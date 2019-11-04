@@ -41,7 +41,7 @@ Quick Start
 
 2. Install TensorFlow_. You can install a gpu version of TensorFlow if you have an Nvidia GPU.
 
-We use tensorflow-gpu==1.13.1 here.
+   We use tensorflow-gpu==1.13.1 here.
 
 .. _TensorFlow: https://www.tensorflow.org/install/pip
 
