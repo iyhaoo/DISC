@@ -45,7 +45,7 @@ Quick Start
 
 3. Install DISC through pip:
 
-    ``pip install scvi``
+    ``pip install DISC``
 
    Alternatively, you may clone this repository and run ``python setup.py install``.
 
