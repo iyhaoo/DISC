@@ -1,5 +1,5 @@
 ====
-DISC, a scalable deep learning imputation method with semi-supervised learning
+DISC - a scalable deep learning imputation method with semi-supervised learning
 ====
 
 ..
