@@ -2,7 +2,8 @@
 DISC
 ====
 
-..|PyPI| |bioconda| |Docs| |Build Status| |Coverage| |Code Style| |Downloads|
+..
+ |PyPI| |bioconda| |Docs| |Build Status| |Coverage| |Code Style| |Downloads|
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/scVI.svg
     :target: https://pypi.org/project/scvi
