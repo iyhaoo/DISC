@@ -39,84 +39,51 @@ Quick Start
 
 .. _Python: https://www.python.org/downloads/
 
-2. Install PyTorch_. If you have an Nvidia GPU, be sure to install a version of PyTorch that supports it -- scVI runs much faster with a discrete GPU.
+2. Install TensorFlow_. You can install a gpu version of TensorFlow if you have an Nvidia GPU. We use tensorflow-gpu==1.13.1 here.
 
-.. _PyTorch: http://pytorch.org
+.. _TensorFlow: https://www.tensorflow.org/install/pip
 
-3. Install scVI through conda:
+3. Install DISC through pip:
 
-    ``conda install scvi -c bioconda -c conda-forge``
+    ``pip install scvi``
 
-   Alternatively, you may try pip (``pip install scvi``), or you may clone this repository and run ``python setup.py install``.
+   Alternatively, you may clone this repository and run ``python setup.py install``.
 
-4. If you wish to use multiple GPUs for hyperparameter tuning, install MongoDb_.
-
-.. _MongoDb: https://docs.mongodb.com/manual/installation/
-
-5. Follow along with our Jupyter notebooks to quickly get familiar with scVI!
+4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 
    a. Getting started:
-       * `data loading`__
-       * `basic usage (scVI)`__
-   b. Analyzing several datasets:
-       * `harmonization (scVI)`__
-       * `annotation (scANVI)`__
-   c. Advanced topics:
-       * `interaction with scanpy`__
-       * `linear decoder for gene interpretation (LDVAE)`__
-       * `imputation of unobserved gene expression (gimVI)`__
-       * `automated hyperparameter search`__
-       * `joint model for CITE-seq data (totalVI)`__
-       * `detection of zero-inflated genes (AutoZI)`__
+       * `running melanoma dataset`__
+   b. Reproducing our results:
+       * `Structure recovery comparing with FISH`__
+       * `Downsampling recovery`__
+       * `Clustering improvement`__
+       * `Ultra-large dataset analysis`__
+   c. Supplementary topics:
+       * `Download datasets we used`__
+       * `Other analysis scripts we used`__
+..
+   d. Advanced topics:
 
 
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/basic_tutorial.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/harmonization.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/annotation.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/scanpy_pbmc3k.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/linear_decoder.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/gimvi_tutorial.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/autotune_advanced_notebook.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/totalVI.ipynb
-.. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/AutoZI_tutorial.ipynb
+..
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/basic_tutorial.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/harmonization.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/annotation.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/scanpy_pbmc3k.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/linear_decoder.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/gimvi_tutorial.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/autotune_advanced_notebook.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/totalVI.ipynb
+ .. __: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/AutoZI_tutorial.ipynb
 
 
 References
 ----------
+..
+ Romain Lopez, Jeffrey Regier, Michael Cole, Michael I. Jordan, Nir Yosef.
+ **"Deep generative modeling for single-cell transcriptomics."**
+ Nature Methods, 2018. `[pdf]`__
+ 
+ .. __: https://rdcu.be/bdHYQ
 
-Romain Lopez, Jeffrey Regier, Michael Cole, Michael I. Jordan, Nir Yosef.
-**"Deep generative modeling for single-cell transcriptomics."**
-Nature Methods, 2018. `[pdf]`__
-
-.. __: https://rdcu.be/bdHYQ
-
-Chenling Xu∗, Romain Lopez∗, Edouard Mehlman∗, Jeffrey Regier, Michael I. Jordan, Nir Yosef.
-**"Harmonization and Annotation of Single-cell Transcriptomics data with Deep Generative Models."**
-Submitted, 2019. `[pdf]`__
-
-.. __: https://www.biorxiv.org/content/biorxiv/early/2019/01/29/532895.full.pdf
-
-Romain Lopez∗, Achille Nazaret∗, Maxime Langevin*, Jules Samaran*, Jeffrey Regier*, Michael I. Jordan, Nir Yosef.
-**"A joint model of unpaired data from scRNA-seq and spatial transcriptomics for imputing missing gene expression measurements."**
-ICML Workshop on Computational Biology, 2019. `[pdf]`__
-
-.. __: https://arxiv.org/pdf/1905.02269.pdf
-
-Adam Gayoso, Romain Lopez, Zoë Steier, Jeffrey Regier, Aaron Streets, Nir Yosef.
-**"A joint model of RNA expression and surface protein abundance in single cells."**
-bioRxiv, 2019. `[pdf]`__
-
-.. __: https://www.biorxiv.org/content/biorxiv/early/2019/10/07/791947.full.pdf
-
-Oscar Clivio, Romain Lopez, Jeffrey Regier, Adam Gayoso, Michael I. Jordan, Nir Yosef.
-**"Detecting zero-inflated genes in single-cell transcriptomics data."**
-bioRxiv, 2019. `[pdf]`__
-
-.. __: https://www.biorxiv.org/content/biorxiv/early/2019/10/10/794875.full.pdf
-
-Pierre Boyeau, Romain Lopez, Jeffrey Regier, Adam Gayoso, Michael I. Jordan, Nir Yosef.
-**"Deep generative models for detecting differential expression in single cells."**
-bioRxiv, 2019. `[pdf]`__
-
-.. __: https://www.biorxiv.org/content/biorxiv/early/2019/10/04/794289.full.pdf
