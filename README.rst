@@ -35,9 +35,9 @@ Requirements
 Quick Start
 -----------
 
-1. Install Python 3. We typically use Python3.6 in Linux.
+1. Install Python 3. We typically use Python3.6 in Linux CentOS 7.
 
-.. _Miniconda: https://conda.io/miniconda.html
+.. _Python3: https://www.python.org/downloads/
 
 2. Install PyTorch_. If you have an Nvidia GPU, be sure to install a version of PyTorch that supports it -- scVI runs much faster with a discrete GPU.
 
