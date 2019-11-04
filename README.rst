@@ -27,10 +27,10 @@ DISC, a deep learning method with semi-supervised learning
 
 Requirements
 ----
-Python >= 3.6 <= 3.7
-tensorflow-gpu >= 1.13.1 < 2
-pandas >= 0.23
-h5py >= 2.9
+- Python >= 3.6 <= 3.7
+- tensorflow-gpu >= 1.13.1 < 2
+- pandas >= 0.23
+- h5py >= 2.9
 
 Quick Start
 -----------
