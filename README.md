@@ -1,2 +1,2 @@
-# DeSCI
-DeSCI: An Accurate and Scalable Deep Learning Algorithm to recover gene interactions from single-cell transcriptome data
+# DISC
+DISC: an accurate and scalable semi-supervised deep learning method for imputing dropouts for single-cell transcriptome
