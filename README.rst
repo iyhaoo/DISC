@@ -52,15 +52,15 @@ Quick Start
 4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 
    a. Getting started:
-       * `running melanoma dataset`__
+       * `running melanoma dataset`_
    b. Reproducing our results:
-       * `Structure recovery comparing with FISH`__
-       * `Downsampling recovery`__
-       * `Clustering improvement`__
-       * `Ultra-large dataset analysis`__
+       * `Structure recovery comparing with FISH`_
+       * `Downsampling recovery`_
+       * `Clustering improvement`_
+       * `Ultra-large dataset analysis`_
    c. Supplementary topics:
-       * `Download datasets we used`__
-       * `Other analysis scripts we used`__
+       * `Download datasets we used`_
+       * `Other analysis scripts we used`_
 ..
    d. Advanced topics:
 
