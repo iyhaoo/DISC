@@ -1,5 +1,5 @@
 ====
-DISC
+DISC, a deep learning method with semi-supervised learning
 ====
 
 ..
@@ -20,11 +20,9 @@ DISC
     :target: https://github.com/python/black
 .. |Downloads| image:: https://pepy.tech/badge/scvi
    :target: https://pepy.tech/project/scvi
-
-Single-cell Variational Inference
-
-* Free software: MIT license
-* Documentation: https://scvi.readthedocs.io.
+..
+ * Free software: MIT license
+ * Documentation: https://scvi.readthedocs.io.
 
 
 Quick Start
