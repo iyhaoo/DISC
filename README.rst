@@ -25,10 +25,17 @@ DISC, a deep learning method with semi-supervised learning
  * Documentation: https://scvi.readthedocs.io.
 
 
+Requirements
+----
+Python >= 3.6 <= 3.7
+tensorflow-gpu >= 1.13.1 < 2
+pandas >= 0.23
+h5py >= 2.9
+
 Quick Start
 -----------
 
-1. Install Python 3.7. We typically use the Miniconda_ Python distribution and Linux.
+1. Install Python 3. We typically use Python3.6 in Linux.
 
 .. _Miniconda: https://conda.io/miniconda.html
 
