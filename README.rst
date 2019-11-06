@@ -1,11 +1,12 @@
 DISC - a scalable deep learning imputation method with semi-supervised learning
 ====
 
-..
- |PyPI| |bioconda| |Docs| |Build Status| |Coverage| |Code Style| |Downloads|
+ |PyPI|
+.. |PyPI| image:: https://img.shields.io/pypi/v/DISC.svg
+    :target: https://pypi.org/project/disc
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/scVI.svg
-    :target: https://pypi.org/project/scvi
+..
+  |bioconda| |Docs| |Build Status| |Coverage| |Code Style| |Downloads|
 .. |bioconda| image:: https://img.shields.io/badge/bioconda-blue.svg
     :target: http://bioconda.github.io/recipes/scvi/README.html
 .. |Docs| image:: https://readthedocs.org/projects/scvi/badge/?version=latest
