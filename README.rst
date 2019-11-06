@@ -56,20 +56,20 @@ Quick Start
 
 4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 
-   a. Getting started:
+   1. Getting started:
        * `Running melanoma dataset`_
 
-   b. Reproducing our results:
+   2. Reproducing our results:
        * `Structure recovery comparing with FISH`_
        * `Downsampling recovery`_
        * `Clustering improvement`_
        * `Ultra-large dataset analysis`_
 
-   c. Supplementary topics:
+   3. Supplementary topics:
        * `Download datasets we used`_
        * `Other analysis scripts we used`_
 ..
-   d. Advanced topics:
+   4. Advanced topics:
 
 .. _`running melanoma dataset`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
 .. _`Structure recovery comparing with FISH`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
