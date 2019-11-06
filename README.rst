@@ -1,7 +1,8 @@
 DISC - a scalable deep learning imputation method with semi-supervised learning
 ====
 
- |PyPI|
+|PyPI|
+
 .. |PyPI| image:: https://img.shields.io/pypi/v/DISC.svg
     :target: https://pypi.org/project/disc
 
