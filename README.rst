@@ -22,6 +22,7 @@ DISC
    :target: https://pepy.tech/project/scvi
 
 A scalable deep learning imputation method with semi-supervised learning
+
 * Free software: Apache License 2.0
 
 ..
