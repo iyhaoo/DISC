@@ -28,8 +28,8 @@ Requirements
 ----
 - Python >= 3.6
 - tensorflow-gpu >= 1.13.1
-- pandas >= 0.23
-- h5py >= 2.9
+- pandas >= 0.23.0
+- h5py >= 2.9.0
 
 Quick Start
 -----------
