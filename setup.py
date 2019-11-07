@@ -6,16 +6,16 @@ with open("README.rst") as readme_file:
 requirements = [
     "numpy>=1.14.0",
     "pandas>=0.21.0",
-    "tensorflow-gpu>=1.13.1",
+    "tensorflow>=1.13.1",
     "h5py>=2.9.0"
 ]
 
 setup(
     name="disc",
-    version="0.0.0.2",
+    version="0.0.0.3",
     author="Example Author",
     author_email="904469382@qq.com",
-    description="An accurate and scalable semi-supervised deep learning method for imputing dropouts for single-cell transcriptome",
+    description="An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome",
     install_requires=requirements,
     long_description=readme,
     url="https://github.com/iyhaoo/DISC",

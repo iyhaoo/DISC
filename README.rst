@@ -16,7 +16,7 @@ A scalable deep learning imputation method with semi-supervised learning
 Requirements
 ----
 - Python >= 3.6
-- tensorflow-gpu >= 1.13.1
+- tensorflow >= 1.13.1
 - numpy >= 1.14.0
 - pandas >= 0.21.0
 - h5py >= 2.9.0
@@ -28,15 +28,35 @@ Quick Start
 
 .. _Python: https://www.python.org/downloads/
 
-2. Install TensorFlow_. You can install a gpu version of TensorFlow if you have an Nvidia GPU.
+2. Install DISC through pip:
 
-.. _TensorFlow: https://www.tensorflow.org/install/pip
+``pip install DISC``
 
-3. Install DISC through pip:
+  Alternatively, you may clone this repository and run ``python setup.py install``.
 
-    ``pip install DISC``
+3. Usage
 
-   Alternatively, you may clone this repository and run ``python setup.py install``.
+  1.Quick Start
+
+We use the melanoma dataset (GSE99330) here as an example.
+
+The following code runs DISC:
+
+``DISC --dataset=matrix.loom --out-dir={output_folder}``
+
+where matrix.loom is a loom-formatted raw count matrix with genes in rows and cells in columns.
+
+Results
+
+output_folder contains the main output file (representing the mean parameter of ZINB distribution) as well as some additional matrices in TSV format:
+
+mean.tsv is the main output of the method which represents the mean parameter of the ZINB distribution. This file has the same dimensions as the input file (except that the zero-expression genes or cells are excluded). It is formatted as a gene x cell matrix. Additionally, mean_norm.tsv file contains the library size-normalized expressions of each cell and gene. See normalize_total function from Scanpy for the details about the default library size normalization method used in DCA.
+
+pi.tsv and dispersion.tsv files represent dropout probabilities and dispersion for each cell and gene. Matrix dimensions are same as mean.tsv and the input file.
+
+reduced.tsv file contains the hidden representation of each cell (in a 32-dimensional space by default), which denotes the activations of bottleneck neurons.
+
+Use -h option to see all available parameters and defaults.
 
 4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 
@@ -72,4 +92,10 @@ References
  
  .. __: https://rdcu.be/bdHYQ
  
+History
+=========
 
+1.0.0 (2019-11-XX)
+------------------
+
+* First release on PyPI.
