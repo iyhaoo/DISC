@@ -13,18 +13,16 @@ An accurate and scalable imputation algorithm based on semi-supervised deep lear
 Requirements
 ------------
 
-- Python >= 3.6
-- tensorflow >= 1.13.1
-- numpy >= 1.14.0
-- pandas >= 0.21.0
-- h5py >= 2.9.0
+- Python_ >= 3.6
+- tensorflow_ >= 1.13.1
+- numpy_ >= 1.14.0
+- pandas_ >= 0.21.0
+- h5py_ >= 2.9.0
 
 Quick Start
 -----------
 
 1. Install Python_. We typically use Python3.6 in Linux CentOS 7.
-
-.. _Python: https://www.python.org/downloads/
 
 2. Install DISC through pip:
 
@@ -44,7 +42,6 @@ Quick Start
 
    where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
 
-   .. _`loom-formatted`: http://loompy.org/
 
    **Results**
 
@@ -56,13 +53,12 @@ Quick Start
 
    `result`: a directory for imputaion results
 
-   1. imputation.loom: a loom-formatted imputed matrix with genes in rows and cells in columns.
+   1. imputation.loom: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
 
-   2. feature.loom: a loom-formatted dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
+   2. feature.loom: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
 
    3. running_info.hdf5: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
 
-   .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 
 4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 
@@ -79,13 +75,6 @@ Quick Start
        * `Download datasets we used`_
        * `Other analysis scripts we used`_
 
-.. _`running melanoma dataset`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Structure recovery comparing with FISH`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Downsampling recovery`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Clustering improvement`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Ultra-large dataset analysis`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Download datasets we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Other analysis scripts we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
 
 
 References
@@ -103,4 +92,21 @@ History
 1.0.0 (2019-11-XX)
 ------------------
 
-* First release on PyPI.
+* First release on PyPI_.
+
+
+.. _Python: https://www.python.org/downloads/
+.. _tensorflow: https://www.tensorflow.org/
+.. _numpy: https://numpy.org/
+.. _pandas: https://pandas.pydata.org/
+.. _h5py: https://www.h5py.org/
+.. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
+.. _`loom-formatted`: http://loompy.org/
+.. _`running melanoma dataset`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Structure recovery comparing with FISH`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Downsampling recovery`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Clustering improvement`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Ultra-large dataset analysis`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Download datasets we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Other analysis scripts we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _PyPI: https://pypi.org/project/disc/
