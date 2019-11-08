@@ -6,12 +6,9 @@ DISC
 .. |PyPI| image:: https://img.shields.io/pypi/v/DISC.svg
     :target: https://pypi.org/project/disc
 
-A scalable deep learning imputation method with semi-supervised learning
+An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome
 
 * Free software: Apache License 2.0
-
-..
- * Documentation: https://scvi.readthedocs.io.
 
 Requirements
 ------------
@@ -37,27 +34,35 @@ Quick Start
 
 3. Usage
 
-   * 1. Quick Start
+   **Quick Start**
 
-        We use the melanoma dataset (GSE99330) here as an example.
+   We use the melanoma dataset (GSE99330) here as an example.
 
-        The following code runs DISC:
+   The following code runs DISC:
 
-        ``DISC --dataset=matrix.loom --out-dir=out_dir``
+   ``DISC --dataset=matrix.loom --out-dir=out_dir``
 
-        where matrix.loom is a loom-formatted raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
+   where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
 
-Results
+   .. _`loom-formatted`: http://loompy.org/
 
-output_folder contains the main output file (representing the mean parameter of ZINB distribution) as well as some additional matrices in TSV format:
+   **Results**
 
-mean.tsv is the main output of the method which represents the mean parameter of the ZINB distribution. This file has the same dimensions as the input file (except that the zero-expression genes or cells are excluded). It is formatted as a gene x cell matrix. Additionally, mean_norm.tsv file contains the library size-normalized expressions of each cell and gene. See normalize_total function from Scanpy for the details about the default library size normalization method used in DCA.
+   log.tsv: a tsv-formatted log file that records training states.
 
-pi.tsv and dispersion.tsv files represent dropout probabilities and dispersion for each cell and gene. Matrix dimensions are same as mean.tsv and the input file.
+   summary.pdf: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
 
-reduced.tsv file contains the hidden representation of each cell (in a 32-dimensional space by default), which denotes the activations of bottleneck neurons.
+   summary.tsv: a tsv-formatted file that shows the raw data of visualization.
 
-Use -h option to see all available parameters and defaults.
+   `result`: a directory for imputaion results
+
+   1. imputation.loom: a loom-formatted imputed matrix with genes in rows and cells in columns.
+
+   2. feature.loom: a loom-formatted dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
+
+   3. running_info.hdf5: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
+
+   .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 
 4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 
