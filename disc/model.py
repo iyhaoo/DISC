@@ -159,7 +159,7 @@ class DeSCI:
         d_B = tf.stop_gradient(self.decoder_bias)
         self.compressed_prediction = [tf.add_n(tf.split(self.output_act_fn(self.output_scale_factor * (tf.stop_gradient(self.output_act_fn_scale_factor) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), d_W) + d_B)) * tf.stop_gradient(self.attention_coefficients), num_or_size_splits=self.repeats, axis=0)) for feature_ in self.reconst_feature_compression]
 
-    def training(self, learning_rate, push_factor=None, gene_express_rate=None):
+    def training(self, learning_rate, feature_l2_factor=1, push_factor=None, gene_express_rate=None):
         """
         learning_rate:
         use_push_factor: "auto", integer, float or None, optional.
@@ -218,7 +218,7 @@ class DeSCI:
         self.regularizer6 = tf.add_n([tf.reduce_sum(tf.abs(w)) for w in self.compress_weight])
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate)
         self.loss1 = prediction_loss + reconst_loss + merge_impute_loss + \
-                     0.000021 * self.feature_l2 + 0.165 * self.use_gene_number / 10000 * self.feature_loss + \
+                     0.000021 * feature_l2_factor * self.feature_l2 + 0.165 * self.use_gene_number / 10000 * self.feature_loss + \
                      0.000001 * regularizer1 + 0.000001 * regularizer2 + 0.00001 * regularizer3 + 0.000001 * regularizer4 + 0.0001 * regularizer5
         self.loss2 = compression_loss + 0.0001 * regularizer6
         self.loss_element = [self.loss1, self.loss2]

@@ -1,5 +1,5 @@
 DISC
-=========
+====
 
 |PyPI|
 
@@ -14,7 +14,8 @@ A scalable deep learning imputation method with semi-supervised learning
  * Documentation: https://scvi.readthedocs.io.
 
 Requirements
-----
+------------
+
 - Python >= 3.6
 - tensorflow >= 1.13.1
 - numpy >= 1.14.0
@@ -30,21 +31,21 @@ Quick Start
 
 2. Install DISC through pip:
 
-``pip install DISC``
+   ``pip install DISC``
 
-  Alternatively, you may clone this repository and run ``python setup.py install``.
+   Alternatively, you may clone this repository and run ``python setup.py install``.
 
 3. Usage
 
-  1.Quick Start
+   * 1. Quick Start
 
-We use the melanoma dataset (GSE99330) here as an example.
+        We use the melanoma dataset (GSE99330) here as an example.
 
-The following code runs DISC:
+        The following code runs DISC:
 
-``DISC --dataset=matrix.loom --out-dir={output_folder}``
+        ``DISC --dataset=matrix.loom --out-dir=out_dir``
 
-where matrix.loom is a loom-formatted raw count matrix with genes in rows and cells in columns.
+        where matrix.loom is a loom-formatted raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
 
 Results
 
@@ -72,8 +73,6 @@ Use -h option to see all available parameters and defaults.
    3. Supplementary topics:
        * `Download datasets we used`_
        * `Other analysis scripts we used`_
-..
-   4. Advanced topics:
 
 .. _`running melanoma dataset`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
 .. _`Structure recovery comparing with FISH`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
@@ -82,6 +81,7 @@ Use -h option to see all available parameters and defaults.
 .. _`Ultra-large dataset analysis`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
 .. _`Download datasets we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
 .. _`Other analysis scripts we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+
 
 References
 ----------

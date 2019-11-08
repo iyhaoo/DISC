@@ -73,7 +73,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch-size", required=False, type=int, default=128, help="Batch size")
     parser.add_argument("--compress-dimensions", required=False, type=int, default=50, help="Latent dimensions")
     parser.add_argument("--noise-intensity", required=False, type=float, default=0.1, help="noise-intensity")
-    parser.add_argument("--feature-l2-base", required=False, type=float, default=3, help="feature_l2_base")
+    parser.add_argument("--feature-l2-factor", required=False, type=float, default=1, help="feature_l2_factor")
     parser.add_argument("--z-score-library-size-factor", required=False, type=float, default=1000000, help="z-score-library-size-factor")
     parser.add_argument("--learning-rate", required=False, type=float, default=0.001, help="learning-rate")
     parser.add_argument("--training", required=False, type=int, default=1, help="is training")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager)
             evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], manager=manager)
-            model.training(FLAGS["learning_rate"], push_factor=None, gene_express_rate=dataset.gene_express_rate)
+            model.training(FLAGS["learning_rate"], feature_l2_factor=FLAGS["feature_l2_factor"], push_factor=None, gene_express_rate=dataset.gene_express_rate)
             feed_dict[model.is_training] = True
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
