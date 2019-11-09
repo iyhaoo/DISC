@@ -11,7 +11,7 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
         rf["norm_max"] = dataset.norm_max
         rf["norm_mean"] = dataset.z_norm_mean
         rf["norm_std"] = dataset.z_norm_std
-        rf["target_gene"] = np.array(dataset.target_gene, dtype=h5py.special_dtype(vlen=str))
+        rf["target_gene"] = np.array(dataset.target_gene, dtype=np.string_)
         rf["library_size_factor"] = dataset.library_size_factor
         rf["library_size"] = dataset.library_size
         rf["outlier_num"] = dataset.outlier_num
@@ -22,8 +22,8 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
     feature_file.create_group("row_graphs")
     feature_file.create_group("col_graphs")
     feature_file.create_group("layers")
-    feature_file["col_attrs/CellID"] = dataset.cell_id.astype(h5py.special_dtype(vlen=str))
-    feature_file["row_attrs/Gene"] = np.array(["feature_{}".format(x) for x in range(model.compress_dimensions)], h5py.special_dtype(vlen=str))
+    feature_file["col_attrs/CellID"] = dataset.cell_id.astype(np.string_)
+    feature_file["row_attrs/Gene"] = np.array(["feature_{}".format(x) for x in range(model.compress_dimensions)], np.string_)
     feature_matrix = feature_file.create_dataset("matrix",
                                                  shape=(model.compress_dimensions, dataset.cell_number),
                                                  chunks=(model.compress_dimensions, 1),
@@ -33,8 +33,8 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
     imputation_file.create_group("row_graphs")
     imputation_file.create_group("col_graphs")
     imputation_file.create_group("layers")
-    imputation_file["col_attrs/CellID"] = dataset.cell_id.astype(h5py.special_dtype(vlen=str))
-    imputation_file["row_attrs/Gene"] = dataset.gene_name.astype(h5py.special_dtype(vlen=str))
+    imputation_file["col_attrs/CellID"] = dataset.cell_id.astype(np.string_)
+    imputation_file["row_attrs/Gene"] = dataset.gene_name.astype(np.string_)
     imputation_matrix = imputation_file.create_dataset("matrix",
                                                        shape=(dataset.gene_number, dataset.cell_number),
                                                        chunks=(dataset.gene_number, 1),
