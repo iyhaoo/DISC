@@ -59,6 +59,7 @@ Quick Start
 
    3. running_info.hdf5: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
 
+   `models`: a directory for trained models in every save interval
 
 4. Follow along with our Jupyter notebooks to quickly get familiar with DISC!
 

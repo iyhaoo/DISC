@@ -236,6 +236,34 @@ downsampling = function(le, gene_bc_mat){
   return(gene_bc_mat)
 }
 
+downsampling_new = function(le, gene_bc_mat){
+  dim_names = dimnames(gene_bc_mat)
+  gene_bc_mat = as(gene_bc_mat, "dgTMatrix")
+  transcript_i = c()
+  transcript_j = c()
+  transcript_table = table(gene_bc_mat@x)
+  expression_values_c = names(transcript_table)
+  if(sum(as.integer(expression_values_c) != as.numeric(expression_values_c)) != 0){
+    stop("float exist!")
+  }
+  for(ii in expression_values_c){
+    for(jj in seq(transcript_table[ii])){
+      transcript_num = as.integer(ii)
+      this_mask = gene_bc_mat@x == transcript_num
+      for(kk in seq(transcript_num)){
+        transcript_i = c(transcript_i, gene_bc_mat@i[this_mask])
+        transcript_j = c(transcript_j, gene_bc_mat@j[this_mask])
+      }
+    }
+  }
+  reads <- length(transcript_i)
+  new_reads <- round(reads * le)
+  use_index = sample(seq(reads), size = new_reads, replace = F)
+  transcript_i = transcript_i[use_index]
+  transcript_j = transcript_j[use_index]
+  ds_mat = Matrix::sparseMatrix(i = transcript_i + 1, j = transcript_j + 1, x = rep(1, length(transcript_i)), dimnames = dim_names)
+  return(as.matrix(ds_mat))
+}
 
 #  strings
 delete_last_element <- function(x){
@@ -834,3 +862,113 @@ smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRa
     if (ret.selection) iS[sel]
   }
 }
+
+###cell_type_mapping###
+cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=NULL){
+  if(!is.null(prior_cell_type)){
+    use_cell <-intersect(rownames(this_metadata), names(prior_cell_type))
+    this_metadata = this_metadata[use_cell, ]
+    this_metadata$cell_type = prior_cell_type[use_cell]
+    cell_number = length(use_cell)
+  }else{
+    this_metadata$cell_type
+    cell_number = nrow(this_metadata)
+  }
+  this_markers$cluster = as.numeric(as.character(this_markers$cluster))
+  ind1 <-which(this_markers[,7]=="IL7R")
+  a <- this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="CD14")
+  b <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="LYZ")
+  c <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="MS4A1")
+  d <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="CD8A")
+  e <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="FCGR3A")
+  f <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="MS4A7")
+  g <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="GNLY")
+  h <- this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="NKG7")
+  i <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="FCER1A")
+  j <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="CST3")
+  k <-this_markers[ind1,][,6]
+  ind1 <-which(this_markers[,7]=="PPBP")
+  l <-this_markers[ind1,][,6]
+  
+  CD4 <-setdiff(a,e)
+  CD14 <-intersect(b,c)
+  B <-d
+  CD8 <-e
+  Mono <-intersect(f,g)
+  NK <-setdiff(intersect(h,i),e)
+  DC <-intersect(j,k)
+  Platelet <-l
+  
+  union <-c(CD4,CD14,B,CD8,Mono,NK,DC,Platelet)
+  dup <- unique(union[duplicated(union)])
+  CD41 <-setdiff(CD4,dup)
+  CD141 <-setdiff(CD14,dup)
+  B1 <-setdiff(B,dup)
+  CD81 <-setdiff(CD8,dup)
+  Mono1 <-setdiff(Mono,dup)
+  NK1 <-setdiff(NK,dup)
+  DC1 <-setdiff(DC,dup)
+  Platelet1 <-setdiff(Platelet,dup)
+  
+  assigned <-unique(c(CD41,CD141,B1,CD81,Mono1,NK1,DC1,Platelet1))
+  A <-unique(this_markers[,6])
+  unassignment = setdiff(A,assigned)
+  
+  Others = unique(c(unassignment, dup))
+  
+  return_list = list()
+  return_list[["CD4 T"]] = CD41
+  return_list[["CD14+ Mono"]] = CD141
+  return_list[["B"]] = B1
+  return_list[["CD8 T"]] = CD81
+  return_list[["FCGR3A+ Mono"]] = Mono1
+  return_list[["NK"]] = NK1
+  return_list[["DC"]] = DC1
+  return_list[["Platelet"]] = Platelet1
+  return_list[["Unresolved"]] = Others
+  return_list[["Unassignment"]] = unassignment
+  return_list[["Duplication"]] = dup
+  this_metadata$assignment = "cluster_outliers"
+  for(ii in names(return_list)){
+    return_list[[ii]] = sort(return_list[[ii]])
+    this_metadata$assignment[this_metadata$seurat_clusters %in% return_list[[ii]]] = ii
+  }
+  return_list[["Unassignment Rate"]] = sum(this_metadata$seurat_clusters %in% unassignment) / cell_number
+  return_list[["Cluster outlier Rate"]] = sum(this_metadata$assignment == "cluster_outliers") / cell_number
+  return_list[["Mixed Rate"]] = sum(this_metadata$seurat_clusters %in% dup) / cell_number
+  cluster_number = length(unique(this_metadata$seurat_clusters))
+  unknown_cluster = c(unassignment, dup)
+  if(!is.null(prior_cell_type)){
+    purity_mask = this_metadata$assignment == this_metadata$cell_type
+    purity = sum(purity_mask) / cell_number
+    ARI <-adjustedRandIndex(this_metadata$assignment, this_metadata$cell_type)
+    recall_type = unique(this_metadata$cell_type[purity_mask])
+    return_list[["recall_type"]] = recall_type
+    return_list[["lost_type"]] = setdiff(unique(this_metadata$cell_type), recall_type)
+    recall_number = length(recall_type)
+    result_summary <-c(purity, ARI, cluster_number, recall_number, length(unknown_cluster))
+    names(result_summary) = c("Accuracy", "ARI", "Clusters", "Types", "Unknown") #  Accuracy means purity
+  }else{
+    result_summary <-c(cluster_number, length(unknown_cluster))
+    names(result_summary) = c("Clusters", "Unknown") #  Accuracy means purity
+    assignment = this_metadata$assignment
+    names(assignment) = rownames(this_metadata)
+    return_list[["assignment"]] = assignment
+  }
+  return_list[["result"]] = result_summary
+  return(return_list)
+}
+
+
+
+

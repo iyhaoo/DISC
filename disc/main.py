@@ -14,7 +14,6 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
         rf["target_gene"] = np.array(dataset.target_gene, dtype=np.string_)
         rf["library_size_factor"] = dataset.library_size_factor
         rf["library_size"] = dataset.library_size
-        rf["outlier_num"] = dataset.outlier_num
         rf["expressed_cell"] = dataset.expressed_cell
         rf["gene_expression"] = dataset.gene_expression
         rf["zscore_cutoff"] = dataset.zscore_cutoff
