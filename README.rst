@@ -100,12 +100,11 @@ History
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
-.. _`running melanoma dataset`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Gene expression structures recovery`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Structure recovery comparing with FISH`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Downsampling recovery`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Clustering improvement`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Ultra-large dataset analysis`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Download datasets we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
-.. _`Other analysis scripts we used`: https://nbviewer.jupyter.org/github/YosefLab/scVI/blob/master/tests/notebooks/data_loading.ipynb
+.. _`Gene expression structures recovery`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/pages/getting_start.ipynb
+.. _`Structure recovery comparing with FISH`: https://github.com/iyhaoo/DISC#
+.. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
+.. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
+.. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
+.. _`Download datasets we used`: https://github.com/iyhaoo/DISC#
+.. _`Other analysis scripts we used`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/
