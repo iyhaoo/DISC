@@ -21,9 +21,36 @@ def read_loom(loom_path):
 class ScanLoom:
     def __init__(self, loom_path, library_size_factor, noise_intensity=0.1, target_gene=None, min_cell=10, min_avg_exp=1,
                  z_score_library_size_factor=1000000, workers=1, scanning_batch_size=2048, log_fn=print):
-        """
-                Note:  If target_gene is provided, min_cell and min_avg_exp will be ignored
-                output gene use the order of loom file
+        r"""
+        An ultra fast scanner that used for our model. The input is loom-formatted data-set and the output is some
+        common attributes including library size, expressed cell number and expression for every genes our model use.
+
+        :param loom_path: Path of input data-set with genes in rows and cells in columns
+
+        :param library_size_factor: int, float or "median". If a value is input, the value will be used as
+               library size factor directly. If "median" is input, the median library size will be used as
+               library size factor.
+
+        :param noise_intensity: use in norm max calculation for our model
+
+        :param target_gene: only calculate specific genes, is useful in our transfer learning module
+
+        :param min_cell: Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and
+               min_avg_exp will be ignored.
+
+        :param min_avg_exp: Minimum average expression in expressed cells. Use for gene filtering. The default value is
+               set to be 1 to filter most noise likely expressed genes that expression is 1 in all expressed entries.
+               You can set this as -1 or other values that < 0 to ensure not use this standard for filtering. Note that
+               if target_gene is provided, min_cell and min_avg_exp will be ignored.
+
+        :param z_score_library_size_factor: Library size factor when doing normalization for z-score filtering.
+
+        :param workers: Process number when conduct this scanning. This parameter can improve performance as most time
+               is use for calculating here though we read the data-set file for three times.
+
+        :param scanning_batch_size: Chunk size for reading when scanning. Users can tune this parameter for better
+               performance. Change workers and scanning_batch_size will affect memory cost and running time.
+
         """
         self.log_fn = log_fn
         self.loom_path = loom_path
@@ -56,7 +83,7 @@ class ScanLoom:
         pre_z_norm_std, = self._memory_economically_scanning(self._calculate_norm_std, ["plus"])
         self.z_norm_std = np.sqrt(np.divide(pre_z_norm_std, expressed_cell_calculate, out=np.zeros(self.calculate_mask.sum()), where=expressed_cell_calculate != 0))
         # norm_max filtered by z-score with 1m normalization
-        pre_inner_norm_max, self.zscore_cutoff, self.library_size = self._memory_economically_scanning(self._calculate_pre_inner_norm_max, ["max", "min", "append"])
+        pre_inner_norm_max, self.zscore_cutoff, self.outlier_num, self.library_size = self._memory_economically_scanning(self._calculate_pre_inner_norm_max, ["max", "min", "plus", "append"])
         #  long vector reassignment
         self.gene_name = gene_name
         self.cell_id = cell_id
@@ -93,6 +120,7 @@ class ScanLoom:
         self.gene_express_rate = self.expressed_cell[self.target_gene_mask] / self.cell_number
         self.norm_max = self.norm_max * (1 + noise_intensity)  # for model noise input
         self.log_fn("Scan Time: {:.2f} Seconds".format(time.time() - this_time))
+        self.log_fn("Outlier Number: {:.0f}".format(self.outlier_num.sum()))
 
     #  these functions need to return iterables
     def _dataset_scanning(self, ix):
@@ -124,21 +152,28 @@ class ScanLoom:
         this_pre_norm = np.divide(use_data, this_library_size, out=np.zeros_like(use_data), where=this_library_size != 0)
         this_z_norm = np.log1p(this_pre_norm * self.z_score_library_size_factor)
         this_zscore = np.divide(this_z_norm - np.expand_dims(self.z_norm_mean, 1), np.expand_dims(self.z_norm_std, 1), out=np.zeros_like(this_z_norm), where=np.expand_dims(self.z_norm_std, 1) != 0)
+        this_outlier_num = np.sum(this_zscore > 3, 1)
         pre_inner_norm_max = np.where(this_zscore > 3, np.zeros_like(this_pre_norm), this_pre_norm).max(1)
         min_zscore = np.where(np.logical_and(use_data > 0, this_zscore >= -2.5), this_zscore, np.ones_like(this_zscore) * 10).min(1)
-        return pre_inner_norm_max, min_zscore, this_library_size
-    #  ####################################################
+        return pre_inner_norm_max, min_zscore, this_outlier_num, this_library_size
 
+    #  optimal running
     def _memory_economically_scanning(self, worker_function, modify_type_list):
-        def master_function(result, to_modify, modify_type):
+        def _main_fn(result, to_modify, modify_type):
             return_list = []
             for this_result, this_to_modify, this_modify_type in zip(result, to_modify, modify_type):
-                if this_modify_type is "plus":
-                    this_to_modify += this_result
-                elif this_modify_type is "max":
-                    this_to_modify = np.maximum(this_to_modify, this_result)
-                elif this_modify_type is "min":
-                    this_to_modify = np.minimum(this_to_modify, this_result)
+                if this_modify_type in ["plus", "max", "min"]:
+                    if this_to_modify is None:
+                        this_to_modify = this_result
+                    else:
+                        if this_modify_type is "plus":
+                            this_to_modify += this_result
+                        elif this_modify_type is "max":
+                            this_to_modify = np.maximum(this_to_modify, this_result)
+                        elif this_modify_type is "min":
+                            this_to_modify = np.minimum(this_to_modify, this_result)
+                        else:
+                            raise Exception("Invalid Input")
                 elif this_modify_type is "append":
                     this_to_modify.append(this_result)
                 else:
@@ -150,10 +185,7 @@ class ScanLoom:
         for this_modify_type in modify_type_list:
             assert this_modify_type in ["plus", "max", "min", "append"]
             if this_modify_type in ["plus", "max", "min"]:
-                if self.calculate_mask is None:
-                    to_modify_list.append(np.zeros(self.gene_number))
-                else:
-                    to_modify_list.append(np.zeros(self.calculate_mask.sum()))
+                to_modify_list.append(None)
             elif this_modify_type in ["append"]:
                 to_modify_list.append([])
             else:
@@ -161,6 +193,9 @@ class ScanLoom:
         scan_pool = Pool(processes=self.workers)
         result_list = [scan_pool.apply_async(worker_function, args=(x * self._scanning_batch_size,)) for x in range(self.task_number)]
         scan_pool.close()
+        result_index = list(range(len(result_list)))
+        process_order = []
+        #  Same as .join()
         while len(list(filter(lambda x: not x.ready(), result_list))):
             ready_index = []
             for this_index, jj in enumerate(result_list):
@@ -168,10 +203,18 @@ class ScanLoom:
                     ready_index.append(this_index)
             for this_index in ready_index[::-1]:
                 ready_task = result_list.pop(this_index)
-                to_modify_list = master_function(ready_task.get(), to_modify_list, modify_type_list)
+                process_order.append(result_index.pop(this_index))
+                to_modify_list = _main_fn(ready_task.get(), to_modify_list, modify_type_list)
+        for ready_task, this_rindex in zip(result_list, result_index):
+            to_modify_list = _main_fn(ready_task.get(), to_modify_list, modify_type_list)
+            process_order.append(this_rindex)
+        #  cell-dimension attributes need reordering
         for ii, this_modify_type in enumerate(modify_type_list):
             if this_modify_type in ["append"]:
-                to_modify_list[ii] = np.concatenate(to_modify_list[ii])
+                sorted_list = [None] * len(to_modify_list[ii])
+                for this_order, this_element in zip(process_order, to_modify_list[ii]):
+                    sorted_list[this_order] = this_element
+                to_modify_list[ii] = np.concatenate(sorted_list)
         return to_modify_list
 
 
@@ -187,5 +230,21 @@ if __name__ == '__main__':
     data = ScanLoom(loom_path, "median", noise_intensity=0.1, workers=FLAGS["workers"])
     print("mean", np.mean(data.library_size))
     print("median", np.median(data.library_size))
+    """
+    from utils.data_preparation0 import ScanLoom0
+    data0 = ScanLoom0(loom_path, "median", noise_intensity=0.1, workers=FLAGS["workers"])
+    print(np.alltrue(np.equal(data.library_size, data0.library_size)))
+    print(np.sum(data.norm_max - data0.norm_max))
+    print(np.sum(data.z_norm_mean - data0.z_norm_mean))
+    print(np.sum(data.z_norm_std - data0.z_norm_std))
+    print(np.sum(data.zscore_cutoff - data0.zscore_cutoff))
+    print(np.alltrue(data.expressed_cell == data0.expressed_cell))
+    print(np.alltrue(data.gene_expression == data0.gene_expression))
+    print(np.alltrue(data.gene_express_rate == data0.gene_express_rate))
+    print(np.alltrue(data.target_gene_mask == data0.target_gene_mask))
+    print(np.alltrue(data.target_gene == data0.target_gene))
+    """
+
+
 
 
