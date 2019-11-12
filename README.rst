@@ -34,9 +34,7 @@ Quick Start
 
    **Quick Start**
 
-   We use the melanoma dataset (GSE99330) here as an example.
-
-   The following code runs DISC:
+   Run DISC:
 
    ``DISC --dataset=matrix.loom --out-dir=out_dir``
 
