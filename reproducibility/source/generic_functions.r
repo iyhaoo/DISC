@@ -218,6 +218,31 @@ save_h5 = function(output_path, bc_gene_mat){
   h5createGroup(output_path, "row_graphs")
 }
 # downsampling
+log.pi.res <- function(z){
+  exp(z)/(1+exp(z))
+}
+
+sample.for.dropout <- function(z){
+  dropout.list <- NULL
+  for(i in 1:length(z)){
+    dropout.list <- c(dropout.list, sample(0:1, 1, prob=c(z[i], 1-z[i])))
+  }
+  return(dropout.list)
+}
+
+change.rate <- function(x1, x2, coef){
+  log.x1 <- log2(x1 + 0.1)
+  log.x2 <- log2(x2 + 0.1)
+  log.x1.hat <- coef[1] + log.x1*coef[2]
+  log.x2.hat <- coef[1] + log.x2*coef[2]
+  rate.x1 <- log.pi.res(log.x1.hat)
+  rate.x2 <- log.pi.res(log.x2.hat)
+  dropout <- (rate.x2 - rate.x1)/(1 - rate.x1)
+  dropout[dropout<0] <- 0.0001
+  dropout.label <- sample.for.dropout(dropout)
+  return(x2*dropout.label)
+}
+
 sample_reads = function(x, le){
   reads <- sum(x)
   new.reads <- round(reads*le)
@@ -229,14 +254,14 @@ sample_reads = function(x, le){
   return(newsample_vector)
 }
 
-downsampling = function(le, gene_bc_mat){
+downsampling_cell = function(le, gene_bc_mat){
   gene_bc_mat[Matrix::rowSums(gene_bc_mat) > 0, ] = apply(gene_bc_mat[Matrix::rowSums(gene_bc_mat) > 0, ], 2, function(x){
     return(sample_reads(x, le))
   })
   return(gene_bc_mat)
 }
 
-downsampling_new = function(le, gene_bc_mat){
+downsampling_pool = function(le, gene_bc_mat){
   dim_names = dimnames(gene_bc_mat)
   gene_bc_mat = as(gene_bc_mat, "dgTMatrix")
   transcript_i = c()
@@ -263,6 +288,35 @@ downsampling_new = function(le, gene_bc_mat){
   transcript_j = transcript_j[use_index]
   ds_mat = Matrix::sparseMatrix(i = transcript_i + 1, j = transcript_j + 1, x = rep(1, length(transcript_i)), dimnames = dim_names)
   return(as.matrix(ds_mat))
+}
+
+downsampling_viper_dependent = function(le, gene_bc_mat){
+  gene_mask = rowSums(gene_bc_mat) > 0
+  logxx = log2(gene_bc_mat[gene_mask, ] + 0.1)
+  zero.rate = round(rowSums(gene_bc_mat[gene_mask, ] == 0) / ncol(gene_bc_mat), 2)
+  pi_ratio = log(zero.rate / (1 - zero.rate))
+  pi_ratio[is.infinite(pi_ratio)] = NA
+  coeff = summary(lm(pi_ratio ~ rowMeans(logxx)))$coefficients[, 1]
+  gene_bc_mat[gene_mask, ] = apply(gene_bc_mat[gene_mask, ], 2, function(x){
+    ds_cell = sample_reads(x, le)
+    na_mask = !is.na(ds_cell)
+    ds_cell[na_mask] = change.rate(x[na_mask], ds_cell[na_mask], coeff)
+    return(ds_cell)
+  })
+  return(gene_bc_mat)
+}
+
+downsampling_viper_independent = function(le, gene_bc_mat){
+  gene_mask = rowSums(gene_bc_mat) > 0
+  #keep_rate = 0.95 ^ ((1 - le) / 0.05) #  raw = 0.98
+  keep_rate = 0.5
+  gene_bc_mat[gene_mask, ] = apply(gene_bc_mat[gene_mask, ], 2, function(x){
+    ds_cell = sample_reads(x, le)
+    na_mask = !is.na(ds_cell)
+    ds_cell[na_mask] = ds_cell[na_mask] * sample(c(0, 1), sum(na_mask), replace = TRUE, prob = c(1 - keep_rate, keep_rate))
+    return(ds_cell)
+  })
+  return(gene_bc_mat)
 }
 
 #  strings
@@ -813,35 +867,50 @@ FindVariableFeatures_vst_by_genes = function(gene_bc_mat){
   return(hvf.info)
 }
 
-smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRampPalette(c("white", blues9)),
-                           nrpoints = 100, ret.selection = FALSE, pch = ".", cex = 1,
-                           col = "black", transformation = function(x) x^0.25,
-                           postPlotHook = box, xlab = NULL, ylab = NULL, xlim, ylim,
-                           xaxs = par("xaxs"), yaxs = par("yaxs"), ...)
+smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRampPalette(c("white", 
+                                                                                            blues9)), nrpoints = 100, ret.selection = FALSE, pch = ".", 
+                           cex = 1, col = "black", transformation = function(x) x^0.25, 
+                           postPlotHook = box, xlab = NULL, ylab = NULL, xlim, ylim, 
+                           xaxs = par("xaxs"), yaxs = par("yaxs"), ...) 
 {
-  if (!is.numeric(nrpoints) || nrpoints < 0 || length(nrpoints) != 1)
+  if (!is.numeric(nrpoints) || nrpoints < 0 || length(nrpoints) != 
+      1) 
     stop("'nrpoints' should be numeric scalar with value >= 0.")
   nrpoints <- round(nrpoints)
   ret.selection <- ret.selection && nrpoints > 0
-  xlabel <- if (!missing(x)) deparse(substitute(x))
-  ylabel <- if (!missing(y)) deparse(substitute(y))
+  xlabel <- if (!missing(x)) 
+    deparse(substitute(x))
+  ylabel <- if (!missing(y)) 
+    deparse(substitute(y))
   xy <- xy.coords(x, y, xlabel, ylabel)
-  xlab <- if (is.null(xlab)) xy$xlab else xlab
-  ylab <- if (is.null(ylab)) xy$ylab else ylab
-  x <- cbind(xy$x, xy$y)[I <- is.finite(xy$x) & is.finite(xy$y), drop = FALSE]
-  if (ret.selection) iS <- which(I)
+  xlab <- if (is.null(xlab)) 
+    xy$xlab
+  else xlab
+  ylab <- if (is.null(ylab)) 
+    xy$ylab
+  else ylab
+  x <- cbind(xy$x, xy$y)[I <- is.finite(xy$x) & is.finite(xy$y), 
+                         , drop = FALSE]
+  if (ret.selection) 
+    iS <- which(I)
   if (!missing(xlim)) {
     stopifnot(is.numeric(xlim), length(xlim) == 2, is.finite(xlim))
-    x <- x[I <- min(xlim) <= x[, 1] & x[, 1] <= max(xlim), drop = FALSE]
-    if (ret.selection) iS <- iS[I]
-  }else {
+    x <- x[I <- min(xlim) <= x[, 1] & x[, 1] <= max(xlim), 
+           , drop = FALSE]
+    if (ret.selection) 
+      iS <- iS[I]
+  }
+  else {
     xlim <- range(x[, 1])
   }
   if (!missing(ylim)) {
     stopifnot(is.numeric(ylim), length(ylim) == 2, is.finite(ylim))
-    x <- x[I <- min(ylim) <= x[, 2] & x[, 2] <= max(ylim), drop = FALSE]
-    if (ret.selection) iS <- iS[I]
-  }else {
+    x <- x[I <- min(ylim) <= x[, 2] & x[, 2] <= max(ylim), 
+           , drop = FALSE]
+    if (ret.selection) 
+      iS <- iS[I]
+  }
+  else {
     ylim <- range(x[, 2])
   }
   map <- grDevices:::.smoothScatterCalcDensity(x, nbin, bandwidth)
@@ -849,17 +918,24 @@ smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRa
   ym <- map$x2
   dens <- map$fhat
   dens[] <- transformation(dens)
-  image(xm, ym, z = dens, col = colramp(12), xlab = xlab, ylab = ylab, xlim = xlim, ylim = ylim, xaxs = xaxs, yaxs = yaxs, ...)
-  if (!is.null(postPlotHook)) postPlotHook()
+  image(xm, ym, z = dens, col = colramp(16), xlab = xlab, 
+        ylab = ylab, xlim = xlim, ylim = ylim, xaxs = xaxs, yaxs = yaxs, 
+        ...)
+  if (!is.null(postPlotHook)) 
+    postPlotHook()
   if (nrpoints > 0) {
     nrpoints <- min(nrow(x), ceiling(nrpoints))
-    stopifnot((nx <- length(xm)) == nrow(dens), (ny <- length(ym)) == ncol(dens))
-    ixm <- 1L + as.integer((nx - 1) * (x[, 1] - xm[1])/(xm[nx] - xm[1]))
-    iym <- 1L + as.integer((ny - 1) * (x[, 2] - ym[1])/(ym[ny] - ym[1]))
+    stopifnot((nx <- length(xm)) == nrow(dens), (ny <- length(ym)) == 
+                ncol(dens))
+    ixm <- 1L + as.integer((nx - 1) * (x[, 1] - xm[1])/(xm[nx] - 
+                                                          xm[1]))
+    iym <- 1L + as.integer((ny - 1) * (x[, 2] - ym[1])/(ym[ny] - 
+                                                          ym[1]))
     sel <- order(dens[cbind(ixm, iym)])[seq_len(nrpoints)]
     x <- x[sel, , drop = FALSE]
     points(x, pch = pch, cex = cex, col = col)
-    if (ret.selection) iS[sel]
+    if (ret.selection) 
+      iS[sel]
   }
 }
 
@@ -899,7 +975,7 @@ cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=
   k <-this_markers[ind1,][,6]
   ind1 <-which(this_markers[,7]=="PPBP")
   l <-this_markers[ind1,][,6]
-  
+
   CD4 <-setdiff(a,e)
   CD14 <-intersect(b,c)
   B <-d
@@ -908,7 +984,7 @@ cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=
   NK <-setdiff(intersect(h,i),e)
   DC <-intersect(j,k)
   Platelet <-l
-  
+
   union <-c(CD4,CD14,B,CD8,Mono,NK,DC,Platelet)
   dup <- unique(union[duplicated(union)])
   CD41 <-setdiff(CD4,dup)
@@ -919,13 +995,13 @@ cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=
   NK1 <-setdiff(NK,dup)
   DC1 <-setdiff(DC,dup)
   Platelet1 <-setdiff(Platelet,dup)
-  
+
   assigned <-unique(c(CD41,CD141,B1,CD81,Mono1,NK1,DC1,Platelet1))
   A <-unique(this_markers[,6])
   unassignment = setdiff(A,assigned)
-  
+
   Others = unique(c(unassignment, dup))
-  
+
   return_list = list()
   return_list[["CD4 T"]] = CD41
   return_list[["CD14+ Mono"]] = CD141

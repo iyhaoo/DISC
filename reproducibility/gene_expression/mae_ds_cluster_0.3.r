@@ -1,11 +1,8 @@
 source("/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/generic_functions.r")
 method_names = c("Raw", "DeSCI", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
 replicates = paste0("downsampling_first_repeat_", seq(5))
-#ds_mode = c("ds_0.3", "ds_0.5", "ds_0.7")
-ds_mode = c("ds_0.5")
+ds_mode = c("ds_0.3")
 raw_path = "/home/yuanhao/data/fn/pbmc3k/pbmc3k_filtered.loom"
-output_dir = paste0(stringi::stri_trim_right(raw_path, "[/]"), "MAE_ds")
-dir.create(output_dir, showWarnings = F, recursive = T)
 compare_gene = get_loom_gene(raw_path)
 for(this_mode in ds_mode){
   for(ii in replicates){
@@ -24,6 +21,8 @@ for(this_mode in ds_mode){
          ds_0.5 = {scale_factor = 1 / 0.5},
          ds_0.7 = {scale_factor = 1 / 0.7}
          )
+  output_dir = paste0(stringi::stri_trim_right(raw_path, "[/]"), "MAE_ds", "/", this_mode)
+  dir.create(output_dir, showWarnings = F, recursive = T)
   mae_gt0_list[[this_mode]] = matrix(nrow = length(method_names), ncol = length(replicates), dimnames = list(method_names, replicates))
   mae_eq0_list[[this_mode]] = matrix(nrow = length(method_names), ncol = length(replicates), dimnames = list(method_names, replicates))
   mae_all_list[[this_mode]] = matrix(nrow = length(method_names), ncol = length(replicates), dimnames = list(method_names, replicates))

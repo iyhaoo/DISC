@@ -41,7 +41,7 @@ if(args[2] != ""){
 this_data <- RunTSNE(this_data, dims = 1:pca_dim, tsne.method = "Rtsne", check_duplicates = FALSE)
 this_data = RunUMAP(this_data, dims = 1:pca_dim)
 if(args[3] != ""){
-  cell_type = readRDS(args[3])
+  cell_type = readRDS(args[3])[colnames(gene_bc_imputation)]
   this_data@active.ident = factor(cell_type, levels = sort(unique(cell_type)))
   tmp_plot = TSNEPlot(this_data, cells = names(cell_type))
   ggsave(plot = tmp_plot, filename = paste0(output_dir, "/tsne_cell_type.pdf"), height = 8, width = 11)
