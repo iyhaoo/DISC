@@ -100,7 +100,7 @@ History
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
-.. _`Gene expression structures recovery`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/pages/getting_start.ipynb
+.. _`Gene expression structures recovery`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/getting_start.ipynb
 .. _`Structure recovery comparing with FISH`: https://github.com/iyhaoo/DISC#
 .. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
