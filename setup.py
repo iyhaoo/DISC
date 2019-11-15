@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name="disc",
-    version="0.0.0.5",
+    version="0.0.0.6",
     author="iyhaoo",
     author_email="904469382@qq.com",
     description="An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome",

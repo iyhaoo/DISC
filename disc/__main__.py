@@ -1,9 +1,9 @@
 import argparse
-from utils.data_preparation import *
-from utils.generator import *
-from utils.util import *
-from model import *
-from evaluation.evaluation import *
+from .utils.data_preparation import *
+from .utils.generator import *
+from .utils.util import *
+from .model import *
+from .evaluation.evaluation import *
 
 
 def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=print):
