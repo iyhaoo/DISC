@@ -36,7 +36,7 @@ Quick Start
 
    Run DISC:
 
-   ``DISC --dataset=matrix.loom --out-dir=out_dir``
+   ``disc --dataset=matrix.loom --out-dir=out_dir``
 
    where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
 

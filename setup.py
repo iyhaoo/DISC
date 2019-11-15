@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name="disc",
-    version="0.0.0.4",
+    version="0.0.0.5",
     author="iyhaoo",
     author_email="904469382@qq.com",
     description="An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome",
@@ -27,8 +27,12 @@ setup(
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
-        "Topic :: Scientific/Engineering :: Bio-Informatics"
+        "Topic :: Scientific/Engineering :: Artificial Intelligence"
     ],
+    entry_points={
+        'console_scripts': [
+            'disc = disc.__main__:main'
+        ]},
     python_requires='>=3.6',
 )
 
