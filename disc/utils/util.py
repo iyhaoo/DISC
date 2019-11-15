@@ -54,15 +54,16 @@ def read_model(pretrained_model, log_fn=print):
     return assign_parameter_run_list
 
 
-def get_gene_name(pretrained_model, name="gene_name"):
+def get_model_values_by_name(pretrained_model, name_list):
     with tf.gfile.FastGFile(pretrained_model, 'rb') as f:
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
-    gene_name = None
+    output_list = [None] * len(name_list)
     for ii in graph_def.node:
-        if ii.op == "Const" and ii.name == name:
-            gene_name = tf.make_ndarray(ii.attr['value'].tensor).astype(str)
-    assert gene_name is not None
-    return gene_name
+        if ii.op == "Const" and ii.name in name_list:
+            output_list[name_list.index(ii.name)] = tf.make_ndarray(ii.attr['value'].tensor).astype(str)
+    for ii in output_list:
+        assert ii is not None
+    return output_list
 
 

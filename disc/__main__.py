@@ -14,6 +14,7 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
         rf["target_gene"] = np.array(dataset.target_gene, dtype=np.string_)
         rf["library_size_factor"] = dataset.library_size_factor
         rf["library_size"] = dataset.library_size
+        rf["outlier_num"] = dataset.outlier_num
         rf["expressed_cell"] = dataset.expressed_cell
         rf["gene_expression"] = dataset.gene_expression
         rf["zscore_cutoff"] = dataset.zscore_cutoff
@@ -57,7 +58,7 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
     imputation_file.close()
 
 
-if __name__ == "__main__":
+def main():
     last_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", required=True, type=str, help="loom")
@@ -98,8 +99,10 @@ if __name__ == "__main__":
     makeLog("Batch size: {}".format(FLAGS["batch_size"]))
 
     if FLAGS["pretrained_model"] is not None:
-        kwargs = {"target_gene": get_gene_name(FLAGS["pretrained_model"])}
+        use_target_gene, use_norm_max =  get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name", "norm_max"])
+        kwargs = {"target_gene": use_target_gene}
     else:
+        use_norm_max = None
         kwargs = {"min_cell": FLAGS["min_expressed_cell"],
                   "min_avg_exp": FLAGS["min_expressed_cell_average_expression"]}
     dataset = ScanLoom(loom_path=FLAGS["dataset"],
@@ -113,18 +116,19 @@ if __name__ == "__main__":
     makeLog("Use {} genes with min_expressed_cell of {} and min_expressed_cell_average_expression of {}".format(dataset.target_gene.size, FLAGS["min_expressed_cell"], FLAGS["min_expressed_cell_average_expression"]))
     makeLog("Use {} as library_size_factor".format(dataset.library_size_factor))
     #  model
-    model = DeSCI(gene_name=dataset.target_gene,
-                  depth=FLAGS["depth"],
-                  repeats=FLAGS["repeats"],
-                  dimension_number=FLAGS["dimension_number"],
-                  compress_dimensions=FLAGS["compress_dimensions"],
-                  noise_intensity=dataset.noise_intensity,
-                  z_score_library_size_factor=dataset.z_score_library_size_factor,
-                  log_fn=makeLog)
+    input_norm_max = dataset.norm_max if use_norm_max is None else use_norm_max
+    model = DISC(gene_name=dataset.target_gene,
+                 norm_max=input_norm_max,
+                 depth=FLAGS["depth"],
+                 repeats=FLAGS["repeats"],
+                 dimension_number=FLAGS["dimension_number"],
+                 compress_dimensions=FLAGS["compress_dimensions"],
+                 noise_intensity=dataset.noise_intensity,
+                 z_score_library_size_factor=dataset.z_score_library_size_factor,
+                 log_fn=makeLog)
     makeLog("Use {} as depth".format(FLAGS["depth"]))
     makeLog("Repeats {}".format(FLAGS["repeats"]))
-    feed_dict = {model.norm_max: dataset.norm_max,
-                 model.z_norm_mean: dataset.z_norm_mean,
+    feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
                  model.zscore_cutoff: dataset.zscore_cutoff,
                  model.library_size_factor: dataset.library_size_factor}

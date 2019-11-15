@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 
 #  33
-class DeSCI:
-    def __init__(self, gene_name, depth="16_8_1", repeats=3, dimension_number=512, compress_dimensions=50,
+class DISC:
+    def __init__(self, gene_name, norm_max, depth="16_8_1", repeats=3, dimension_number=512, compress_dimensions=50,
                  noise_intensity=0.1, dropout_rate=0.5, output_scale_factor=2, z_score_library_size_factor=1000000,
                  en_de_act_fn=tf.nn.tanh, p_act_fn=tf.nn.sigmoid, output_act_fn=tf.nn.sigmoid, log_fn=print):
         self.log_fn = log_fn
@@ -22,10 +22,10 @@ class DeSCI:
         self.output_act_fn = output_act_fn
         #  constant tensors
         self.gene_name = tf.constant(gene_name_array, name="gene_name")
+        self.norm_max = tf.constant(norm_max, dtype=tf.float32, name="norm_max")
         #  feed tensors
         self.input_raw = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None, self.use_gene_number], name="input_layer")
         self.batch_library_size = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None], name="library_size")
-        self.norm_max = tf.compat.v1.placeholder(tf.float32, shape=[self.use_gene_number], name="norm_max")
         self.z_norm_mean = tf.compat.v1.placeholder(tf.float32, shape=[self.use_gene_number], name="z_norm_mean")
         self.z_norm_std = tf.compat.v1.placeholder(tf.float32, shape=[self.use_gene_number], name="z_norm_std")
         self.zscore_cutoff = tf.compat.v1.placeholder(tf.float32, shape=[self.use_gene_number], name="zscore_cutoff")
@@ -159,7 +159,7 @@ class DeSCI:
         d_B = tf.stop_gradient(self.decoder_bias)
         self.compressed_prediction = [tf.add_n(tf.split(self.output_act_fn(self.output_scale_factor * (tf.stop_gradient(self.output_act_fn_scale_factor) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), d_W) + d_B)) * tf.stop_gradient(self.attention_coefficients), num_or_size_splits=self.repeats, axis=0)) for feature_ in self.reconst_feature_compression]
 
-    def training(self, learning_rate, feature_l2_factor=1, push_factor=None, gene_express_rate=None):
+    def training(self, learning_rate, feature_l2_factor=1, push_factor=None, gene_express_rate=None, var_list=None):
         """
         learning_rate:
         use_push_factor: "auto", integer, float or None, optional.
@@ -222,7 +222,7 @@ class DeSCI:
                      0.000001 * regularizer1 + 0.000001 * regularizer2 + 0.00001 * regularizer3 + 0.000001 * regularizer4 + 0.0001 * regularizer5
         self.loss2 = compression_loss + 0.0001 * regularizer6
         self.loss_element = [self.loss1, self.loss2]
-        gradients, v = zip(*optimizer.compute_gradients(self.loss1))
+        gradients, v = zip(*optimizer.compute_gradients(self.loss1, var_list=var_list))
         gradients, _ = tf.clip_by_global_norm(gradients, 5)
         train_op1 = optimizer.apply_gradients(zip(gradients, v), global_step=self.global_step)
         with tf.control_dependencies([tf.group(train_op1, tf.compat.v1.assign_add(self.run_cells, self.current_batch_size))]):
@@ -239,8 +239,8 @@ if __name__ == '__main__':
     # loom_path = "/home/yuanhao/data/fn/melanoma/dropseq_filt_ls.loom"
     with h5py.File(loom_path, "r", libver='latest', swmr=True) as f:
         gene_name = f["row_attrs/Gene"][...].astype(np.str)
-    model = DeSCI(gene_name)
-    model.training(0.001, 3, np.ones_like(gene_name))
+    model = DISC(gene_name, np.ones_like(gene_name))
+    model.training(0.001, 3, gene_express_rate=np.ones_like(gene_name))
     with tf.compat.v1.Session() as sess:
         print(model.gene_name.eval())
 
