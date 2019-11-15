@@ -184,3 +184,6 @@ def main():
         inference(dataset, model, sess, result_dir, FLAGS["batch_size"], manager, makeLog)
 
 
+if __name__ == "__main__":
+    main()
+
