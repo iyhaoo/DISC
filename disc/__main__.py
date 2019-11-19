@@ -6,7 +6,7 @@ from .model import *
 from .evaluation.evaluation import *
 
 
-def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=print):
+def inference(dataset, model, sess, output_dir, batch_size, workers, manager, log_fn=print):
     with h5py.File("{}/running_info.hdf5".format(output_dir), "w") as rf:
         rf["norm_max"] = dataset.norm_max
         rf["norm_mean"] = dataset.z_norm_mean
@@ -40,7 +40,7 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
                                                        chunks=(dataset.gene_number, 1),
                                                        fletcher32=False,
                                                        dtype=np.float32)
-    generator = DataQueue(dataset.loom_path, dataset.gene_name, False, batch_size=batch_size, log_fn=log_fn, workers=FLAGS["generator_workers"], manager=manager)
+    generator = DataQueue(dataset.loom_path, dataset.gene_name, False, batch_size=batch_size, log_fn=log_fn, workers=workers, manager=manager)
     feed_dict = {model.norm_max: dataset.norm_max,
                  model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
@@ -56,6 +56,7 @@ def inference(dataset, model, sess, output_dir, batch_size, manager, log_fn=prin
         imputation_matrix[:, batch_index] = np.where(np.broadcast_to(dataset.target_gene_mask, batch_data.shape), impute_data, batch_data).transpose()
     feature_file.close()
     imputation_file.close()
+    generator.terminate()
 
 
 def main():
@@ -181,7 +182,7 @@ def main():
             use_pretrained_model = FLAGS["pretrained_model"]
         sess.run(read_model(use_pretrained_model, log_fn=makeLog))
         makeLog("Use {} for inference".format(use_pretrained_model))
-        inference(dataset, model, sess, result_dir, FLAGS["batch_size"], manager, makeLog)
+        inference(dataset, model, sess, result_dir, FLAGS["batch_size"], FLAGS["generator_workers"], manager, makeLog)
 
 
 if __name__ == "__main__":

@@ -19,59 +19,78 @@ Requirements
 - pandas_ >= 0.21.0
 - h5py_ >= 2.9.0
 
-Quick Start
------------
+Installation
+------------
 
-1. Install Python_. We typically use Python3.6 in Linux CentOS 7.
+**Installation with pip**
 
-2. Install DISC through pip:
+To install with ``pip``, run the following from a terminal:
 
-   ``pip install DISC``
+  ``pip install DISC``
 
-   Alternatively, you may clone this repository and run ``python setup.py install``.
+**Installation from GitHub**
 
-3. Usage
+To clone the repository and install manually, run the following from a terminal:
 
-   **Quick Start**
+  ``git clone git://github.com/iyhaoo/DISC.git``
 
-   Run DISC:
+  ``cd DISC``
 
-   ``disc --dataset=matrix.loom --out-dir=out_dir``
+  ``python setup.py install``
 
-   where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
+Usage
+-----
+
+**Quick Start**
+
+1. Run DISC:
+
+  ``disc --dataset=matrix.loom --out-dir=out_dir``
+
+  where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
 
 
-   **Results**
+2. Results
 
-   log.tsv: a tsv-formatted log file that records training states.
+  ``log.tsv``: a tsv-formatted log file that records training states.
 
-   summary.pdf: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
+  ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
 
-   summary.tsv: a tsv-formatted file that shows the raw data of visualization.
+  ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
 
-   `result`: a directory for imputaion results
+  ``result``: a directory for imputaion results as below:
 
-   1. imputation.loom: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
+  1. ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
 
-   2. feature.loom: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
+  2. ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
 
-   3. running_info.hdf5: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
+  3. ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
 
-   `models`: a directory for trained models in every save interval
+  ``models``: a directory for trained models in every save interval
 
-4. Follow along our Jupyter notebooks to quickly get familiar with DISC!
+**Tutorials**
 
-   1. Getting started (`Gene expression structures recovery`_)
+  1.Imputation
 
-   2. Reproducing our results:
-       * `Structure recovery comparing with FISH`_
-       * `Downsampling recovery`_
-       * `Clustering improvement`_
-       * `Ultra-large dataset analysis`_
+    * `Data pre-processing`_
 
-   3. Supplementary topics:
-       * `Download datasets we used`_
-       * `Other analysis scripts we used`_
+    * `Imputation`_
+
+  2. Reproducing our results:
+
+    * `Structure recovery comparing with FISH`_
+
+    * `Downsampling recovery`_
+
+    * `Clustering improvement`_
+
+    * `Ultra-large dataset analysis`_
+
+  3. Supplementary topics:
+
+    * `Download datasets we used`_
+
+    * `Other analysis scripts we used`_
 
 
 
@@ -100,7 +119,8 @@ History
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
-.. _`Gene expression structures recovery`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/getting_start.ipynb
+.. _`Data pre-processing`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
+.. _`Imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Imputation.ipynb
 .. _`Structure recovery comparing with FISH`: https://github.com/iyhaoo/DISC#
 .. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
