@@ -3,7 +3,6 @@ import scanpy.api as sc
 import numpy as np
 import h5py
 import pandas as pd
-import glob
 import argparse
 import os
 import time
@@ -26,21 +25,21 @@ def read_loom(loom_path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--filt-loom', required=True, type=str, help="Filtered data")
+parser.add_argument('--loom', required=True, type=str, help="Loom")
 parser.add_argument('--num-gpus', required=False, type=int, default=1, help="how many gpus to use")
 parser.add_argument('--epoch', required=False, type=int, default=100, help="how many epochs to run")
 parser.add_argument('--min-expressed-cell', required=False, type=int, default=10, help="min-expressed-cell")
 parser.add_argument("--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
 FLAGS = vars(parser.parse_args())
-output_dir = "{}/imputation".format(FLAGS["filt_loom"].rsplit("/", 1)[0])
+output_dir = "{}/imputation".format(FLAGS["loom"].rsplit("/", 1)[0])
 os.makedirs(output_dir, exist_ok=True)
 
 starttime = time.time()
-gene_bc_mat, cell_id, gene_name = read_loom(FLAGS["filt_loom"])
+gene_bc_mat, cell_id, gene_name = read_loom(FLAGS["loom"])
 min_expressed_cell = FLAGS["min_expressed_cell"]
 min_expressed_cell_average_expression = FLAGS["min_expressed_cell_average_expression"]
 
-input_loom_name = FLAGS["filt_loom"].rsplit("/", 1)[1]
+input_loom_name = FLAGS["loom"].rsplit("/", 1)[1]
 if FLAGS["epoch"] == 100:
     output_raw_h5 = input_loom_name.replace(".loom", "_scScope_mc_{}_mce_{}_raw.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))
     output_feature_h5 = input_loom_name.replace(".loom", "_scScope_mc_{}_mce_{}_feature.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))

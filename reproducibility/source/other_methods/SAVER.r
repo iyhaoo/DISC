@@ -1,6 +1,6 @@
 args<-commandArgs(trailingOnly=TRUE)
 if(length(args) < 2){
-  stop("R --slave < this_code.r --args <filtdata_dir> <use_core> <min_expressed_cell> <min_expressed_cell_average_expression>")
+  stop("R --slave < this_code.r --args <loom> <use_core> <min_expressed_cell> <min_expressed_cell_average_expression>")
 }
 library(doParallel)
 library(Matrix)
