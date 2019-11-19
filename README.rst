@@ -24,72 +24,64 @@ Installation
 
 **Installation with pip**
 
-To install with ``pip``, run the following from a terminal:
+To install with ``pip``, run the following from a terminal::
 
-  ``pip install DISC``
+  pip install DISC
 
 **Installation from GitHub**
 
-To clone the repository and install manually, run the following from a terminal:
+To clone the repository and install manually, run the following from a terminal::
 
-  ``git clone git://github.com/iyhaoo/DISC.git``
+  git clone git://github.com/iyhaoo/DISC.git
 
-  ``cd DISC``
+  cd DISC
 
-  ``python setup.py install``
+  python setup.py install
 
 Usage
 -----
 
-**Quick Start**
+Quick Start
+ 1. Run DISC::
 
-1. Run DISC:
+     disc --dataset=matrix.loom --out-dir=out_dir
 
-  ``disc --dataset=matrix.loom --out-dir=out_dir``
+    where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
 
-  where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
+ 2. Results
 
+    ``log.tsv``: a tsv-formatted log file that records training states.
 
-2. Results
+    ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
 
-  ``log.tsv``: a tsv-formatted log file that records training states.
+    ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
 
-  ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
+    ``result``: a directory for imputaion results as below:
 
-  ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
+    1. ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
 
-  ``result``: a directory for imputaion results as below:
+    2. ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
 
-  1. ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
+    3. ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
 
-  2. ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
+    ``models``: a directory for trained models in every save interval
 
-  3. ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
-
-  ``models``: a directory for trained models in every save interval
-
-**Tutorials**
-
-  1.Imputation
+Tutorials
+ 1. Imputation
 
     * `Data pre-processing`_
-
     * `Imputation`_
 
-  2. Reproducing our results:
+ 2. Reproducing our results:
 
     * `Structure recovery comparing with FISH`_
-
     * `Downsampling recovery`_
-
     * `Clustering improvement`_
-
     * `Ultra-large dataset analysis`_
 
-  3. Supplementary topics:
+ 3. Supplementary topics:
 
     * `Download datasets we used`_
-
     * `Other analysis scripts we used`_
 
 
@@ -104,11 +96,10 @@ References
  .. __: https://rdcu.be/bdHYQ
  
 History
-=========
+-------
 
 1.0.0 (2019-11-XX)
-------------------
-
+^^^^^^^^^^^^^^^^^^
 * First release on PyPI_.
 
 
