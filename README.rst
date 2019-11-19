@@ -44,10 +44,11 @@ Usage
 Quick Start
  1. Run DISC::
 
-     disc --dataset=matrix.loom --out-dir=out_dir
+     disc \
+     --dataset=matrix.loom \
+     --out-dir=out_dir
 
     where matrix.loom is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and out_dir is the path of output directory.
-
  2. Results
 
     * ``log.tsv``: a tsv-formatted log file that records training states.
