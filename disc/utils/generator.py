@@ -8,6 +8,37 @@ import pandas as pd
 
 class DataQueue:
     def __init__(self, loom_path, target_gene, permutation=True, batch_size=128, chunk_number=64, chunk_size=32, workers=6, prefetch=12, refill_cutoff=None, log_fn=print, output_type=np.float32, manager=None, debug=True):
+        r"""
+                An ultra fast scanner that used for our model. The input is loom-formatted data-set and the output is some
+                common attributes including library size, expressed cell number and expression for every genes our model use.
+
+                :param loom_path: Path of input data-set with genes in rows and cells in columns
+
+                :param library_size_factor: int, float or "median". If a value is input, the value will be used as
+                       library size factor directly. If "median" is input, the median library size will be used as
+                       library size factor.
+
+                :param noise_intensity: use in norm max calculation for our model
+
+                :param target_gene: only calculate specific genes, is useful in our transfer learning module
+
+                :param min_cell: Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and
+                       min_avg_exp will be ignored.
+
+                :param min_avg_exp: Minimum average expression in expressed cells. Use for gene filtering. The default value is
+                       set to be 1 to filter most noise likely expressed genes that expression is 1 in all expressed entries.
+                       You can set this as -1 or other values that < 0 to ensure not use this standard for filtering. Note that
+                       if target_gene is provided, min_cell and min_avg_exp will be ignored.
+
+                :param z_score_library_size_factor: Library size factor when doing normalization for z-score filtering.
+
+                :param workers: Process number when conduct this scanning. This parameter can improve performance as most time
+                       is use for calculating here though we read the data-set file for three times.
+
+                :param scanning_batch_size: Chunk size for reading when scanning. Users can tune this parameter for better
+                       performance. Change workers and scanning_batch_size will affect memory cost and running time.
+
+        """
         assert os.path.exists(loom_path)
         assert workers > 0
         if manager is None:
