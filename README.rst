@@ -50,21 +50,16 @@ Quick Start
 
  2. Results
 
-    ``log.tsv``: a tsv-formatted log file that records training states.
+    * ``log.tsv``: a tsv-formatted log file that records training states.
+    * ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
+    * ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
+    * ``result``: a directory for imputaion results as below:
 
-    ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
+      * ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
+      * ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
+      * ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
 
-    ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
-
-    ``result``: a directory for imputaion results as below:
-
-    1. ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
-
-    2. ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
-
-    3. ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
-
-    ``models``: a directory for trained models in every save interval
+    * ``models``: a directory for trained models in every save interval
 
 Tutorials
  1. Imputation
