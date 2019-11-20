@@ -75,12 +75,8 @@ Tutorials
     * `Clustering improvement`_
     * `Ultra-large dataset analysis`_
 
+..
  3. Supplementary topics:
-
-    * `Download datasets we used`_
-    * `Other analysis scripts we used`_
-
-
 
 References
 ----------
@@ -112,6 +108,4 @@ History
 .. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
-.. _`Download datasets we used`: https://github.com/iyhaoo/DISC#
-.. _`Other analysis scripts we used`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/

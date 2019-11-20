@@ -10,6 +10,25 @@ from multiprocessing import Pool, Manager
 
 class Evaluation:
     def __init__(self, out_dir, batch_size, batch_window=10000, warm_up_cells=5000000, detect_cells=500000, refresh_time=10, log_fn=print, manager=None):
+        r"""
+                An parallels evaluation .
+
+                :param out_dir: Directory for output.
+
+                :param batch_size: Setting batch size, we only use complete batch for evaluation.
+
+                :param batch_window: Window size for this evaluation (complete batches).
+
+                :param warm_up_cells: The minimum for optimal point.
+
+                :param detect_cells: Cell number for continually running after the last optimal point.
+
+                :param refresh_time: Time interval for update.
+
+                :param log_fn: function for logging.
+
+                :param manager: manager server.
+        """
         if manager is None:
             manager = Manager()
         self.pdf_file = "{}/summary.pdf".format(out_dir)
