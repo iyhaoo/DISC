@@ -373,3 +373,8 @@ output_list[["mean_ks_stat"]] = mean_ks_stat
 output_list[["standard_error_ks_stat"]] = standard_error_ks_stat
 saveRDS(output_list, paste(outdir, "/Bar_stat.rds", sep = ""))
 ```
+### Notes:
+The height and width of result pictures are different from those in PDF files which are saved here(https://github.com/iyhaoo/DISC/tree/master/reproducibility/imputation_results/melanoma/structure_recovery).
+The imputation results are too large to upload into GitHub and can be reproduced using this script( https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md).
+
+
