@@ -22,11 +22,11 @@ dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/im
 dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
 ### loaded
 method_names = c("Raw", "DeSCI", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
-method_color = c("gray20", "red", "blue4", "yellow4", "green", "purple", "cyan")
+method_color = c("gray40", "red", "blue4", "yellow4", "green", "purple", "cyan")
 names(method_color) = method_names
 bar_color = rep("gray60", length(method_names))
 names(bar_color) = method_names
-bar_color["Raw"] = "gray20"
+bar_color["Raw"] = "gray40"
 bar_color["DeSCI"] = "red"
 text_color = rep("black", length(method_names))
 names(text_color) = method_names

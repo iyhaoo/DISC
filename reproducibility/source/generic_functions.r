@@ -5,7 +5,8 @@ library(rhdf5)
 library(parallel)
 library(reldist)
 library(Seurat)
-source_python("/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/ks_2d_function.py")
+library(future)
+source_python("./source/ks_2d_function.py")
 library(stringi)
 #  read data
 cal_RMSD = function(pd_array, window_size){
@@ -319,6 +320,13 @@ downsampling_viper_independent = function(le, gene_bc_mat){
   return(gene_bc_mat)
 }
 
+downsampling_for_splatter = function(gene_bc_mat, d_min=0.01, d_max=0.05){
+  gene_bc_mat[Matrix::rowSums(gene_bc_mat) > 0, ] = t(apply(gene_bc_mat[Matrix::rowSums(gene_bc_mat) > 0, ], 1, function(x){
+    return(sample_reads(x, runif(1, d_min, d_max)))
+  }))
+  return(gene_bc_mat)
+}
+
 #  strings
 delete_last_element <- function(x){
   return(x[1: (length(x) - 1)])
@@ -350,6 +358,27 @@ rsq = function (x, y){
 
 jaccard <- function(x, y){
   length(intersect(x, y))/length(union(x, y))
+}
+
+
+cal_EMD = function(d_a, d_b){
+  return(scipy$stats$wasserstein_distance(d_a[!is.na(d_a)], d_b[!is.na(d_b)]))
+}
+
+cal_EMD2D = function(c_a, c_b){
+  distance_mat = as.matrix(scipy$spatial$distance$cdist(c_a, c_b))
+  earth_flow = ot$emd(a = list(), b = list(), M = np_array(distance_mat), numItermax = 1e6)
+  return(sum(earth_flow * distance_mat))
+}
+
+cal_EMD2D_ds = function(c_a, c_b, sample_num = 1500, observation = 10){
+  all_distance = 0
+  for(ii in 1:observation){
+    c_as = c_a[sample(seq(1, nrow(c_a)), sample_num, replace = TRUE), ]
+    c_bs = c_b[sample(seq(1, nrow(c_b)), sample_num, replace = TRUE), ]
+    all_distance = all_distance + cal_EMD2D(c_as, c_bs)
+  }
+  return(all_distance / observation)
 }
 
 cal_2D_KL_divergence = function(p_raw, q_raw){
@@ -867,37 +896,37 @@ FindVariableFeatures_vst_by_genes = function(gene_bc_mat){
   return(hvf.info)
 }
 
-smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRampPalette(c("white", 
-                                                                                            blues9)), nrpoints = 100, ret.selection = FALSE, pch = ".", 
-                           cex = 1, col = "black", transformation = function(x) x^0.25, 
-                           postPlotHook = box, xlab = NULL, ylab = NULL, xlim, ylim, 
-                           xaxs = par("xaxs"), yaxs = par("yaxs"), ...) 
+smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRampPalette(c("white",
+                                                                                            blues9)), nrpoints = 100, ret.selection = FALSE, pch = ".",
+                           cex = 1, col = "black", transformation = function(x) x^0.25,
+                           postPlotHook = box, xlab = NULL, ylab = NULL, xlim, ylim,
+                           xaxs = par("xaxs"), yaxs = par("yaxs"), ...)
 {
-  if (!is.numeric(nrpoints) || nrpoints < 0 || length(nrpoints) != 
-      1) 
+  if (!is.numeric(nrpoints) || nrpoints < 0 || length(nrpoints) !=
+      1)
     stop("'nrpoints' should be numeric scalar with value >= 0.")
   nrpoints <- round(nrpoints)
   ret.selection <- ret.selection && nrpoints > 0
-  xlabel <- if (!missing(x)) 
+  xlabel <- if (!missing(x))
     deparse(substitute(x))
-  ylabel <- if (!missing(y)) 
+  ylabel <- if (!missing(y))
     deparse(substitute(y))
   xy <- xy.coords(x, y, xlabel, ylabel)
-  xlab <- if (is.null(xlab)) 
+  xlab <- if (is.null(xlab))
     xy$xlab
   else xlab
-  ylab <- if (is.null(ylab)) 
+  ylab <- if (is.null(ylab))
     xy$ylab
   else ylab
-  x <- cbind(xy$x, xy$y)[I <- is.finite(xy$x) & is.finite(xy$y), 
+  x <- cbind(xy$x, xy$y)[I <- is.finite(xy$x) & is.finite(xy$y),
                          , drop = FALSE]
-  if (ret.selection) 
+  if (ret.selection)
     iS <- which(I)
   if (!missing(xlim)) {
     stopifnot(is.numeric(xlim), length(xlim) == 2, is.finite(xlim))
-    x <- x[I <- min(xlim) <= x[, 1] & x[, 1] <= max(xlim), 
+    x <- x[I <- min(xlim) <= x[, 1] & x[, 1] <= max(xlim),
            , drop = FALSE]
-    if (ret.selection) 
+    if (ret.selection)
       iS <- iS[I]
   }
   else {
@@ -905,9 +934,9 @@ smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRa
   }
   if (!missing(ylim)) {
     stopifnot(is.numeric(ylim), length(ylim) == 2, is.finite(ylim))
-    x <- x[I <- min(ylim) <= x[, 2] & x[, 2] <= max(ylim), 
+    x <- x[I <- min(ylim) <= x[, 2] & x[, 2] <= max(ylim),
            , drop = FALSE]
-    if (ret.selection) 
+    if (ret.selection)
       iS <- iS[I]
   }
   else {
@@ -918,25 +947,34 @@ smoothScatter1 = function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRa
   ym <- map$x2
   dens <- map$fhat
   dens[] <- transformation(dens)
-  image(xm, ym, z = dens, col = colramp(16), xlab = xlab, 
-        ylab = ylab, xlim = xlim, ylim = ylim, xaxs = xaxs, yaxs = yaxs, 
+  image(xm, ym, z = dens, col = colramp(16), xlab = xlab,
+        ylab = ylab, xlim = xlim, ylim = ylim, xaxs = xaxs, yaxs = yaxs,
         ...)
-  if (!is.null(postPlotHook)) 
+  if (!is.null(postPlotHook))
     postPlotHook()
   if (nrpoints > 0) {
     nrpoints <- min(nrow(x), ceiling(nrpoints))
-    stopifnot((nx <- length(xm)) == nrow(dens), (ny <- length(ym)) == 
+    stopifnot((nx <- length(xm)) == nrow(dens), (ny <- length(ym)) ==
                 ncol(dens))
-    ixm <- 1L + as.integer((nx - 1) * (x[, 1] - xm[1])/(xm[nx] - 
+    ixm <- 1L + as.integer((nx - 1) * (x[, 1] - xm[1])/(xm[nx] -
                                                           xm[1]))
-    iym <- 1L + as.integer((ny - 1) * (x[, 2] - ym[1])/(ym[ny] - 
+    iym <- 1L + as.integer((ny - 1) * (x[, 2] - ym[1])/(ym[ny] -
                                                           ym[1]))
     sel <- order(dens[cbind(ixm, iym)])[seq_len(nrpoints)]
     x <- x[sel, , drop = FALSE]
     points(x, pch = pch, cex = cex, col = col)
-    if (ret.selection) 
+    if (ret.selection)
       iS[sel]
   }
+}
+
+dropout_rate_plot = function(gene_bc_mat, main){
+  dropout_rate = rowSums(gene_bc_mat == 0) / ncol(gene_bc_mat)
+  mean_gene_expression = log1p(rowSums(gene_bc_mat) / rowSums(gene_bc_mat > 0))
+  plot(mean_gene_expression, dropout_rate,
+       main = main, xlim = c(0, max(mean_gene_expression, na.rm=T)), ylim = c(0, 1),
+       pch = 16, cex = 1, col = alpha("#4752cc", 0.3),
+       xlab = "log(mean expression + 1)", ylab = "Dropout rate for each gene")
 }
 
 ###cell_type_mapping###
