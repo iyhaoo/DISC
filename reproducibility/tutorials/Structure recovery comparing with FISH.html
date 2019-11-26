@@ -317,7 +317,7 @@ use_genes = intersect(rownames(dataset_list[[<span class="hljs-string">"FISH"</s
 <pre><code class="hljs">## [1] "./imputation_results/melanoma/raw.loom"
 ## [1]   19 8498</code></pre>
 <pre class="r"><code class="hljs">used_cells = colnames(dataset_list[[<span class="hljs-string">"Raw"</span>]])</code></pre>
-<p>After <code>Run imputation</code>(<a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md" class="uri">https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md</a>), we get imputation results. Now we load them.</p>
+<p>After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md" class="uri">Run imputation</a>, we get imputation results. Now we load them.</p>
 <pre class="r"><code class="hljs"><span class="hljs-comment">### DISC</span>
 our_result = <span class="hljs-string">"./imputation_results/melanoma/DISC.hdf5"</span>
 dataset_list[[<span class="hljs-string">"DISC"</span>]] = readh5_imputation(our_result, use_genes, with_outliers=<span class="hljs-literal">T</span>)</code></pre>
