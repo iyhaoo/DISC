@@ -104,7 +104,7 @@ History
 .. _`loom-formatted`: http://loompy.org/
 .. _`Data pre-processing`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md
-.. _`Structure recovery comparing with FISH`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Structure%20recovery%20comparing%20with%20FISH.html#
+.. _`Structure recovery comparing with FISH`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Structure%20recovery%20comparing%20with%20FISH.html
 .. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
