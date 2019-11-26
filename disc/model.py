@@ -1,42 +1,63 @@
 import tensorflow as tf
 import numpy as np
 
-#  33
+
 class DISC:
+    """
+        An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell
+        transcriptome, which has an integrative structure of an AE and an RNN.
+
+        Parameters
+        __________
+
+
+        gene_name : str
+            Gene names for modelling.
+
+        norm_max : float
+            Max normalized expression for all genes specified by gene_name.
+            Provided as an attribute in ScanLoom Class.
+
+        depth : str, optional, default: "16_8_1"
+            Splitting by "_", int means the channel number in each layer while the number of int means the layer number
+            of the prediction matrix.
+
+        repeats : int, optional, default: 3
+            RNN Step number.
+
+        dimension_number : int, optional, default: 512
+            The projected low-dimensional length in AE.
+
+        compress_dimensions : int, optional, default: 50
+            Dimension length when compressing the latent representations over all steps.
+
+        noise_intensity : float, optional, default: 0.1
+            Uniform noise intensity.
+
+        dropout_rate : float, optional, default: 0.5
+            Dropout rate for noise target.
+
+        output_scale_factor : int, optional, default: 2
+            Output scale factor.
+
+        z_score_library_size_factor : int, optional, default: 1000000
+            Scale factor for normalization in outlier detection.
+
+        en_de_act_fn : function, optional, default: tf.nn.tanh
+            Activation function for autoencoder.
+
+        p_act_fn : function, optional, default: tf.nn.sigmoid
+            Activation function for prediction matrix.
+
+        output_act_fn : function, optional, default: tf.nn.sigmoid
+            Activation function for output.
+
+        log_fn : function, optional, default: print
+            Logging function used for this class. Can be specified as a custom function.
+    """
     def __init__(self, gene_name, norm_max, depth="16_8_1", repeats=3, dimension_number=512, compress_dimensions=50,
                  noise_intensity=0.1, dropout_rate=0.5, output_scale_factor=2, z_score_library_size_factor=1000000,
                  en_de_act_fn=tf.nn.tanh, p_act_fn=tf.nn.sigmoid, output_act_fn=tf.nn.sigmoid, log_fn=print):
-        r"""
-                An ultra fast scanner that used for our model. The input is loom-formatted data-set and the output is some
-                common attributes including library size, expressed cell number and expression for every genes our model use.
-
-                :param loom_path: Path of input data-set with genes in rows and cells in columns
-
-                :param library_size_factor: int, float or "median". If a value is input, the value will be used as
-                       library size factor directly. If "median" is input, the median library size will be used as
-                       library size factor.
-
-                :param noise_intensity: use in norm max calculation for our model
-
-                :param target_gene: only calculate specific genes, is useful in our transfer learning module
-
-                :param min_cell: Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and
-                       min_avg_exp will be ignored.
-
-                :param min_avg_exp: Minimum average expression in expressed cells. Use for gene filtering. The default value is
-                       set to be 1 to filter most noise likely expressed genes that expression is 1 in all expressed entries.
-                       You can set this as -1 or other values that < 0 to ensure not use this standard for filtering. Note that
-                       if target_gene is provided, min_cell and min_avg_exp will be ignored.
-
-                :param z_score_library_size_factor: Library size factor when doing normalization for z-score filtering.
-
-                :param workers: Process number when conduct this scanning. This parameter can improve performance as most time
-                       is use for calculating here though we read the data-set file for three times.
-
-                :param scanning_batch_size: Chunk size for reading when scanning. Users can tune this parameter for better
-                       performance. Change workers and scanning_batch_size will affect memory cost and running time.
-
-        """
         self.log_fn = log_fn
         gene_name_array = np.array(gene_name)
         self.use_gene_number = gene_name_array.size
@@ -191,50 +212,34 @@ class DISC:
         self.compressed_prediction = [tf.add_n(tf.split(self.output_act_fn(self.output_scale_factor * (tf.stop_gradient(self.output_act_fn_scale_factor) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), d_W) + d_B)) * tf.stop_gradient(self.attention_coefficients), num_or_size_splits=self.repeats, axis=0)) for feature_ in self.reconst_feature_compression]
 
     def training(self, learning_rate, feature_l2_factor=1, push_factor=None, gene_express_rate=None, var_list=None):
-        r"""
-                An ultra fast scanner that used for our model. The input is loom-formatted data-set and the output is some
-                common attributes including library size, expressed cell number and expression for every genes our model use.
-
-                :param loom_path: Path of input data-set with genes in rows and cells in columns
-
-                :param library_size_factor: int, float or "median". If a value is input, the value will be used as
-                       library size factor directly. If "median" is input, the median library size will be used as
-                       library size factor.
-
-                :param noise_intensity: use in norm max calculation for our model
-
-                :param target_gene: only calculate specific genes, is useful in our transfer learning module
-
-                :param min_cell: Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and
-                       min_avg_exp will be ignored.
-
-                :param min_avg_exp: Minimum average expression in expressed cells. Use for gene filtering. The default value is
-                       set to be 1 to filter most noise likely expressed genes that expression is 1 in all expressed entries.
-                       You can set this as -1 or other values that < 0 to ensure not use this standard for filtering. Note that
-                       if target_gene is provided, min_cell and min_avg_exp will be ignored.
-
-                :param z_score_library_size_factor: Library size factor when doing normalization for z-score filtering.
-
-                :param workers: Process number when conduct this scanning. This parameter can improve performance as most time
-                       is use for calculating here though we read the data-set file for three times.
-
-                :param scanning_batch_size: Chunk size for reading when scanning. Users can tune this parameter for better
-                       performance. Change workers and scanning_batch_size will affect memory cost and running time.
-
         """
+            Training function for DISC model.
+
+            Parameters
+            __________
+
+
+            learning_rate : float
+                Gene names for modelling.
+
+            feature_l2_factor : int, optional, default: 1
+                Bottleneck layer width and depth in predictor.
+
+            push_factor : str or float, optional, default: None
+
+                0 or None means not use.
+                "auto" means using automatical tune for push_factor .
+                float means a fix push_factor.
+
+            gene_express_rate : int, optional, default: 512
+                The reduced dimension number for autoencoder.
+
+            var_list : int, optional, default: 50
+                Dimension length when compressing the latent representations over all steps.
         """
-        learning_rate:
-        use_push_factor: "auto", integer, float or None, optional.
-                         0 or None means not use.
-                         auto means model will tune it automatically.
-                         integer or float means fix push_factor.
-        """
-        #  losses
-        #  hyperparameters
         self.global_step = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="global_step", trainable=False)
         tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.GLOBAL_STEP, self.global_step)
         self.run_cells = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="run_cells", trainable=False)
-        #  for training:
         if push_factor:
             pf_initial_value = 1. if push_factor == "auto" else float(push_factor)
             self.push_factor = tf.Variable(initial_value=pf_initial_value, expected_shape=(), dtype=tf.float32, name="push_factor", trainable=False)

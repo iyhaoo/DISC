@@ -9,26 +9,38 @@ from multiprocessing import Pool, Manager
 
 
 class Evaluation:
-    def __init__(self, out_dir, batch_size, batch_window=10000, warm_up_cells=5000000, detect_cells=500000, refresh_time=10, log_fn=print, manager=None):
-        r"""
-                An parallels evaluation .
+    """
+        A parallel evaluation. Calculate metrics in real time and conduct plotting and indicate optimal point.
 
-                :param out_dir: Directory for output.
+        Parameters
+        __________
 
-                :param batch_size: Setting batch size, we only use complete batch for evaluation.
 
-                :param batch_window: Window size for this evaluation (complete batches).
+        out_dir : str
+            Directory to save output files from this class.
 
-                :param warm_up_cells: The minimum for optimal point.
+        batch_size : int
+            Set batch size, indicate complete batches for evaluation.
 
-                :param detect_cells: Cell number for continually running after the last optimal point.
+        batch_window : int, optional, default: 10000
+            Batch window size for evaluation, please note that only complete batches will be calculated.
 
-                :param refresh_time: Time interval for update.
+        warm_up_cells : int, optional, default: 5000000
+            Warm up cell number before determining the optimal point.
 
-                :param log_fn: function for logging.
+        detect_cells : int, optional, default: 500000
+            Continually run cell number to make sure our optimal point is actually the optimal.
 
-                :param manager: manager server.
-        """
+        refresh_time : float, optional, default: 0.1
+            Time interval when waiting.
+
+        log_fn : function, optional, default: print
+            Logging function used for this class. Can be specified as a custom function.
+
+        manager : manager class object, optional, default: None
+            The manager class object. It's recommended only 1 manager is used in the whole program.
+    """
+    def __init__(self, out_dir, batch_size, batch_window=10000, warm_up_cells=5000000, detect_cells=500000, refresh_time=0.1, log_fn=print, manager=None):
         if manager is None:
             manager = Manager()
         self.pdf_file = "{}/summary.pdf".format(out_dir)
@@ -68,7 +80,7 @@ class Evaluation:
             interval_preparation = True
             while self.runnable:
                 while len(self.evaluation_list) == 0:
-                    time.sleep(0.01)
+                    time.sleep(self.refresh_time)
                     if not self.runnable.value:
                         return
                 ii = self.evaluation_list.pop(0)

@@ -19,39 +19,55 @@ def read_loom(loom_path):
 
 
 class ScanLoom:
-    def __init__(self, loom_path, library_size_factor, noise_intensity=0.1, target_gene=None, min_cell=10, min_avg_exp=1,
-                 z_score_library_size_factor=1000000, workers=1, scanning_batch_size=2048, log_fn=print):
-        r"""
+    """
         An ultra fast scanner that used for our model. The input is loom-formatted data-set and the output is some
         common attributes including library size, expressed cell number and expression for every genes our model use.
 
-        :param loom_path: Path of input data-set with genes in rows and cells in columns
+        Parameters
+        __________
 
-        :param library_size_factor: int, float or "median". If a value is input, the value will be used as
-               library size factor directly. If "median" is input, the median library size will be used as
-               library size factor.
 
-        :param noise_intensity: use in norm max calculation for our model
+        loom_path : str
+            Input data-set path. Should be a loom-formatted file containing a gene expression matrix with genes in rows
+            and cells in columns.
 
-        :param target_gene: only calculate specific genes, is useful in our transfer learning module
+        library_size_factor : str or float
+            "median" means using median library size.
+            float means using defined library_size_factor.
 
-        :param min_cell: Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and
-               min_avg_exp will be ignored.
+        noise_intensity : float, optional, default: 0.1
+            Use in norm max calculation for our model
 
-        :param min_avg_exp: Minimum average expression in expressed cells. Use for gene filtering. The default value is
-               set to be 1 to filter most noise likely expressed genes that expression is 1 in all expressed entries.
-               You can set this as -1 or other values that < 0 to ensure not use this standard for filtering. Note that
-               if target_gene is provided, min_cell and min_avg_exp will be ignored.
+        target_gene : str, optional, default: None
+            Only calculate specific genes, is useful in our transfer learning module
 
-        :param z_score_library_size_factor: Library size factor when doing normalization for z-score filtering.
+        min_cell : int, optional, default: 10
+            Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and min_avg_exp will
+            be ignored.
 
-        :param workers: Process number when conduct this scanning. This parameter can improve performance as most time
-               is use for calculating here though we read the data-set file for three times.
+        min_avg_exp : float, optional, default: 1
+            Minimum average expression in expressed cells. Use for gene filtering. The default value is set to be 1 to
+            filter most noise likely expressed genes that expression is 1 in all expressed entries. You can set this as
+            -1 or other values that < 0 to ensure not use this standard for filtering. Note that if target_gene is
+            provided, min_cell and min_avg_exp will be ignored.
 
-        :param scanning_batch_size: Chunk size for reading when scanning. Users can tune this parameter for better
-               performance. Change workers and scanning_batch_size will affect memory cost and running time.
+        z_score_library_size_factor : int, optional, default: 1000000
+            Library size factor when doing normalization for z-score filtering.
+
+        workers : int, optional, default: 1
+            Process number when conduct this scanning. This parameter can improve performance as most time is use for
+            calculating here though we read the data-set file for three times.
+
+        scanning_batch_size : int, optional, default: 2048
+            Chunk size for reading when scanning. Users can tune this parameter for better performance. Change workers
+            and scanning_batch_size will affect memory cost and running time.
+
+        log_fn : function, optional, default: print
+            Logging function used for this class. Can be specified as a custom function.
 
         """
+    def __init__(self, loom_path, library_size_factor, noise_intensity=0.1, target_gene=None, min_cell=10, min_avg_exp=1,
+                 z_score_library_size_factor=1000000, workers=1, scanning_batch_size=2048, log_fn=print):
         self.log_fn = log_fn
         self.loom_path = loom_path
         self.z_score_library_size_factor = z_score_library_size_factor

@@ -7,41 +7,57 @@ import pandas as pd
 
 
 class DataQueue:
+    """
+        An ultra fast generator for ultra large dataset.
+
+        Parameters
+        __________
+
+
+        loom_path : str
+            Input data-set path. Should be a loom-formatted file containing a gene expression matrix with genes in rows
+            and cells in columns.
+
+        target_gene : str, optional, default: None
+            Only calculate specific genes, is useful in our transfer learning module.
+            Output columns will follow the order of specific genes input here.
+
+        permutation : bool, optional, default: True
+            Whether use random output.
+
+        batch_size : int, optional, default: 128
+            Set batch size for output.
+
+        chunk_number : int, optional, default: 64
+            Reading chunk number, larger number for better stochasticity performance but higher memory occupation.
+
+        chunk_size : int, optional, default: 32
+            Reading chunk size, smaller number for better stochasticity performance but lower speed.
+
+        workers : int, optional, default: 6
+            Process number for reading. Larger number for better performance but higher CPU and memory occupation.
+
+        prefetch : int, optional, default: 12
+            max prefetch number for localization queue.
+
+        refill_cutoff : int, optional, default: None
+            Cutoff for starting new task. None means use automatic setting.
+
+        log_fn : function, optional, default: print
+            Logging function used for this class. Can be specified as a custom function.
+
+        output_type : dtype, optional, default: np.float32
+            Set output dtype.
+
+        manager : manager class object, optional, default: None
+            The manager class object. It's recommended only 1 manager is used in the whole program.
+
+        debug : bool, optional, default: True
+            Whether use the debug mode. Print lagged reading if lagged.
+    """
     def __init__(self, loom_path, target_gene, permutation=True, batch_size=128, chunk_number=64, chunk_size=32,
                  workers=6, prefetch=12, refill_cutoff=None, log_fn=print, output_type=np.float32, manager=None,
                  debug=True):
-        r"""
-                An ultra fast generator for ultra large dataset.
-
-                :param loom_path: Path of input data-set with genes in rows and cells in columns.
-
-                :param target_gene: str array, the output columns follow the order of specific genes input here.
-
-                :param permutation: Whether use permutation when generation.
-
-                :param batch_size: Batch size when output.
-
-                :param chunk_number: Reading chunk number, larger number for better stochasticity performance but
-                       higher memory occupation.
-
-                :param chunk_size: Reading chunk size, smaller number for better stochasticity performance but
-                       lower speed.
-
-                :param workers: Process number for reading. Larger number for better performance but
-                       higher CPU and memory occupation.
-
-                :param prefetch: max prefetch number for localization queue.
-
-                :param refill_cutoff: Cutoff for starting new task.
-
-                :param log_fn: function for logging.
-
-                :param output_type: output dtype.
-
-                :param manager: manager server.
-
-                :param debug: whether use debug mode.
-        """
         assert os.path.exists(loom_path)
         assert workers > 0
         if manager is None:
