@@ -2,21 +2,19 @@
 title: "Gene expression structures recovery validated by FISH"
 output: html_notebook
 ---
-### Setup knitr
-Firstly, we setup the root dir.
+### Setup knitr and load utility functions
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
-### Load utility functions
 ```{r}
 generic_functions_path = "./source/utility.r"
 source(generic_functions_path)
 ```
 ### Load Data
-Here, gene expression matrixes of RNA-seq and FISH experiments will be loaded.
-We removed cells as <a href="https://www.nature.com/articles/s41592-018-0033-z">SAVER</a>.
-We removed genes as our methods. 
+Here, gene expression matrixes of RNA-seq and FISH experiments will be loaded.</br>
+We removed cells as <a href="https://www.nature.com/articles/s41592-018-0033-z">SAVER</a>.</br>
+We removed genes as our methods.</br>
 Only the overlapped gene in both filtered RNA-seq and FISH matrixes will be used here.
 ```{r}
 dataset_list = list()
@@ -31,7 +29,9 @@ print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ```
-After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md">Run imputation</a>, we get imputation results. Now we load them.
+After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">Run imputation</a>, we get imputation results.</br>
+Now we load them.</br>
+Note that SAVER needs to generate gene expression values following gamma distribution (FF, Gini CMD) or poisson–gamma mixture (density distribution). For this reason, we load its rds-formatted file here.
 ```{r}
 ### DISC
 our_result = "./imputation_results/melanoma/DISC.hdf5"
@@ -45,9 +45,9 @@ dataset_list[["DCA"]] = readh5_imputation("./imputation_results/melanoma/DCA.hdf
 dataset_list[["scScope"]] = readh5_imputation("./imputation_results/melanoma/scScope.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("./imputation_results/melanoma/scVI.hdf5", use_genes, used_cells)
 ```
-## Output settings
+### Output settings
+The output color for each method and the output directory will be setup here.
 ```{r}
-### loaded
 method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
 method_color = c("gray40", "red", "blue4", "yellow4", "green", "purple", "cyan")
 names(method_color) = method_names
@@ -63,14 +63,9 @@ length_path_fragments = length(path_fragments)
 ### make output dir
 outdir = paste(c(path_fragments[1:(length_path_fragments - 1)], "structure_recovery"), collapse = "/")
 dir.create(outdir, showWarnings = F, recursive = T)
-resetPar <- function() {
-    dev.new()
-    op <- par(no.readonly = TRUE)
-    dev.off()
-    op
-}
 ```
-Now we start evaluation
+### Evaluation
+#### Calculate correlation with FISH
 ```{r}
 ### calculate correlation of FISH
 cor_mat = matrix(ncol = 3, nrow = 0, dimnames = list(c(), c("Gene x", "Gene y", "FISH Correlation")))
@@ -90,7 +85,9 @@ for(ii in use_genes){
     }
   }
 }
-###correlation_map
+```
+#### Plot correlation map
+```{r fig.height=7.5, fig.width=13}
 fish_mask_mat = !is.na(cor_all[["FISH"]])
 for(ii in 1:length(use_genes)){
   fish_mask_mat[ii, seq(ii)] = FALSE
@@ -102,7 +99,10 @@ mfrow = c(2, 4)
 #pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
 #dev.off()
-par(resetPar())
+```
+
+#### Plot heatmap
+```{r fig.height=7, fig.width=12.5}
 #  heatmap & CMD
 outfile = paste0(outdir, "/correlation_heatmap.pdf")
 use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
@@ -112,13 +112,15 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
 #pdf(outfile, height = 7, width = 12.5)
 cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
 #dev.off()
-par(resetPar())
+```
+```{r}
 names(cmd_vector) = names(cor_all)
 cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
-#dev.off()
-par(resetPar())
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
+```
+```{r}
+
 ###
 ###two dimensional distributions compare
 rescale_mean_list = list()
