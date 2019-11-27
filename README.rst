@@ -103,7 +103,7 @@ History
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
 .. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
-.. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md
+.. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md
 .. _`Structure recovery comparing with FISH`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Structure_recovery_comparing_with_FISH.html
 .. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#

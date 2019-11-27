@@ -1,19 +1,21 @@
 ---
-title: "Structure recovery comparing with FISH"
+title: "Gene expression structures recovery validated by FISH"
+output: html_notebook
 ---
-
-```{r setup, include=FALSE}
+### Setup knitr
+Firstly, we setup the root dir.
+```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
-## Load generic functions
+### Load utility functions
 ```{r}
 generic_functions_path = "./source/utility.r"
 source(generic_functions_path)
 ```
-## Load Data
+### Load Data
 Here, gene expression matrixes of RNA-seq and FISH experiments will be loaded.
-We removed cells as SAVER(https://www.nature.com/articles/s41592-018-0033-z).
+We removed cells as <a href="https://www.nature.com/articles/s41592-018-0033-z">SAVER</a>.
 We removed genes as our methods. 
 Only the overlapped gene in both filtered RNA-seq and FISH matrixes will be used here.
 ```{r}
@@ -29,7 +31,7 @@ print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ```
-After `Run imputation`(https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md), we get imputation results. Now we load them.
+After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md">Run imputation</a>, we get imputation results. Now we load them.
 ```{r}
 ### DISC
 our_result = "./imputation_results/melanoma/DISC.hdf5"
