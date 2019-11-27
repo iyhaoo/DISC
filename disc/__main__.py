@@ -1,7 +1,7 @@
 import argparse
 from .utils.data_preparation import *
 from .utils.generator import *
-from .utils.util import *
+from .utils.utility import *
 from .model import *
 from .evaluation.evaluation import *
 

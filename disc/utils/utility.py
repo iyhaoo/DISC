@@ -65,5 +65,3 @@ def get_model_values_by_name(pretrained_model, name_list):
     for ii in output_list:
         assert ii is not None
     return output_list
-
-

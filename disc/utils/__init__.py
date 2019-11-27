@@ -1,5 +1,5 @@
 from .generator import DataQueue
-from .util import MakeLogClass
+from .utility import MakeLogClass
 
 
 __all__ = ["DataQueue", "MakeLogClass"]

@@ -8,7 +8,7 @@ knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
 ## Load generic functions
 ```{r}
-generic_functions_path = "./source/generic_functions.r"
+generic_functions_path = "./source/utility.r"
 source(generic_functions_path)
 ```
 ## Load Data
