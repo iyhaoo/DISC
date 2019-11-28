@@ -86,7 +86,7 @@ for(ii in use_genes){
   }
 }
 ```
-#### Plot correlation map
+#### correlation map
 ```{r fig.height=7.5, fig.width=13}
 fish_mask_mat = !is.na(cor_all[["FISH"]])
 for(ii in 1:length(use_genes)){
@@ -100,7 +100,7 @@ mfrow = c(2, 4)
 layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
 #dev.off()
 ```
-#### Plot heatmap
+#### Correlation heatmap
 ```{r fig.height=7, fig.width=12.5}
 #  heatmap & CMD
 outfile = paste0(outdir, "/correlation_heatmap.pdf")
@@ -112,14 +112,14 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
 cmd_vector_all = layout_correlogram_plot(cor_all, use_order=use_order)
 #dev.off()
 ```
-#### Plot CMD
+#### CMD
 ```{r fig.height=6, fig.width=4.2}
 names(cmd_vector_all) = names(cor_all)
 cmd_vector = cmd_vector_all[setdiff(names(cmd_vector_all), "FISH")]
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
 ```
-### Normalization
+#### Normalization
 ```{r}
 example_gene = c("WNT5A", "SOX10")
 rescale_mean_list = list()
@@ -143,7 +143,7 @@ for(ii in names(norm_for_density)){
 }
 saveRDS(norm_for_density, paste0(outdir, "/norm_for_density.rds"))
 ```
-### Gini
+#### Gini
 ```{r fig.height=7.5, fig.width=13}
 gini_result_list = list()
 for(ii in names(saver_style_filt_norm_list)){
@@ -166,7 +166,7 @@ saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
 par(mfrow = c(1, 1))
 barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = bar_color, text_color = text_color, use_data_order = T)
 ```
-### Density
+#### Density
 ```{r fig.height=9, fig.width=16.5, warning=FALSE}
 plot_genes = use_genes
 ks_matrix = matrix(nrow = length(plot_genes), ncol = length(method_names), dimnames = list(plot_genes, method_names))
@@ -221,7 +221,7 @@ par(mfrow = c(1, 1))
 barplot_usage(ks_mean, main = "K-S Statistic", bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks)
 #dev.off()
 ```
-### 2D distribution
+#### 2D distribution
 ```{r}
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
