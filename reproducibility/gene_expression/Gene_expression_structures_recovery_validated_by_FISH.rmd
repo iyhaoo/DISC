@@ -100,7 +100,6 @@ mfrow = c(2, 4)
 layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
 #dev.off()
 ```
-
 #### Plot heatmap
 ```{r fig.height=7, fig.width=12.5}
 #  heatmap & CMD
@@ -110,19 +109,19 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
   return(x)
 })[t(t(fish_gene_mat) != colnames(fish_gene_mat))], nrow = nrow(cor_all[["FISH"]]) - 1, ncol = ncol(cor_all[["FISH"]]), dimnames = list(c(), colnames(cor_all[["FISH"]])))), decreasing = T)
 #pdf(outfile, height = 7, width = 12.5)
-cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
+cmd_vector_all = layout_correlogram_plot(cor_all, use_order=use_order)
 #dev.off()
 ```
-```{r}
-names(cmd_vector) = names(cor_all)
-cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
+#### Plot CMD
+```{r fig.height=6, fig.width=4.2}
+names(cmd_vector_all) = names(cor_all)
+cmd_vector = cmd_vector_all[setdiff(names(cmd_vector_all), "FISH")]
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
 ```
+### Normalization
 ```{r}
-
-###
-###two dimensional distributions compare
+example_gene = c("WNT5A", "SOX10")
 rescale_mean_list = list()
 for(ii in method_names){
   if(ii != "SAVER"){
@@ -138,45 +137,14 @@ for(ii in rescale_mean_list){
 saver_style_filt_norm_list = rescale_mean_list
 saver_style_filt_norm_list[["SAVER"]] = binom_result_mean(dataset_list[["SAVER"]], dataset_list[["FISH"]])
 saver_style_filt_norm_list[["FISH"]] = dataset_list[["FISH"]]
-example_gene = c("WNT5A", "SOX10")
 norm_for_density = saver_style_filt_norm_list
 for(ii in names(norm_for_density)){
   norm_for_density[[ii]] = norm_for_density[[ii]][example_gene,]
 }
 saveRDS(norm_for_density, paste0(outdir, "/norm_for_density.rds"))
-
-gene1 = example_gene[1]
-gene2 = example_gene[2]
-gene_x = list()
-gene_y = list()
-gene_x_ws = list()
-gene_y_ws = list()
-for(ii in method_names){
-  gene_x[[ii]] = rescale_mean_list[[ii]][gene1, ]
-  gene_y[[ii]] = rescale_mean_list[[ii]][gene2, ]
-  if(ii != "SAVER"){
-    gene_x_ws[[ii]] = dataset_list[[ii]][gene1, ]
-    gene_y_ws[[ii]] = dataset_list[[ii]][gene2, ]
-  }else{
-    gene_x_ws[[ii]] = dataset_list[["SAVER_gamma"]][gene1, ]
-    gene_y_ws[[ii]] = dataset_list[["SAVER_gamma"]][gene2, ]
-  }
-}
-x_fish_raw = dataset_list[["FISH"]][gene1, ]
-y_fish_raw = dataset_list[["FISH"]][gene2, ]
-select_cell = !is.na(x_fish_raw) & !is.na(y_fish_raw)
-x_fish = x_fish_raw[select_cell]
-y_fish = y_fish_raw[select_cell]
-gene_x[["FISH"]] = x_fish
-gene_y[["FISH"]] = y_fish
-gene_x_ws[["FISH"]] = x_fish
-gene_y_ws[["FISH"]] = y_fish
-saveRDS(gene_x, file = paste0(outdir, "/", gene1, ".rds"))
-saveRDS(gene_y, file = paste0(outdir, "/", gene2, ".rds"))
-saveRDS(gene_x_ws, file = paste0(outdir, "/", gene1, "_ws.rds"))
-saveRDS(gene_y_ws, file = paste0(outdir, "/", gene2, "_ws.rds"))
-
-#  Gini
+```
+### Gini
+```{r fig.height=7.5, fig.width=13}
 gini_result_list = list()
 for(ii in names(saver_style_filt_norm_list)){
   if(ii != "SAVER"){
@@ -192,10 +160,14 @@ mfrow = c(2, 4)
 #pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
 #dev.off()
-par(resetPar())
 saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
-###density
-#plot_genes = setdiff(use_genes, "GAPDH")
+```
+```{r fig.height=6, fig.width=4.2}
+par(mfrow = c(1, 1))
+barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = bar_color, text_color = text_color, use_data_order = T)
+```
+### Density
+```{r fig.height=9, fig.width=16.5, warning=FALSE}
 plot_genes = use_genes
 ks_matrix = matrix(nrow = length(plot_genes), ncol = length(method_names), dimnames = list(plot_genes, method_names))
 mfrow = c(3, 6)
@@ -239,7 +211,8 @@ for(ii in plot_genes){
   }
 }
 #dev.off()
-par(resetPar())
+```
+```{r fig.height=6, fig.width=4.2}
 outfile = paste0(outdir, "/density_summary.pdf")
 #pdf(outfile, height = 6, width = ncol(ks_matrix) * 0.6)
 ks_mean = Matrix::colMeans(ks_matrix)
@@ -247,8 +220,9 @@ standard_error_ks = apply(ks_matrix, 2, function(x) sqrt(var(x)/length(x)))
 par(mfrow = c(1, 1))
 barplot_usage(ks_mean, main = "K-S Statistic", bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks)
 #dev.off()
-par(resetPar())
-#####2d_distribution
+```
+### 2D distribution
+```{r}
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
 dir.create(dist_outdir, showWarnings = F)
@@ -278,11 +252,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
     method_name = method_names[jj]
     x_i[[method_name]] = rescale_mean_list[[method_name]][gene_x, ]
     y_i[[method_name]] = rescale_mean_list[[method_name]][gene_y, ]
-    ks_result = unlist(ks2d2s(np_array(round(x_fish)),
-                              np_array(round(y_fish)), 
-                              np_array(round(x_i[[method_name]])),
-                              np_array(round(y_i[[method_name]])), extra=T))
-    ks_stat = c(ks_stat, ks_result[2])
+    ks_stat = c(ks_stat, ks2d2s(round(x_fish), round(y_fish), round(x_i[[method_name]]), round(y_i[[method_name]])))
     corr_score = c(corr_score, cor(x_i[[method_name]], y_i[[method_name]]))
   }
   names(corr_score) = c("FISH", method_names)
@@ -337,6 +307,8 @@ saveRDS(ks_stat_mat, paste(outdir, "/ks_stat_mat.rds", sep = ""))
 ###all_compare
 mean_ks_stat = Matrix::colMeans(ks_stat_mat)
 standard_error_ks_stat = apply(ks_stat_mat, 2, function(x) sqrt(var(x)/length(x)))
+```
+```{r fig.height=6, fig.width=4.2}
 outfile = paste(outdir, "/score_compare.pdf", sep = "")
 #pdf(outfile, height = 5, width = 9)
 #par(mfrow = c(1, 2))
@@ -344,9 +316,8 @@ barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main =
 corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
 barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T)
 #dev.off()
-par(resetPar())
 ```
-Outputs
+### Summary
 ```{r}
 outfile = paste(outdir, "/Bar_plot.pdf", sep = "")
 #pdf(outfile, height = 3, width = 8)
@@ -369,7 +340,6 @@ par(mar = rep(0, 4))
 plot(1, type = "n", axes = FALSE, xlab="", ylab="")
 legend(x = "top",inset = 0, legend = names(method_color), fill = method_color, horiz = TRUE, border = NA, bty = "n")
 #dev.off()
-par(resetPar())
 output_list = list()
 output_list[["cmd"]] = cmd_vector
 output_list[["gini_rmse"]] = gini_rmse
@@ -378,7 +348,7 @@ output_list[["standard_error_ks_stat"]] = standard_error_ks_stat
 saveRDS(output_list, paste(outdir, "/Bar_stat.rds", sep = ""))
 ```
 ### Notes:
-The height and width of result pictures are different from those in PDF files which are saved here(https://github.com/iyhaoo/DISC/tree/master/reproducibility/imputation_results/melanoma/structure_recovery).
-The imputation results are too large to upload into GitHub and can be reproduced using this script( https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md).
+Single plots of FF are saved in <a href="https://github.com/iyhaoo/DISC/tree/master/reproducibility/imputation_results/melanoma/structure_recovery/2d_distribution">here</a>.</br>
+The imputation results are too large to upload into GitHub and can be reproduced using <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">this script</a>.
 
 

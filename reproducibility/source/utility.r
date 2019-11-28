@@ -1,12 +1,10 @@
 library(Matrix)
 library(ggplot2)
-library(reticulate)
 library(rhdf5)
 library(parallel)
 library(reldist)
 library(Seurat)
 library(future)
-source_python("./source/ks_2d_function.py")
 library(stringi)
 #  read data
 cal_RMSD = function(pd_array, window_size){
@@ -360,26 +358,64 @@ jaccard <- function(x, y){
   length(intersect(x, y))/length(union(x, y))
 }
 
-
-cal_EMD = function(d_a, d_b){
-  return(scipy$stats$wasserstein_distance(d_a[!is.na(d_a)], d_b[!is.na(d_b)]))
+quadct = function(x, y, xx, yy){
+  n = length(xx)
+  ix1 = xx <= x
+  ix2 = yy <= y
+  a = sum(ix1 & ix2) / n
+  b = sum(ix1 & !ix2) / n
+  c = sum(!ix1 & ix2) / n
+  d = 1 - a - b - c
+  return(list(a = a, b = b, c = c, d = d))
 }
 
-cal_EMD2D = function(c_a, c_b){
-  distance_mat = as.matrix(scipy$spatial$distance$cdist(c_a, c_b))
-  earth_flow = ot$emd(a = list(), b = list(), M = np_array(distance_mat), numItermax = 1e6)
-  return(sum(earth_flow * distance_mat))
+maxdist = function(x1, y1, x2, y2){
+  n1 = length(x1)
+  D1 = t(sapply(seq(n1), function(x){
+    list1 = quadct(x1[x], y1[x], x1, y1)
+    list2 = quadct(x1[x], y1[x], x2, y2)
+    return(c(list1$a - list2$a, list1$b - list2$b, list1$c - list2$c, list1$d - list2$d))
+  }))
+  # re-assign the point to maximize difference,
+  # the discrepancy is significant for N < ~50
+  D1[, 1] = D1[, 1] - (1 / n1)
+  dmin = -min(D1)
+  dmax = max(D1) + 1 / n1
+  return(max(c(dmin, dmax)))
 }
 
-cal_EMD2D_ds = function(c_a, c_b, sample_num = 1500, observation = 10){
-  all_distance = 0
-  for(ii in 1:observation){
-    c_as = c_a[sample(seq(1, nrow(c_a)), sample_num, replace = TRUE), ]
-    c_bs = c_b[sample(seq(1, nrow(c_b)), sample_num, replace = TRUE), ]
-    all_distance = all_distance + cal_EMD2D(c_as, c_bs)
+avgmaxdist = function(x1, y1, x2, y2){
+  D1 = maxdist(x1, y1, x2, y2)
+  D2 = maxdist(x2, y2, x1, y1)
+  return((D1 + D2) / 2)
+}
+  
+ks2d2s = function(x1, y1, x2, y2){
+  #Two-dimensional Kolmogorov-Smirnov test on two samples.
+  #Parameters
+  #----------
+  #x1, y1 : ndarray, shape (n1, )
+  #Data of sample 1.
+  #x2, y2 : ndarray, shape (n2, )
+  #Data of sample 2. Size of two samples can be different.
+  #Returns
+  #-------
+  #D : float
+  #KS statistic.
+  #References
+  #----------
+  #Peacock, J.A. 1983, Two-Dimensional Goodness-of-Fit Testing in Astronomy, Monthly Notices of the Royal Astronomical Society, vol. 202, pp. 615-627
+  #Fasano, G. and Franceschini, A. 1987, A Multidimensional Version of the Kolmogorov-Smirnov Test, Monthly Notices of the Royal Astronomical Society, vol. 225, pp. 155-170
+  #Press, W.H. et al. 2007, Numerical Recipes, section 14.8
+  if(!(length(x1) == length(y1) & length(x2) == length(y2))){
+    stop()
   }
-  return(all_distance / observation)
+  n1 = length(x1)
+  n2 = length(x2)
+  D = avgmaxdist(x1, y1, x2, y2)
+  return(D)
 }
+  
 
 cal_2D_KL_divergence = function(p_raw, q_raw){
   p1 = as.vector(p_raw)[as.vector(p_raw) > 0]
@@ -466,14 +502,17 @@ saver_density_norm_method = function(impute_result, fish_gene_bc_mat){
   return(sweep(norm_as_saver, 1, mult_factor, "*"))
 }
 
-mean_norm_fun = function(gene_bc_mat, fish_gene_bc_mat){
+mean_norm_fun = function(gene_bc_mat, fish_gene_bc_mat, return_factor = F){
   intersect_genes = intersect(rownames(fish_gene_bc_mat), rownames(gene_bc_mat))
-  t(sapply(matrix(intersect_genes), function(x) gene_bc_mat[x, ] * mean(fish_gene_bc_mat[x, ], na.rm = TRUE) / mean(gene_bc_mat[x, ])))
-}
-
-mean_norm_fun_new = function(gene_bc_mat){
-  intersect_genes = intersect(rownames(fish_gene_bc_mat), rownames(gene_bc_mat))
-  t(sapply(matrix(intersect_genes), function(x) gene_bc_mat[x, ] / mean(gene_bc_mat[x, ], na.rm = TRUE)))
+  if(return_factor){
+    return(sapply(intersect_genes, function(x){
+      mean(fish_gene_bc_mat[x, ], na.rm = TRUE) / mean(gene_bc_mat[x, ])
+    }))
+  }else{
+    return(t(sapply(intersect_genes, function(x){
+      gene_bc_mat[x, ] * mean(fish_gene_bc_mat[x, ], na.rm = TRUE) / mean(gene_bc_mat[x, ])
+    })))
+  }
 }
 
 grid_switch = function(target_mat, input_mat, output_all = F){
