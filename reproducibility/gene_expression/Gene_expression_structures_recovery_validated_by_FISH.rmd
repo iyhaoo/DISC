@@ -18,15 +18,21 @@ We removed genes as our methods.</br>
 Only the overlapped gene in both filtered RNA-seq and FISH matrixes will be used here.
 ```{r}
 dataset_list = list()
-dataset_list[["FISH"]] = readh5_loom("./imputation_results/melanoma/fish.loom")
-raw_input_data = "./imputation_results/melanoma/raw.loom"
-use_genes = intersect(rownames(dataset_list[["FISH"]]), get_loom_gene(raw_input_data))
+dataset_list[["FISH"]] = readh5_loom("./data/melanoma/fish.loom")
+raw_data = readh5_loom("./data/melanoma/raw.loom")
+expressed_cell = rowSums(raw_data > 0)
+gene_expression = rowSums(raw_data)
+gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
+raw_input_data = raw_data[gene_filter, ]
+use_genes = intersect(rownames(dataset_list[["FISH"]]), rownames(raw_input_data))
 ```
 We use these 19 overlapped genes for analysis below.
 ```{r}
 print(length(use_genes))
 print(use_genes)
-dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
+dataset_list[["Raw"]] = raw_input_data[use_genes, ]
+print(dim(raw_input_data))
+print(dim(dataset_list[["Raw"]]))
 used_cells = colnames(dataset_list[["Raw"]])
 ```
 After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">Run imputation</a>, we get imputation results.</br>
@@ -34,16 +40,16 @@ Now we load them.</br>
 Note that SAVER needs to generate gene expression values following gamma distribution (FF, Gini CMD) or poisson–gamma mixture (density distribution). For this reason, we load its rds-formatted file here.
 ```{r}
 ### DISC
-our_result = "./imputation_results/melanoma/DISC.hdf5"
+our_result = "./data/melanoma/DISC.hdf5"
 dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
 ### Other methods
-dataset_list[["SAVER"]] = readRDS("./imputation_results/melanoma/SAVER.rds")
+dataset_list[["SAVER"]] = readRDS("./data/melanoma/SAVER.rds")
 set.seed(42)
 dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
-dataset_list[["MAGIC"]] = readh5_imputation("./imputation_results/melanoma/MAGIC.hdf5", use_genes, used_cells)
-dataset_list[["DCA"]] = readh5_imputation("./imputation_results/melanoma/DCA.hdf5", use_genes, used_cells)
-dataset_list[["scScope"]] = readh5_imputation("./imputation_results/melanoma/scScope.hdf5", use_genes, used_cells)
-dataset_list[["scVI"]] = readh5_imputation("./imputation_results/melanoma/scVI.hdf5", use_genes, used_cells)
+dataset_list[["MAGIC"]] = readh5_imputation("./data/melanoma/MAGIC.hdf5", use_genes, used_cells)
+dataset_list[["DCA"]] = readh5_imputation("./data/melanoma/DCA.hdf5", use_genes, used_cells)
+dataset_list[["scScope"]] = readh5_imputation("./data/melanoma/scScope.hdf5", use_genes, used_cells)
+dataset_list[["scVI"]] = readh5_imputation("./data/melanoma/scVI.hdf5", use_genes, used_cells)
 ```
 ### Output settings
 The output color for each method and the output directory will be setup here.
@@ -348,7 +354,7 @@ output_list[["standard_error_ks_stat"]] = standard_error_ks_stat
 saveRDS(output_list, paste(outdir, "/Bar_stat.rds", sep = ""))
 ```
 ### Notes:
-Single plots of FF are saved in <a href="https://github.com/iyhaoo/DISC/tree/master/reproducibility/imputation_results/melanoma/structure_recovery/2d_distribution">here</a>.</br>
+Single plots of FF are saved in <a href="https://github.com/iyhaoo/DISC/tree/master/reproducibility/data/melanoma/structure_recovery/2d_distribution">here</a>.</br>
 The imputation results are too large to upload into GitHub and can be reproduced using <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">this script</a>.
 
 

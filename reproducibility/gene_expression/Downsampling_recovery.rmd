@@ -1,23 +1,41 @@
 ---
-title: "Structure recovery comparing with FISH"
+title: "Downsampling recovery"
 output: html_notebook
 ---
-
-```{r setup, include=FALSE}
+### Setup knitr and load utility functions
+```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
-## Load utility functions
 ```{r}
 generic_functions_path = "./source/utility.r"
 source(generic_functions_path)
 ```
-## Load Data
-Here, gene expression matrixes of RNA-seq and FISH experiments will be loaded.
-We removed cells as SAVER(https://www.nature.com/articles/s41592-018-0033-z).
-We removed genes as our methods. 
-Only the overlapped gene in both filtered RNA-seq and FISH matrixes will be used here.
+### Load Data
+Here, we use melanoma dataset as an example. The fraction of sampling is set to 50% of the original library size across cells.
 ```{r}
+raw_data = readh5_loom("./data/melanoma/raw.loom")
+observed_data = downsampling_cell(0.5, raw_data)
+save_h5("./data/melanoma/ds_0.5.loom", t(observed_data))
+```
+We use these 19 overlapped genes for analysis below.
+```{r}
+
+repeats = 5
+ds_rate = c(0.5)
+loom_path = "E:/DeSCI/fn/melanoma/dropseq_filt_ls.loom"
+gene_bc_mat = readh5_loom(loom_path)
+
+for(ii in 1:repeats){
+  output_dir = paste0(paste(delete_last_element(unlist(strsplit(loom_path, "/"))), collapse = "/"), "/downsampling_first_repeat_", ii)
+  dir.create(output_dir, showWarnings = F)
+  for(jj in ds_rate){
+    output_loom = paste0(output_dir, "/", sub(".loom", paste0("_ds_", jj, ".loom"), get_last_element(unlist(strsplit(loom_path, "/"))), fixed = TRUE))
+    save_h5(output_loom, t(downsampling(jj, gene_bc_mat)))
+    cat(ii, " - ", jj, "\n")
+  }
+}
+
 dataset_list = list()
 dataset_list[["FISH"]] = readh5_loom("./imputation_results/melanoma/fish.loom")
 raw_input_data = "./imputation_results/melanoma/raw.loom"
@@ -30,7 +48,9 @@ print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ```
-After `Run imputation`(https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md), we get imputation results. Now we load them.
+After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">Run imputation</a>, we get imputation results.</br>
+Now we load them.</br>
+Note that SAVER needs to generate gene expression values following gamma distribution (FF, Gini CMD) or poisson–gamma mixture (density distribution). For this reason, we load its rds-formatted file here.
 ```{r}
 ### DISC
 our_result = "./imputation_results/melanoma/DISC.hdf5"
@@ -44,9 +64,9 @@ dataset_list[["DCA"]] = readh5_imputation("./imputation_results/melanoma/DCA.hdf
 dataset_list[["scScope"]] = readh5_imputation("./imputation_results/melanoma/scScope.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("./imputation_results/melanoma/scVI.hdf5", use_genes, used_cells)
 ```
-## Output settings
+### Output settings
+The output color for each method and the output directory will be setup here.
 ```{r}
-### loaded
 method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
 method_color = c("gray40", "red", "blue4", "yellow4", "green", "purple", "cyan")
 names(method_color) = method_names
@@ -62,14 +82,9 @@ length_path_fragments = length(path_fragments)
 ### make output dir
 outdir = paste(c(path_fragments[1:(length_path_fragments - 1)], "structure_recovery"), collapse = "/")
 dir.create(outdir, showWarnings = F, recursive = T)
-resetPar <- function() {
-    dev.new()
-    op <- par(no.readonly = TRUE)
-    dev.off()
-    op
-}
 ```
-Now we start evaluation
+### Evaluation
+#### Calculate correlation with FISH
 ```{r}
 ### calculate correlation of FISH
 cor_mat = matrix(ncol = 3, nrow = 0, dimnames = list(c(), c("Gene x", "Gene y", "FISH Correlation")))
@@ -89,7 +104,9 @@ for(ii in use_genes){
     }
   }
 }
-###correlation_map
+```
+#### correlation map
+```{r fig.height=7.5, fig.width=13}
 fish_mask_mat = !is.na(cor_all[["FISH"]])
 for(ii in 1:length(use_genes)){
   fish_mask_mat[ii, seq(ii)] = FALSE
@@ -101,7 +118,9 @@ mfrow = c(2, 4)
 #pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
 #dev.off()
-par(resetPar())
+```
+#### Correlation heatmap
+```{r fig.height=7, fig.width=12.5}
 #  heatmap & CMD
 outfile = paste0(outdir, "/correlation_heatmap.pdf")
 use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
@@ -109,17 +128,19 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
   return(x)
 })[t(t(fish_gene_mat) != colnames(fish_gene_mat))], nrow = nrow(cor_all[["FISH"]]) - 1, ncol = ncol(cor_all[["FISH"]]), dimnames = list(c(), colnames(cor_all[["FISH"]])))), decreasing = T)
 #pdf(outfile, height = 7, width = 12.5)
-cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
+cmd_vector_all = layout_correlogram_plot(cor_all, use_order=use_order)
 #dev.off()
-par(resetPar())
-names(cmd_vector) = names(cor_all)
-cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
+```
+#### CMD
+```{r fig.height=6, fig.width=4.2}
+names(cmd_vector_all) = names(cor_all)
+cmd_vector = cmd_vector_all[setdiff(names(cmd_vector_all), "FISH")]
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
-#dev.off()
-par(resetPar())
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
-###
-###two dimensional distributions compare
+```
+#### Normalization
+```{r}
+example_gene = c("WNT5A", "SOX10")
 rescale_mean_list = list()
 for(ii in method_names){
   if(ii != "SAVER"){
@@ -135,45 +156,14 @@ for(ii in rescale_mean_list){
 saver_style_filt_norm_list = rescale_mean_list
 saver_style_filt_norm_list[["SAVER"]] = binom_result_mean(dataset_list[["SAVER"]], dataset_list[["FISH"]])
 saver_style_filt_norm_list[["FISH"]] = dataset_list[["FISH"]]
-example_gene = c("WNT5A", "SOX10")
 norm_for_density = saver_style_filt_norm_list
 for(ii in names(norm_for_density)){
   norm_for_density[[ii]] = norm_for_density[[ii]][example_gene,]
 }
 saveRDS(norm_for_density, paste0(outdir, "/norm_for_density.rds"))
-
-gene1 = example_gene[1]
-gene2 = example_gene[2]
-gene_x = list()
-gene_y = list()
-gene_x_ws = list()
-gene_y_ws = list()
-for(ii in method_names){
-  gene_x[[ii]] = rescale_mean_list[[ii]][gene1, ]
-  gene_y[[ii]] = rescale_mean_list[[ii]][gene2, ]
-  if(ii != "SAVER"){
-    gene_x_ws[[ii]] = dataset_list[[ii]][gene1, ]
-    gene_y_ws[[ii]] = dataset_list[[ii]][gene2, ]
-  }else{
-    gene_x_ws[[ii]] = dataset_list[["SAVER_gamma"]][gene1, ]
-    gene_y_ws[[ii]] = dataset_list[["SAVER_gamma"]][gene2, ]
-  }
-}
-x_fish_raw = dataset_list[["FISH"]][gene1, ]
-y_fish_raw = dataset_list[["FISH"]][gene2, ]
-select_cell = !is.na(x_fish_raw) & !is.na(y_fish_raw)
-x_fish = x_fish_raw[select_cell]
-y_fish = y_fish_raw[select_cell]
-gene_x[["FISH"]] = x_fish
-gene_y[["FISH"]] = y_fish
-gene_x_ws[["FISH"]] = x_fish
-gene_y_ws[["FISH"]] = y_fish
-saveRDS(gene_x, file = paste0(outdir, "/", gene1, ".rds"))
-saveRDS(gene_y, file = paste0(outdir, "/", gene2, ".rds"))
-saveRDS(gene_x_ws, file = paste0(outdir, "/", gene1, "_ws.rds"))
-saveRDS(gene_y_ws, file = paste0(outdir, "/", gene2, "_ws.rds"))
-
-#  Gini
+```
+#### Gini
+```{r fig.height=7.5, fig.width=13}
 gini_result_list = list()
 for(ii in names(saver_style_filt_norm_list)){
   if(ii != "SAVER"){
@@ -189,10 +179,14 @@ mfrow = c(2, 4)
 #pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
 #dev.off()
-par(resetPar())
 saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
-###density
-#plot_genes = setdiff(use_genes, "GAPDH")
+```
+```{r fig.height=6, fig.width=4.2}
+par(mfrow = c(1, 1))
+barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = bar_color, text_color = text_color, use_data_order = T)
+```
+#### Density
+```{r fig.height=9, fig.width=16.5, warning=FALSE}
 plot_genes = use_genes
 ks_matrix = matrix(nrow = length(plot_genes), ncol = length(method_names), dimnames = list(plot_genes, method_names))
 mfrow = c(3, 6)
@@ -236,7 +230,8 @@ for(ii in plot_genes){
   }
 }
 #dev.off()
-par(resetPar())
+```
+```{r fig.height=6, fig.width=4.2}
 outfile = paste0(outdir, "/density_summary.pdf")
 #pdf(outfile, height = 6, width = ncol(ks_matrix) * 0.6)
 ks_mean = Matrix::colMeans(ks_matrix)
@@ -244,8 +239,9 @@ standard_error_ks = apply(ks_matrix, 2, function(x) sqrt(var(x)/length(x)))
 par(mfrow = c(1, 1))
 barplot_usage(ks_mean, main = "K-S Statistic", bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks)
 #dev.off()
-par(resetPar())
-#####2d_distribution
+```
+#### 2D distribution
+```{r}
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
 dir.create(dist_outdir, showWarnings = F)
@@ -275,11 +271,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
     method_name = method_names[jj]
     x_i[[method_name]] = rescale_mean_list[[method_name]][gene_x, ]
     y_i[[method_name]] = rescale_mean_list[[method_name]][gene_y, ]
-    ks_result = unlist(ks2d2s(np_array(round(x_fish)),
-                              np_array(round(y_fish)), 
-                              np_array(round(x_i[[method_name]])),
-                              np_array(round(y_i[[method_name]])), extra=T))
-    ks_stat = c(ks_stat, ks_result[2])
+    ks_stat = c(ks_stat, ks2d2s(round(x_fish), round(y_fish), round(x_i[[method_name]]), round(y_i[[method_name]])))
     corr_score = c(corr_score, cor(x_i[[method_name]], y_i[[method_name]]))
   }
   names(corr_score) = c("FISH", method_names)
@@ -334,6 +326,8 @@ saveRDS(ks_stat_mat, paste(outdir, "/ks_stat_mat.rds", sep = ""))
 ###all_compare
 mean_ks_stat = Matrix::colMeans(ks_stat_mat)
 standard_error_ks_stat = apply(ks_stat_mat, 2, function(x) sqrt(var(x)/length(x)))
+```
+```{r fig.height=6, fig.width=4.2}
 outfile = paste(outdir, "/score_compare.pdf", sep = "")
 #pdf(outfile, height = 5, width = 9)
 #par(mfrow = c(1, 2))
@@ -341,9 +335,8 @@ barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main =
 corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
 barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T)
 #dev.off()
-par(resetPar())
 ```
-Outputs
+### Summary
 ```{r}
 outfile = paste(outdir, "/Bar_plot.pdf", sep = "")
 #pdf(outfile, height = 3, width = 8)
@@ -366,7 +359,6 @@ par(mar = rep(0, 4))
 plot(1, type = "n", axes = FALSE, xlab="", ylab="")
 legend(x = "top",inset = 0, legend = names(method_color), fill = method_color, horiz = TRUE, border = NA, bty = "n")
 #dev.off()
-par(resetPar())
 output_list = list()
 output_list[["cmd"]] = cmd_vector
 output_list[["gini_rmse"]] = gini_rmse
@@ -375,7 +367,7 @@ output_list[["standard_error_ks_stat"]] = standard_error_ks_stat
 saveRDS(output_list, paste(outdir, "/Bar_stat.rds", sep = ""))
 ```
 ### Notes:
-The height and width of result pictures are different from those in PDF files which are saved here(https://github.com/iyhaoo/DISC/tree/master/reproducibility/imputation_results/melanoma/structure_recovery).
-The imputation results are too large to upload into GitHub and can be reproduced using this script( https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/imputation.md).
+Single plots of FF are saved in <a href="https://github.com/iyhaoo/DISC/tree/master/reproducibility/imputation_results/melanoma/structure_recovery/2d_distribution">here</a>.</br>
+The imputation results are too large to upload into GitHub and can be reproduced using <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">this script</a>.
 
 
