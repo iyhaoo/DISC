@@ -70,7 +70,7 @@ Tutorials
 
  2. Reproducing our results:
 
-    * `Structure recovery comparing with FISH`_
+    * `Gene expression structures recovery validated by FISH`_
     * `Downsampling recovery`_
     * `Clustering improvement`_
     * `Ultra-large dataset analysis`_
@@ -104,7 +104,7 @@ History
 .. _`loom-formatted`: http://loompy.org/
 .. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md
-.. _`Structure recovery comparing with FISH`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Structure_recovery_comparing_with_FISH.html
+.. _`Gene expression structures recovery validated by FISH`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Gene_expression_structures_recovery_validated_by_FISH.nb.html
 .. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
