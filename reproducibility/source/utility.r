@@ -410,8 +410,6 @@ ks2d2s = function(x1, y1, x2, y2){
   if(!(length(x1) == length(y1) & length(x2) == length(y2))){
     stop()
   }
-  n1 = length(x1)
-  n2 = length(x2)
   D = avgmaxdist(x1, y1, x2, y2)
   return(D)
 }
@@ -595,46 +593,76 @@ heatmap_plot = function(grid_mat, use_colors, xlab = "", ylab = "", main = "", c
 
 
 
-barplot_usage = function(data_vector, main, bar_color, text_color, use_data_order=F, standard_error=NULL, show_number=F, ylim = NULL, cex.main = 2){
-  data_order = c(1, order(data_vector[-1]) + 1)
-  if(is.null(ylim)){
-    ylim = c(-0.1 * max(data_vector), max(data_vector))
-  }
+barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data_order=F, decreasing=F, standard_error=NULL, show_number=F, ylim=NULL, cex.main=2, use_log1p=F, use_border=T, ...){
+  data_order = c(1, order(data_vector[-1], decreasing = decreasing) + 1)
   if(use_data_order){
     data_vector = data_vector[data_order]
     bar_color = bar_color[data_order]
-    text_color = text_color[data_order]
+    if(!is.null(text_color)){
+      text_color = text_color[data_order]
+    }
     if(!is.null(standard_error)){
       standard_error = standard_error[data_order]
-      ylim = c(-0.1 * max(data_vector + standard_error), max(data_vector + standard_error))
     }
   }
-  bp = barplot(data_vector, main = main, las=1, names.arg="", col = bar_color, ylim = ylim,
-               cex.axis = 1.2, cex.main = cex.main)
-  if(!is.null(standard_error)){
-    arrows(bp, data_vector - standard_error, bp, data_vector + standard_error, length=0.05, angle=90, code=3)
+  if(use_log1p){
+    plot_data = log1p(data_vector)
+    ylim = log1p(ylim)
+    if(!is.null(standard_error)){
+      plot_data_up = log1p(data_vector + standard_error)
+      plot_data_down = log1p(data_vector - standard_error)
+    }
+  }else{
+    plot_data = data_vector
+    if(!is.null(standard_error)){
+      plot_data_up = data_vector + standard_error
+      plot_data_down = data_vector - standard_error
+    }
   }
-  text_position = -0.015 * max(data_vector)
-  text(bp, sapply(data_vector,
-                  function(x){
-                    if(x >= 0){
-                      return(text_position)
-                      }
-                    else{
-                      return(x - text_position)
-                      }
-                    }),
-       srt = 90, adj= 1, xpd = TRUE, labels = names(data_vector), cex=1.5, col = text_color)
-  if(show_number){
+  if(is.null(ylim)){
+    if(is.null(standard_error)){
+      ylim = c(NA, max(plot_data) * 1.01)
+    }else{
+      ylim = c(NA, max(plot_data + plot_data_up) * 1.01)
+    }
+    if(!is.null(text_color)){
+      ylim[1] = -0.1 * ylim[2]
+    }else{
+      ylim[1] = 0
+    }
+  }
+  if(use_border){
+    border = par("fg")
+  }else{
+    border = NA
+  }
+  bp = barplot(plot_data, main = main, las=1, names.arg="", col = bar_color, ylim = ylim, cex.axis = 1.2, border = border, cex.main = cex.main, ...)
+  if(!is.null(standard_error)){
+    arrows(bp, plot_data_down, bp, plot_data_up, length=0.05, angle=90, code=3)
+  }
+  if(!is.null(text_color)){
+    text_position = -0.015 * max(data_vector)
     text(bp, sapply(data_vector,
                     function(x){
                       if(x >= 0){
-                        return(x)
-                        }
+                        return(text_position)
+                      }
                       else{
-                        return(0)
+                        return(x - text_position)
+                      }
+                    }),
+         srt = 90, adj= 1, xpd = TRUE, labels = names(data_vector), cex=1.5, col = text_color)
+    if(show_number){
+      text(bp, sapply(data_vector,
+                      function(x){
+                        if(x >= 0){
+                          return(x)
+                        }
+                        else{
+                          return(0)
                         }}),
-         srt = 90, adj= 0, xpd = TRUE, labels = round(data_vector, digits = 3) , cex=1.5, col = text_color)
+           srt = 90, adj= 0, xpd = TRUE, labels = round(data_vector, digits = 3) , cex=1.5, col = text_color)
+    }
   }
 }
 

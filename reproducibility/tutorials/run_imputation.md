@@ -1,4 +1,4 @@
-## Imputation
+## Run imputation
 We use a Linux CentOS 7 machine which has 2 Intel® Xeon® E5-2650 v4 CPUs, 128GB RAM and 1 NVIDIA® Tesla® V100 GPU.
 
 For Some datasets which have duplicated gene names, we can run a python script in terminal as 

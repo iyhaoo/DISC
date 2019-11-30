@@ -55,11 +55,11 @@ dataset_list[["scVI"]] = readh5_imputation("./data/melanoma/scVI.hdf5", use_gene
 The output color for each method and the output directory will be setup here.
 ```{r}
 method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
-method_color = c("gray40", "red", "blue4", "yellow4", "green", "purple", "cyan")
+method_color = c("gray80", "red", "blue4", "yellow4", "green", "purple", "cyan")
 names(method_color) = method_names
-bar_color = rep("gray60", length(method_names))
+bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
-bar_color["Raw"] = "gray40"
+bar_color["Raw"] = "gray80"
 bar_color["DISC"] = "red"
 text_color = rep("black", length(method_names))
 names(text_color) = method_names
