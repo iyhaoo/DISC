@@ -235,31 +235,30 @@ class ScanLoom:
 
 
 if __name__ == '__main__':
+    """
+            Usage
+            _____
+            
+            
+            python3 data_preparation.py \
+            --loom-path= \
+            --workers=16 \
+            --min-expressed-cell=-1 \
+            --min-expressed-cell-average-expression=-1
+    """
     import argparse
     parser = argparse.ArgumentParser()
-    #parser.add_argument("--loom-path", required=False, default="/home/yuanhao/data/redo/pbmc68k/fresh_68k_pbmc_donor_a_unique_rename.loom", type=str, help="loom")
-    parser.add_argument("--loom-path", required=False, default="E:/DeSCI/fn/melanoma/dropseq_filt_ls.loom", type=str, help="loom")
-    #parser.add_argument("--loom-path", required=False, default="/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom", type=str, help="loom")
+    parser.add_argument("--loom-path", required=True, type=str, help="loom")
     parser.add_argument("--workers", required=False, default=3, type=int, help="loom")
+    parser.add_argument("--min-expressed-cell", required=False, type=int, default=10, help="min-expressed-cell")
+    parser.add_argument("--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
     FLAGS = vars(parser.parse_args())
     loom_path = FLAGS["loom_path"]
-    data = ScanLoom(loom_path, "median", noise_intensity=0.1, workers=FLAGS["workers"])
-    print("mean", np.mean(data.library_size))
-    print("median", np.median(data.library_size))
-    """
-    from utils.data_preparation0 import ScanLoom0
-    data0 = ScanLoom0(loom_path, "median", noise_intensity=0.1, workers=FLAGS["workers"])
-    print(np.alltrue(np.equal(data.library_size, data0.library_size)))
-    print(np.sum(data.norm_max - data0.norm_max))
-    print(np.sum(data.z_norm_mean - data0.z_norm_mean))
-    print(np.sum(data.z_norm_std - data0.z_norm_std))
-    print(np.sum(data.zscore_cutoff - data0.zscore_cutoff))
-    print(np.alltrue(data.expressed_cell == data0.expressed_cell))
-    print(np.alltrue(data.gene_expression == data0.gene_expression))
-    print(np.alltrue(data.gene_express_rate == data0.gene_express_rate))
-    print(np.alltrue(data.target_gene_mask == data0.target_gene_mask))
-    print(np.alltrue(data.target_gene == data0.target_gene))
-    """
+    data = ScanLoom(loom_path, "median", workers=FLAGS["workers"], min_cell=FLAGS["min_expressed_cell"], min_avg_exp=FLAGS["min_expressed_cell_average_expression"])
+    print("Mean Library Size : {}".format(np.mean(data.library_size)))
+    print("Median Library Size : {}".format(np.median(data.library_size)))
+    print("Dropout rate : {}".format(1 - np.sum(data.expressed_cell) / data.gene_number / data.cell_number))
+
 
 
 

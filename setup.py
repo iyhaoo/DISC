@@ -12,8 +12,8 @@ requirements = [
 
 setup(
     name="disc",
-    version="0.0.0.11",
-    author="iyhaoo",
+    version="0.0.0.15",
+    author="Zhongshan Ophthalmic Centre, Sun Yat-sen University",
     author_email="904469382@qq.com",
     description="An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome",
     install_requires=requirements,

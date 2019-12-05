@@ -28,7 +28,7 @@ class Evaluation:
         warm_up_cells : int, optional, default: 5000000
             Warm up cell number before determining the optimal point.
 
-        detect_cells : int, optional, default: 500000
+        detect_cells : int, optional, default: 250000
             Continually run cell number to make sure our optimal point is actually the optimal.
 
         refresh_time : float, optional, default: 0.1
@@ -40,7 +40,7 @@ class Evaluation:
         manager : manager class object, optional, default: None
             The manager class object. It's recommended only 1 manager is used in the whole program.
     """
-    def __init__(self, out_dir, batch_size, batch_window=10000, warm_up_cells=5000000, detect_cells=500000, refresh_time=0.1, log_fn=print, manager=None):
+    def __init__(self, out_dir, batch_size, batch_window=10000, warm_up_cells=5000000, detect_cells=250000, refresh_time=0.1, log_fn=print, manager=None):
         if manager is None:
             manager = Manager()
         self.pdf_file = "{}/summary.pdf".format(out_dir)
