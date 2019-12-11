@@ -341,7 +341,7 @@ firstup <- function(x) {
   return(x)
 }
 
-delect_lt0.5 = function(gene_bc_mat){
+delete_lt0.5 = function(gene_bc_mat){
   gene_bc_mat[gene_bc_mat < 0.5] = 0
   return(gene_bc_mat)
 }

@@ -1,4 +1,4 @@
-generic_functions_path = "/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/generic_functions.r"
+generic_functions_path = "/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utility.r"
 source(generic_functions_path)
 ####################main###############
 dataset_list = list()
@@ -11,7 +11,7 @@ dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ### our imputation
 our_result = get_optimal_point33("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/DeSCI_2.7.4.33/log.txt")
-dataset_list[["DeSCI"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
+dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
 ### theirs
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/SAVER_tmp/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_SAVER_mc_10_mce_1.rds")
 set.seed(42)
@@ -21,16 +21,16 @@ dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_g
 dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scScope_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
 ### loaded
-method_names = c("Raw", "DeSCI", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
-method_color = c("gray20", "red", "blue4", "yellow4", "green", "purple", "cyan")
+method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
+method_color = c("gray80", "red", "blue4", "yellow4", "green", "purple", "cyan")
 names(method_color) = method_names
-bar_color = rep("gray60", length(method_names))
+bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
-bar_color["Raw"] = "gray20"
-bar_color["DeSCI"] = "red"
+bar_color["Raw"] = "gray80"
+bar_color["DISC"] = "red"
 text_color = rep("black", length(method_names))
 names(text_color) = method_names
-text_color["DeSCI"] = "red"
+text_color["DISC"] = "red"
 path_fragments = unlist(strsplit(our_result, "/", fixed = T))
 length_path_fragments = length(path_fragments)
 ### make output dir
@@ -54,7 +54,7 @@ for(ii in use_genes){
     }
   }
 }
-###correlation_map
+#### correlation map
 fish_mask_mat = !is.na(cor_all[["FISH"]])
 for(ii in 1:length(use_genes)){
   fish_mask_mat[ii, seq(ii)] = FALSE
@@ -80,8 +80,8 @@ cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
 dev.off()
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
-###
-###two dimensional distributions compare
+#### Normalization
+example_gene = c("Cnr1", "Crh")
 rescale_mean_list = list()
 for(ii in method_names){
   if(ii != "SAVER"){
@@ -97,7 +97,6 @@ for(ii in rescale_mean_list){
 saver_style_filt_norm_list = rescale_mean_list
 saver_style_filt_norm_list[["SAVER"]] = binom_result_mean(dataset_list[["SAVER"]], dataset_list[["FISH"]])
 saver_style_filt_norm_list[["FISH"]] = dataset_list[["FISH"]]
-example_gene = c("Cnr1", "Crh")
 norm_for_density = saver_style_filt_norm_list
 for(ii in names(norm_for_density)){
   norm_for_density[[ii]] = norm_for_density[[ii]][example_gene,]
@@ -180,7 +179,7 @@ for(ii in plot_genes){
       use_density[[method_names[method_index]]] = this_density
       ylim_max = max(c(ylim_max, this_density$y))
     }
-    ks_matrix[ii, method_index] = ks.test(delect_lt0.5(this_method_expression), delect_lt0.5(this_fish))$statistic
+    ks_matrix[ii, method_index] = ks.test(delete_lt0.5(this_method_expression), delete_lt0.5(this_fish))$statistic
   }
   plot(fish_density, lwd = 4, col = "gray80",
        xlim = c(min(fish_density$x, 0), xlim_max + 5),
@@ -234,11 +233,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
     method_name = method_names[jj]
     x_i[[method_name]] = rescale_mean_list[[method_name]][gene_x, ]
     y_i[[method_name]] = rescale_mean_list[[method_name]][gene_y, ]
-    ks_result = unlist(ks2d2s(np_array(round(x_fish)),
-                              np_array(round(y_fish)), 
-                              np_array(round(x_i[[method_name]])),
-                              np_array(round(y_i[[method_name]])), extra=T))
-    ks_stat = c(ks_stat, ks_result[2])
+    ks_stat = c(ks_stat, ks2d2s(round(x_fish), round(y_fish), round(x_i[[method_name]]), round(y_i[[method_name]])))
     corr_score = c(corr_score, cor(x_i[[method_name]], y_i[[method_name]]))
   }
   names(corr_score) = c("FISH", method_names)
@@ -251,8 +246,8 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   nbin = 128
   x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
   y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in c("Raw", "FISH", "DeSCI", "SAVER", "MAGIC", "scVI", "DCA", "scScope")){
-    if(jj == "DeSCI"){
+  for(jj in c("Raw", "FISH", "DISC", "SAVER", "MAGIC", "scVI", "DCA", "scScope")){
+    if(jj == "DISC"){
       col.main = "red"
     }else{
       col.main = "black"

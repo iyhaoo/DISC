@@ -200,7 +200,7 @@ for(ii in plot_genes){
       use_density[[method_names[method_index]]] = this_density
       ylim_max = max(c(ylim_max, this_density$y))
     }
-    ks_matrix[ii, method_index] = ks.test(delect_lt0.5(this_method_expression), delect_lt0.5(this_fish))$statistic
+    ks_matrix[ii, method_index] = ks.test(delete_lt0.5(this_method_expression), delete_lt0.5(this_fish))$statistic
   }
   plot(fish_density, lwd = 4, col = "gray80",
        xlim = c(min(fish_density$x, 0), xlim_max + 5),
