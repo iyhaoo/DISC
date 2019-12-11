@@ -1152,4 +1152,77 @@ cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=
 
 
 
+seurat_clustering = function(expression_path, feature_path = NULL, cell_type_rds = NULL, gene_selection_rds = NULL, output_dir = NULL, pca_dim = 50, res = 1.4, min_pct = 0.1, show = FALSE){
+  if(is.null(feature_path)){
+    output_dir_candidate = paste(c(delete_last_element(unlist(strsplit(expression_path, "/", fixed = T))), "cluster_evaluation", get_last_element(delete_last_element(unlist(strsplit(expression_path, "[/\\.]", perl = T)))), "pca"), collapse = "/")
+  }else{
+    cell.embeddings = t(readh5_loom(feature_path, is_feature = TRUE))
+    output_dir_candidate = paste(c(delete_last_element(unlist(strsplit(expression_path, "/", fixed = T))), "cluster_evaluation", get_last_element(delete_last_element(unlist(strsplit(expression_path, "[/\\.]", perl = T)))), "feature"), collapse = "/")
+  }
+  if(is.null(output_dir)){
+    output_dir = output_dir_candidate
+  }
+  gene_bc_mat = get_gene_bc_mat(expression_path)
+  if(!is.null(gene_selection_rds)){
+    gene_bc_mat = gene_bc_mat[gsub("_", "-", rownames(gene_bc_mat)) %in% readRDS(gene_selection_rds), ] 
+  }
+  seurat_obj = CreateSeuratObject(as.data.frame(gene_bc_mat))
+  seurat_obj <- NormalizeData(object = seurat_obj)
+  dir.create(output_dir, showWarnings = F, recursive = T)
+  if(is.null(feature_path)){
+    seurat_obj <- FindVariableFeatures(seurat_obj)
+    seurat_obj <- ScaleData(object = seurat_obj, verbose = !show)
+    pca_dim_use = min(c(pca_dim * 2, nrow(gene_bc_mat)))
+    seurat_obj <- RunPCA(object = seurat_obj, npcs = pca_dim_use)
+    tmp_plot = ElbowPlot(seurat_obj, ndims = pca_dim_use)
+    if(show){
+      print(tmp_plot)
+    }
+    ggsave(plot = tmp_plot, filename = paste0(output_dir, "/elbow.pdf"), height = 8, width = 11)
+  }else{
+    seurat_obj@reductions = list()
+    seurat_obj@reductions[["pca"]] = Seurat:::DimReduc(cell.embeddings = cell.embeddings, assay.used = "RNA", key = "feature_")
+    pca_dim = ncol(cell.embeddings)
+  }
+  seurat_obj <- RunTSNE(seurat_obj, dims = 1:pca_dim, tsne.method = "Rtsne", check_duplicates = FALSE)
+  seurat_obj = RunUMAP(seurat_obj, dims = 1:pca_dim)
+  if(!is.null(cell_type_rds)){
+    all_cell_type = readRDS(cell_type_rds)
+    cell_type_overlap_mask = colnames(gene_bc_mat) %in% cell_type
+    cell_type = all_cell_type[cell_type_overlap_mask]
+    plot_seurat_obj = subset(seurat_obj, cells = names(cell_type))
+    plot_seurat_obj@active.ident = factor(cell_type, levels = sort(unique(cell_type)))
+    tmp_plot = TSNEPlot(plot_seurat_obj)
+    if(show){
+      print(tmp_plot)
+    }
+    ggsave(plot = tmp_plot, filename = paste0(output_dir, "/tsne_cell_type.pdf"), height = 8, width = 11)
+    tmp_plot = UMAPPlot(plot_seurat_obj)
+    if(show){
+      print(tmp_plot)
+    }
+    ggsave(plot = tmp_plot, filename = paste0(output_dir, "/umap_cell_type.pdf"), height = 8, width = 11)
+  }
+  seurat_obj <- FindNeighbors(object = seurat_obj, dims = 1:pca_dim, force.recalc = TRUE)
+  seurat_obj <- FindClusters(object = seurat_obj, resolution = res)
+  tmp_plot = TSNEPlot(seurat_obj)
+  if(show){
+    print(tmp_plot)
+  }
+  ggsave(plot = tmp_plot, filename = paste0(output_dir, "/tsne_cluster.pdf"), height = 8, width = 11)
+  tmp_plot = UMAPPlot(seurat_obj)
+  if(show){
+    print(tmp_plot)
+  }
+  ggsave(plot = tmp_plot, filename = paste0(output_dir, "/umap_cluster.pdf"), height = 8, width = 11)
+  this_metadata = seurat_obj@meta.data
+  write.table(this_metadata, paste0(output_dir, "/metadata.txt"), row.names = T, col.names = T, quote = F)
+  this_markers <- FindAllMarkers(object = seurat_obj, only.pos = TRUE, min.pct = min_pct, logfc.threshold = 0.25, verbose = !show)
+  write.table(this_markers, paste0(output_dir, "/markers.txt"), row.names = T, col.names = T, quote = F)
+  write.table(seurat_obj@active.ident, paste0(output_dir, "/cluster_cell_type.txt"), row.names = T, col.names = F, quote = F)
+  cluster_cell_type = seurat_obj@active.ident
+  save(this_markers, this_metadata, cluster_cell_type, file = paste0(output_dir, "/tmp.rdata"))
+}
+
+
 

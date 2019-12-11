@@ -207,7 +207,7 @@ class DISC:
         d_B = tf.stop_gradient(self.decoder_bias)
         self.compressed_prediction = [tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.output_activation_function_scale_factor) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), d_W) + d_B)) * tf.stop_gradient(self.attention_coefficients), num_or_size_splits=self.repeats, axis=0)) for feature_ in self.reconst_feature_compression]
 
-    def training(self, learning_rate, feature_l2_factor=1, push_factor=None, gene_express_rate=None, var_list=None):
+    def training(self, learning_rate, feature_l2_factor=1, var_list=None):
         """
             Training function for DISC model.
 
@@ -221,27 +221,13 @@ class DISC:
             feature_l2_factor : int, optional, default: 1
                 Bottleneck layer width and depth in predictor.
 
-            push_factor : str or float, optional, default: None
-
-                0 or None means not use.
-                "auto" means using automatical tune for push_factor .
-                float means a fix push_factor.
-
-            gene_express_rate : int, optional, default: 512
-                The reduced dimension number for autoencoder.
-
             var_list : int, optional, default: 50
                 Dimension length when compressing the latent representations over all steps.
         """
         self.global_step = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="global_step", trainable=False)
         tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.GLOBAL_STEP, self.global_step)
         self.run_cells = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="run_cells", trainable=False)
-        if push_factor:
-            pf_initial_value = 1. if push_factor == "auto" else float(push_factor)
-            self.push_factor = tf.Variable(initial_value=pf_initial_value, expected_shape=(), dtype=tf.float32, name="push_factor", trainable=False)
-            expression_mask_1 = [tf.where(tf.logical_not(self.known_expressed), tf.maximum(3., self.push_factor * tf.ones_like(self.input_norm) * tf.cast(self.current_batch_size, tf.float32) * gene_express_rate), tf.zeros_like(self.input_norm)) for _ in self.predictions]
-        else:
-            expression_mask_1 = [tf.where(tf.logical_not(self.known_expressed), 3. * tf.ones_like(self.input_norm), tf.zeros_like(self.input_norm)) for _ in self.predictions]
+        expression_mask_1 = [tf.where(self.known_expressed, tf.zeros_like(self.input_norm), 3. * tf.ones_like(self.input_norm)) for _ in self.predictions]
         prediction_mask = tf.where(self.known_expressed, 1.5 * tf.ones_like(self.input_norm), 0.35 * tf.ones_like(self.input_norm))
         prediction_target = [tf.where(self.known_expressed, self.input_norm, tf.stop_gradient(predict_)) for predict_ in self.split_reconst_prediction[0]]
         prediction_loss = tf.reduce_sum(tf.reduce_mean(tf.add_n([tf.square(impute_[0] - target_) * prediction_mask for impute_, target_ in zip(self.predictions, prediction_target)]), 0))
@@ -287,12 +273,7 @@ class DISC:
         self.loss_element = [self.loss1, self.loss2]
         gradients, v = zip(*optimizer.compute_gradients(self.loss1, var_list=var_list))
         gradients, _ = tf.clip_by_global_norm(gradients, 5)
-        train_op1 = optimizer.apply_gradients(zip(gradients, v), global_step=self.global_step)
-        with tf.control_dependencies([tf.group(train_op1, tf.compat.v1.assign_add(self.run_cells, self.current_batch_size))]):
-            if push_factor is "auto":
-                self.train_op1 = tf.group(tf.cond(tf.greater(self.run_cells, 50000), lambda: tf.group(tf.cond(self.single_gene_loss * 10000 <= 1, lambda: tf.compat.v1.assign_sub(self.push_factor, tf.minimum(self.push_factor, 0.001)), lambda: tf.compat.v1.assign_add(self.push_factor, 0.001))), lambda: tf.no_op()))
-            else:
-                self.train_op1 = tf.no_op()
+        self.train_op1 = optimizer.apply_gradients(zip(gradients, v), global_step=self.global_step)
         self.train_op2 = optimizer.minimize(self.loss2)
 
 
