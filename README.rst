@@ -105,7 +105,7 @@ History
 .. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md
 .. _`Gene expression structures recovery validated by FISH`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Gene_expression_structures_recovery_validated_by_FISH.nb.html
-.. _`Downsampling recovery`: https://github.com/iyhaoo/DISC#
+.. _`Downsampling recovery`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/Downsampling_recovery.nb.html
 .. _`Clustering improvement`: https://github.com/iyhaoo/DISC#
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/
