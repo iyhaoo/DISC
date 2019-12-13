@@ -90,7 +90,7 @@ References
 History
 -------
 
-1.0.0 (2019-11-XX)
+1.0.0 (2019-12-XX)
 ^^^^^^^^^^^^^^^^^^
 * First release on PyPI_.
 
