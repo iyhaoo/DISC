@@ -6,13 +6,13 @@ with open("README.rst") as readme_file:
 requirements = [
     "numpy>=1.14.0",
     "pandas>=0.21.0",
-    "tensorflow>=1.13.1",
+    "tensorflow>=1.13.1,<2.0.0",
     "h5py>=2.9.0"
 ]
 
 setup(
     name="disc",
-    version="0.0.0.17",
+    version="0.0.0.18",
     author="Zhongshan Ophthalmic Centre (ZOC), Sun Yat-sen University (SYSU)",
     author_email="904469382@qq.com",
     description="A deep learning method with semi-supervised learning, aiming to accurately recover true gene expression and expression structures for large scRNA-seq data",
