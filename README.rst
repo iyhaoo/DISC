@@ -99,12 +99,15 @@ Data availability
       Mouse somatosensory cortex of CD-1 mice at age of p28 and p29 were profiled by 10X where 7,477 cells were detected in total.
       Its `loom-formatted`_ file after cell filtering is provide `here`__
 
-      .. __: https://www.biorxiv.org/content/biorxiv/early/2019/10/10/794875.full.pdf
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/sscortex/raw.loom
 
 
     * `SSCORTEX_FISH`_
 
       osmFISH experiment of 4,839 cells from somatosensory cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected.
+      Its `loom-formatted`_ file after cell filtering is provide `here`__
+
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/sscortex/fish.loom
 
 
     * `PBMC`_
@@ -120,7 +123,7 @@ Data availability
       Cord blood mononuclear cells were profiled by CITE-seq, where 8,005 human cells were detected in total.
       Its `loom-formatted`_ file after cell and with all human genes is provide `here`__
 
-      .. __: https://www.biorxiv.org/content/biorxiv/early/2019/10/10/794875.full.pdf
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/cite_seq/raw.loom
 
 
     * `RETINA`_
