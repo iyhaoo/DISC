@@ -67,37 +67,37 @@ Data availability
       8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected.
       Its `loom-formatted`_ file after cell filtering is provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/melanoma/raw.loom
+      .. __: https://github.com/iyhaoo/DISC/master/reproducibility/data/melanoma/raw.loom
 
   * `MELANOMA_FISH`_ :
       RNA FISH experiment of across 7,000-88,000 melanoma cells from the same cell line was conducted and 26 genes were detected.
       Its `loom-formatted`_ file is provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/blob/master/reproducibility/data/melanoma/fish.loom
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/melanoma/fish.loom
 
   * `SSCORTEX`_ :
       Mouse somatosensory cortex of CD-1 mice at age of p28 and p29 were profiled by 10X where 7,477 cells were detected in total.
       Its `loom-formatted`_ file after cell filtering is provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/blob/master/reproducibility/data/sscortex/raw.loom
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/sscortex/raw.loom
 
   * `SSCORTEX_FISH`_ :
       osmFISH experiment of 4,839 cells from somatosensory cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected.
       Its `loom-formatted`_ file of 4,388 cells from somatosensory cortex is provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/blob/master/reproducibility/data/sscortex/fish.loom
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/sscortex/fish.loom
 
   * `PBMC`_ :
       2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from a healthy donor were profiled by 10X, where 32,738 genes were detect.
       Its `loom-formatted`_ file after cell filtering is provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/blob/master/reproducibility/data/pbmc3k/pbmc3k_filtered.loom
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/pbmc3k/pbmc3k_filtered.loom
 
   * `CBMC`_ :
       Cord blood mononuclear cells were profiled by CITE-seq, where 8,005 human cells were detected in total.
       Its `loom-formatted`_ file after cell and with all human genes is provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/blob/master/reproducibility/data/cite_seq/raw.loom
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/cite_seq/raw.loom
 
   * `RETINA`_ :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected.
