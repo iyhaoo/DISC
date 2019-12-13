@@ -8,8 +8,8 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
 ```{r}
-generic_functions_path = "./source/utility.r"
-source(generic_functions_path)
+utilities_path = "./source/utilities.r"
+source(utilities_path)
 ```
 ### Load raw data and downsampling
 Here, we use MELANOMA dataset as an example.</br>
