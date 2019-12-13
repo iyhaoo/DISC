@@ -80,13 +80,9 @@ Tutorials
 
 References
 ----------
-..
- Romain Lopez, Jeffrey Regier, Michael Cole, Michael I. Jordan, Nir Yosef.
- **"Deep generative modeling for single-cell transcriptomics."**
- Nature Methods, 2018. `[pdf]`__
- 
- .. __: https://rdcu.be/bdHYQ
- 
+Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
+**"Reliable and efficient gene expression recovery in single-cell transcriptomes using DISC"**
+
 History
 -------
 
