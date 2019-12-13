@@ -104,8 +104,8 @@ History
 .. _`loom-formatted`: http://loompy.org/
 .. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md
-.. _`Gene expression structures recovery validated by FISH`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH.nb.html
-.. _`Dropout event recovery`: http://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/Dropout_event_recovery.nb.html
-.. _`Cell type identification improvement`: https://htmlpreview.github.io/?https://github.com/iyhaoo/DISC/blob/master/reproducibility/cell_type_identification/Cell_type_identification_improvement.nb.html
+.. _`Gene expression structures recovery validated by FISH`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH.nb.html
+.. _`Dropout event recovery`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Dropout_event_recovery.nb.html
+.. _`Cell type identification improvement`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/cell_type_identification/Cell_type_identification_improvement.nb.html
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/
