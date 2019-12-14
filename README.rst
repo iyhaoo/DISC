@@ -152,7 +152,7 @@ History
 .. _`loom-formatted`: http://loompy.org/
 .. _`Data pre-processing (MELANOMA)`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
-.. _`Gene expression structures recovery validated by FISH (MELANOMA)`: https://rawcdn.githack.com/iyhaoo/DISC/6145621c8d9d48e406c5ce3497c60a20bd821e05/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+.. _`Gene expression structures recovery validated by FISH (MELANOMA)`: https://rawcdn.githack.com/iyhaoo/DISC/db0b895ba65fda0a00edbca21bb846f39ad7beb7/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 .. _`Dropout event recovery (MELANOMA)`: https://rawcdn.githack.com/iyhaoo/DISC/fe2ea6f2c7832e0e0ea2be97b162f726fd7b16f0/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 .. _`Cell type identification improvement (PBMC)`: https://rawcdn.githack.com/iyhaoo/DISC/fe2ea6f2c7832e0e0ea2be97b162f726fd7b16f0/reproducibility/cell_type_identification/Cell_type_identification_improvement_PBMC.nb.html
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
