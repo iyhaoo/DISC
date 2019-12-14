@@ -111,7 +111,8 @@ barplot_usage(ari_result, main = "", cex.main = 1.5, bar_color = bar_color, text
 ```
 
 ```{r fig.height=5, fig.width=4.5}
-acc_result = rep(NA, length(cell_type_identification_result_list))
+
+jaccard_mat = matrix(nlength(cell_type_identification_result_list))
 names(acc_result) = names(cell_type_identification_result_list)
 ari_result = rep(NA, length(cell_type_identification_result_list))
 names(ari_result) = names(cell_type_identification_result_list)
@@ -119,15 +120,11 @@ for(ii in names(cell_type_identification_result_list)){
   acc_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ACC"]
   ari_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ARI"]
 }
-method_names = names(cell_type_identification_result_list)
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
-text_color["DISC"] = "red"
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
-bar_color["Raw"] = "white"
-bar_color["Observed"] = "gray80"
-bar_color["DISC"] = "red"
-barplot_usage(acc_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ACC", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
-barplot_usage(ari_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ARI", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
+
+
+
+p <-ggplot(data = dff1, aes(x=Var2, y=Var1, fill=value))+ geom_tile()+ labs(x="Method", y = "Cell Type")+theme_classic()
+p <-p +theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"))+theme(axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"))
+p +scale_fill_gradient(low='white',high='red')+theme(legend.title=element_blank()) +geom_text(aes(Var2, Var1, label = round(value,2)), color = "black", size = 4)
+
 ```

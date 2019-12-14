@@ -102,7 +102,7 @@ Data availability
   * `RETINA`_ :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected.
 
-  * `BRAIN_SPLIT`_ :
+  * `BRAIN_SPLiT`_ :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected
 
   * `BRAIN_1.3M`_ :
@@ -133,7 +133,7 @@ Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
 History
 -------
 
-1.0.0 (2019-12-XX)
+1.0.0 (2019-12-15)
 ^^^^^^^^^^^^^^^^^^
 * First release on PyPI_.
 
@@ -160,5 +160,5 @@ History
 .. _PBMC: https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html
 .. _CBMC: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866
 .. _RETINA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63472
-.. _BRAIN_SPLIT: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110823
+.. _BRAIN_SPLiT: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110823
 .. _BRAIN_1.3M: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.3.0/1M_neurons
