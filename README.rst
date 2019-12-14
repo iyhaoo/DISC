@@ -44,7 +44,7 @@ Installation
       .. __: https://www.tensorflow.org/install/gpu
 
 **Install DISC with pip**
-  To install with ``pip``, run the following from a terminal::
+  To install with ``pip``, run::
 
     pip install DISC
 
