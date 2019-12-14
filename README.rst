@@ -6,7 +6,7 @@ DISC
 .. |PyPI| image:: https://img.shields.io/pypi/v/DISC.svg
     :target: https://pypi.org/project/disc
 
-An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome
+An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome.
 
 * Free software: Apache License 2.0
 
