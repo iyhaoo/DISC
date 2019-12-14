@@ -120,7 +120,7 @@ Tutorials
     * `Data pre-processing`_ (`MELANOMA`__, `CBMC`__)
 
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
-      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
 
 
     * `Run imputation`_
