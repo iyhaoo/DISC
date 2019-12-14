@@ -66,6 +66,7 @@ Data availability
   * MELANOMA :
       8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected (`MELANOMA`_).
       In addition, RNA FISH experiment of across 7,000-88,000 cells from the same cell line was conducted and 26 genes were detected (`MELANOMA_FISH`_).
+
       The original, raw and imputed RNA-seq data and the original and raw FISH data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA
@@ -73,36 +74,42 @@ Data availability
   * SSCORTEX :
       Mouse somatosensory cortex of CD-1 mice at age of p28 and p29 were profiled by 10X where 7,477 cells were detected (`SSCORTEX`_).
       In addition, osmFISH experiment of 4,839 cells from somatosensory cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected (`SSCORTEX_FISH`_).
+
       The original, raw and imputed RNA-seq data and the original and raw FISH data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/SSCORTEX
 
   * PBMC :
       2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from a healthy donor were profiled by 10X, where 32,738 genes were detect (`PBMC`_).
+
       The original, raw and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC
 
   * CBMC :
       Cord blood mononuclear cells were profiled by CITE-seq, where 8,005 human cells were detected in total (`CBMC`_).
+
       The original, raw and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
 
   * RETINA :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+
       The original and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
 
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
+
       The original and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
   * BRAIN_1.3M :
       1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected (`BRAIN_1.3M`_).
+
       The original and raw RNA-seq data in `loom-formatted`_ are provide `here`__.
 
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_1.3M
