@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+import sys
+import os
+from time import sleep, time
+from subprocess import *
+
+# -o file.txt : output information to a file rather than stderr
+# -d          : debug mode
+
+start_time = time()
+out = sys.stderr
+DEBUG = False
+
+child_args = []
+i = 1
+while i < len(sys.argv):
+    if sys.argv[i] == '-o':
+        i += 1
+        out = open(sys.argv[i], 'w')
+    elif sys.argv[i] == '-d':
+        DEBUG = True
+    else:
+        child_args.append(sys.argv[i])
+    i += 1
+
+# child_command should be a single argument as if to "/bin/sh -c 'child_command'"
+# when shell=True is enabled
+child_command = ' '.join(child_args)
+print(child_command)
+
+
+def log(msg):
+    if DEBUG:
+        print >> sys.stderr, "memusg: {}".format(msg)
+
+
+def get_vsize(sid):
+    ram = 0
+    vsize = 0
+    thread_num = 0
+    # Example: /bin/ps -o vsize= --sid 23928
+    proc0 = Popen(['ps', '-o', 'rss=', '--sid', str(sid)], stdout=PIPE, stderr=None, shell=False)
+    proc1 = Popen(['ps', '-o', 'vsize=', '--sid', str(sid)], stdout=PIPE, stderr=None, shell=False)
+    (stdout0, _stderr0) = proc0.communicate()
+    (stdout1, _stderr1) = proc1.communicate()
+    # Iterate over each process within the process tree of our process session
+    # (this ensures that we include processes launched by a child bash script, etc.)
+    # print(stdout0.split(), stdout1.split())
+    for line in stdout0.split():
+        ram += int(line.strip())
+        thread_num += 1
+    for line in stdout1.split():
+        vsize += int(line.strip())
+    return ram, vsize, thread_num
+
+
+# Create a new process session for this process so that we can
+# easily calculate the memory usage of the whole process tree using ps
+#
+# Since we need a new session using os.setsid(), we must first fork()
+pid = os.getpid()
+sid = os.getsid(pid)
+pgid = os.getpgid(pid)
+log("Pre-fork: PID is {} ; PGID is {} ; SID is {}".format(pid, pgid, sid))
+
+fork_pid = os.fork()
+if fork_pid == 0:
+    # We *are* the new fork (not the original process)
+    pid = os.getpid()
+    sid = os.getsid(pid)
+    pgid = os.getpgid(pid)
+    log("Post-fork: PID is {} ; PGID is {} ; SID is {}".format(pid, pgid, sid))
+
+    log("Trying to init our own session".format(pid, pgid))
+    os.setsid()
+    sid = os.getsid(pid)
+    pgid = os.getpgid(pid)
+    log("Post-session init: PID is {} ; PGID is {} ; SID is {}".format(pid, pgid, sid))
+        
+    log("Starting child: {}".format(child_command))
+    # "None" means "inherit from parent"
+    proc = Popen(child_command, stdin=None, stdout=None, stderr=None, env=None, shell=True)
+
+    ram_peak = -1
+    vm_peak = -1
+    while proc.returncode is None:
+        ram_peak_, vm_peak_, thread_num = get_vsize(sid)
+        ram_peak = max(ram_peak, ram_peak_)
+        vm_peak = max(vm_peak, vm_peak_)
+        log("Waiting for child {} to exit. ram_peak={:.4f}gb vm_peak={:.4f}gb thread number: {}".format(sid, float(ram_peak) / pow(1024, 2), float(vm_peak) / pow(1024, 2), thread_num))
+        proc.poll()
+        sleep(0.1)  # Time in seconds (float)
+    run_time = time() - start_time
+    run_time_hours = run_time / 3600
+    run_time_s = run_time % 60
+    run_time = run_time // 60
+    run_time_m = run_time % 60
+    run_time_h = run_time // 60
+
+    out.write("memusg: ram_peak: {:.4f} gb\n".format(float(ram_peak) / pow(1024, 2)))
+    out.write("memusg: vm_peak: {:.4f} gb\n".format(float(vm_peak) / pow(1024, 2)))
+    out.write("memusg: {} hours\n".format(run_time_hours))
+    out.write("memusg: runtime: {:.0f}h{:.0f}m{:.2f}s\n".format(run_time_h, run_time_m, run_time_s))
+
+    status = proc.returncode
+    log("Child process returned {}".format(status))
+    sys.exit(status)
+
+else:
+    # This is the branch of fork that continues the original process
+    (_fork_pid, full_status) = os.waitpid(fork_pid, 0)
+    status = full_status >> 8
+    log("Fork returned {}".format(status))
+    out.close()
+    sys.exit(status)

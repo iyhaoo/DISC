@@ -14,40 +14,40 @@ source(utilities_path)
 ### Filtering cells as Seurat tutorial
 Following <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we download original PBMC_3k data and filter cells.
 ```{r}
-if(!file.exists("./data/pbmc3k/pbmc3k_filtered.loom")){
+if(!file.exists("./data/PBMC/raw.loom")){
   temp <- tempfile()
   download.file("https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz", temp)
-  exdir = "./data/pbmc3k"
+  exdir = "./data/PBMC"
   untar(temp, exdir = exdir)
   unlink(temp)
   original_data <- Read10X(data.dir = paste0(exdir, "/filtered_gene_bc_matrices/hg19/"))
-  save_h5("./data/pbmc3k/pbmc3k.loom", as.matrix(t(original_data)))
+  save_h5("./data/PBMC/original.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.cells = 3, min.features = 200)
   seurat_obj[["percent.mt"]] <- PercentageFeatureSet(seurat_obj, pattern = "^MT-")
   seurat_obj <- subset(seurat_obj, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
   keep_cell_names = colnames(seurat_obj[["RNA"]]@counts)
   keep_gene_names = rownames(seurat_obj[["RNA"]]@counts)
-  saveRDS(keep_gene_names, "./data/pbmc3k/used_gene_names.rds")
-  raw_data = original_data[, keep_cell_names]
-  save_h5("./data/pbmc3k/pbmc3k_filtered.loom", as.matrix(t(raw_data)))
+  saveRDS(keep_gene_names, "./results/PBMC/used_gene_names.rds")
+  raw_data = as.matrix(original_data[, keep_cell_names])
+  save_h5("./data/PBMC/raw.loom", t(raw_data))
 }else{
-  raw_data = readh5_loom("./data/pbmc3k/pbmc3k_filtered.loom")
+  raw_data = readh5_loom("./data/PBMC/raw.loom")
 }
 
 ```
 ### Classify cell types as Seurat tutorial
 Following the <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we classify cells.
 ```{r fig.height=8, fig.width=11}
-cell_type_identification = seurat_clustering(expression = raw_data, gene_selection_rds = "./data/pbmc3k/used_gene_names.rds", pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
+cell_type_identification = seurat_clustering(expression = raw_data, gene_selection_rds = "./results/PBMC/used_gene_names.rds", pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
 cell_type= cell_type_identification$assignment
-saveRDS(cell_type, "./data/pbmc3k/cell_type.rds")
+saveRDS(cell_type, "./results/PBMC/cell_type.rds")
 ```
 ### Load raw data and downsampling
 The fraction of sampling is set to 30% of the original library size across cells.</br>
 Only 1 replicate will be generated here as asn example.</br>
 Only imputed genes will be kept for comparison.
 ```{r}
-ds_dir = "./data/pbmc3k/ds_0.3"
+ds_dir = "./data/PBMC/ds_0.3"
 dir.create(ds_dir, showWarnings = F, recursive = T)
 observed_path = paste0(ds_dir, "/observed.loom")
 if(!file.exists(observed_path)){
@@ -69,7 +69,7 @@ rm(raw_data, observed_data)
 ```
 ### Load downsampling data and imputation results
 We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">run imputation</a> using downsampling data.</br>
-Here, we load the results.
+Here, we load the imputation results, which can be found at <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC">here</a>.
 ```{r}
 data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
 print(dim(data_list[["DISC"]]))
@@ -110,21 +110,18 @@ barplot_usage(acc_result, main = "", cex.main = 1.5, bar_color = bar_color, text
 barplot_usage(ari_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ARI", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
 ```
 
-```{r fig.height=5, fig.width=4.5}
-
-jaccard_mat = matrix(nlength(cell_type_identification_result_list))
-names(acc_result) = names(cell_type_identification_result_list)
-ari_result = rep(NA, length(cell_type_identification_result_list))
-names(ari_result) = names(cell_type_identification_result_list)
+```{r fig.height=5, fig.width=10}
+unique_cell_type = unique(cell_type)
+jaccard_mat = matrix(ncol = length(unique_cell_type), nrow = length(cell_type_identification_result_list), dimnames = list(names(cell_type_identification_result_list), unique_cell_type))
+f1_mat = matrix(ncol = length(unique_cell_type), nrow = length(cell_type_identification_result_list), dimnames = list(names(cell_type_identification_result_list), unique_cell_type))
+acc_mat = matrix(ncol = length(unique_cell_type), nrow = length(cell_type_identification_result_list), dimnames = list(names(cell_type_identification_result_list), unique_cell_type))
 for(ii in names(cell_type_identification_result_list)){
-  acc_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ACC"]
-  ari_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ARI"]
+  jaccard_mat[ii, ] = cell_type_identification_result_list[[ii]][["cell_type_result"]][, "Jaccard"]
+  f1_mat[ii, ] = cell_type_identification_result_list[[ii]][["cell_type_result"]][, "F1-score"]
+  acc_mat[ii, ] = cell_type_identification_result_list[[ii]][["cell_type_result"]][, "ACC"]
 }
-
-
-
-p <-ggplot(data = dff1, aes(x=Var2, y=Var1, fill=value))+ geom_tile()+ labs(x="Method", y = "Cell Type")+theme_classic()
-p <-p +theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"))+theme(axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"))
-p +scale_fill_gradient(low='white',high='red')+theme(legend.title=element_blank()) +geom_text(aes(Var2, Var1, label = round(value,2)), color = "black", size = 4)
+cell_type_heatmap(jaccard_mat, "Jaccard")
+cell_type_heatmap(f1_mat, "F1-score")
+cell_type_heatmap(acc_mat, "ACC")
 
 ```

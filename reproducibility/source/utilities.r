@@ -6,6 +6,7 @@ library(reldist)
 library(Seurat)
 library(future)
 library(stringi)
+library(reshape2)
 #  read data
 cal_RMSD = function(pd_array, window_size){
   apply(sapply(1:(length(pd_array) - window_size) + window_size - 1, function(x){
@@ -1268,5 +1269,15 @@ seurat_clustering = function(expression = NULL, feature = NULL, expression_path 
   }
 }
 
-
+cell_type_heatmap = function(method_type_mat, title){
+  ggplot(data = melt(method_type_mat), aes(x = Var2, y = Var1, fill = value)) + geom_tile() +
+    labs(x="Method", y = "Cell Type") + theme_classic() +
+    scale_fill_gradient(low='white',high='red') + geom_text(aes(Var2, Var1, label = round(value,2)), color = "black", size = 4) + 
+    ggtitle(title) + 
+    theme(axis.text.x = element_text(size = 10,angle = 45, hjust = 1, vjust = 1),
+          axis.text.y = element_text(size = 10, hjust = 1, vjust = 1),
+          axis.title = element_text(size=12, face="bold"),
+          legend.title = element_blank(), 
+          plot.title = element_text(size=14, face="bold"))
+}
 
