@@ -22,40 +22,40 @@ Requirements
 Installation
 ------------
 
-**Installation with pip**
+**Install TensorFlow**
+  If you have an Nvidia GPU, be sure to install a version of TensorFlow that supports it first -- DISC runs much faster with GPU::
 
-To install with ``pip``, run the following from a terminal::
+    pip install "tensorflow-gpu<2.0.0"
 
-  pip install DISC
+  We typically tensorflow-gpu==1.13.1.
 
-**Installation from GitHub**
+  Here are requirements for GPU version TensorFlow_::
 
-To clone the repository and install manually, run the following from a terminal::
+    * Hardware
+        * NVIDIA GPU card with CUDA Compute Capability 3.5 or higher.
+    * Software
+        * NVIDIA GPU drivers - CUDA 10.0 requires 410.x or higher.
+        * CUDA Toolkit - TensorFlow_ supports CUDA 10.0 (TensorFlow >= 1.13.0)
+        * CUPTI ships with the CUDA Toolkit.
+        * cuDNN SDK (>= 7.4.1)
 
-  git clone git://github.com/iyhaoo/DISC.git
+  see this__ for further information
 
-  cd DISC
+      .. __: https://www.tensorflow.org/install/gpu
 
-  python setup.py install
+**Install DISC with pip**
+  To install with ``pip``, run the following from a terminal::
 
-Nvidia GPU is recommended for better performance. Installing GPU version TensorFlow_ to use DISC with GPU::
+    pip install DISC
 
-  pip install "tensorflow-gpu<2.0.0"
+**Install DISC from GitHub**
+  To clone the repository and install manually, run the following from a terminal::
 
-  pip install DISC
+    git clone git://github.com/iyhaoo/DISC.git
 
-We typically programmed and ran DISC using tensorflow-gpu==1.13.1.
+    cd DISC
 
-Requirements for GPU version TensorFlow_ (here__ in detail)
-  .. __: https://www.tensorflow.org/install/gpu
-
-  * Hardware
-      NVIDIA GPU card with CUDA Compute Capability 3.5 or higher.
-  * Software
-      * NVIDIA GPU drivers - CUDA 10.0 requires 410.x or higher.
-      * CUDA Toolkit - TensorFlow_ supports CUDA 10.0 (TensorFlow >= 1.13.0)
-      * CUPTI ships with the CUDA Toolkit.
-      * cuDNN SDK (>= 7.4.1)
+    python setup.py install
 
 Usage
 -----
