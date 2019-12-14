@@ -13,11 +13,11 @@ An accurate and scalable imputation algorithm based on semi-supervised deep lear
 Requirements
 ------------
 
-- Python_ >= 3.6
-- TensorFlow_ >= 1.13.1
-- numpy_ >= 1.14.0
-- pandas_ >= 0.21.0
-- h5py_ >= 2.9.0
+- Python_ >=3.6
+- TensorFlow_ >=1.13.1,<2.0.0
+- numpy_ >=1.14.0
+- pandas_ >=0.21.0
+- h5py_ >=2.9.0
 
 Installation
 ------------
