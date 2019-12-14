@@ -25,7 +25,7 @@ Installation
 **Install TensorFlow**
   If you have an Nvidia GPU, be sure to install a version of TensorFlow that supports it first -- DISC runs much faster with GPU::
 
-    pip install "tensorflow-gpu<2.0.0"
+    pip install "tensorflow-gpu>= 1.13.1,<2.0.0"
 
   We typically tensorflow-gpu==1.13.1.
 
