@@ -12,11 +12,13 @@ utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
 ### Filtering cells as Seurat tutorial
-Following <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we download original PBMC_3k data and filter cells.
+Following <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we download original PBMC_3k data and filter cells.</br>
+The original PBMC data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a.</br>
+The original PBMC data provided by Seurat can be found at https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz.
 ```{r}
 if(!file.exists("./data/PBMC/raw.loom")){
   temp <- tempfile()
-  download.file("https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz", temp)
+  download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/frozen_pbmc_donor_a/frozen_pbmc_donor_a_filtered_gene_bc_matrices.tar.gz", temp)
   exdir = "./data/PBMC"
   untar(temp, exdir = exdir)
   unlink(temp)
