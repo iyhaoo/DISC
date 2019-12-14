@@ -14,7 +14,7 @@ Requirements
 ------------
 
 - Python_ >= 3.6
-- tensorflow_ >= 1.13.1
+- TensorFlow_ >= 1.13.1
 - numpy_ >= 1.14.0
 - pandas_ >= 0.21.0
 - h5py_ >= 2.9.0
@@ -37,6 +37,25 @@ To clone the repository and install manually, run the following from a terminal:
   cd DISC
 
   python setup.py install
+
+Nvidia GPU is recommended for better performance. Installing GPU version TensorFlow_ to use DISC with GPU::
+
+  pip install "tensorflow-gpu<2.0.0"
+
+  pip install DISC
+
+We typically programmed and ran DISC using tensorflow-gpu==1.13.1.
+
+Requirements for GPU version TensorFlow_ (here__ in detail)
+  .. __: https://www.tensorflow.org/install/gpu
+
+  * Hardware
+      NVIDIA GPU card with CUDA Compute Capability 3.5 or higher.
+  * Software
+      * NVIDIA GPU drivers - CUDA 10.0 requires 410.x or higher.
+      * CUDA Toolkit - TensorFlow_ supports CUDA 10.0 (TensorFlow >= 1.13.0)
+      * CUPTI ships with the CUDA Toolkit.
+      * cuDNN SDK (>= 7.4.1)
 
 Usage
 -----
@@ -149,7 +168,7 @@ History
 
 
 .. _Python: https://www.python.org/downloads/
-.. _tensorflow: https://www.tensorflow.org/
+.. _TensorFlow: https://www.tensorflow.org/
 .. _numpy: https://numpy.org/
 .. _pandas: https://pandas.pydata.org/
 .. _h5py: https://www.h5py.org/
