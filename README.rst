@@ -117,14 +117,14 @@ Data availability
 Tutorials
  1. Imputation
 
-    * `Data pre-processing`_
+    * `Data pre-processing (MELANOMA)`_
     * `Run imputation`_
 
  2. Reproducing our results:
 
-    * `Gene expression structures recovery validated by FISH`_
-    * `Dropout event recovery`_
-    * `Cell type identification improvement`_
+    * `Gene expression structures recovery validated by FISH (MELANOMA)`_
+    * `Dropout event recovery (MELANOMA)`_
+    * `Cell type identification improvement (PBMC)`_
     * `Ultra-large dataset analysis`_
 
 ..
@@ -150,11 +150,11 @@ History
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
-.. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing_MELANOMA.ipynb
-.. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md
-.. _`Gene expression structures recovery validated by FISH`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
-.. _`Dropout event recovery`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
-.. _`Cell type identification improvement`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/cell_type_identification/Cell_type_identification_improvement_PBMC.nb.html
+.. _`Data pre-processing (MELANOMA)`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
+.. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
+.. _`Gene expression structures recovery validated by FISH (MELANOMA)`: https://rawcdn.githack.com/iyhaoo/DISC/fe2ea6f2c7832e0e0ea2be97b162f726fd7b16f0/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+.. _`Dropout event recovery (MELANOMA)`: https://rawcdn.githack.com/iyhaoo/DISC/fe2ea6f2c7832e0e0ea2be97b162f726fd7b16f0/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+.. _`Cell type identification improvement (PBMC)`: https://rawcdn.githack.com/iyhaoo/DISC/fe2ea6f2c7832e0e0ea2be97b162f726fd7b16f0/reproducibility/cell_type_identification/Cell_type_identification_improvement_PBMC.nb.html
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/
 .. _MELANOMA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE99330
