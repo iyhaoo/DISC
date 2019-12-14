@@ -63,51 +63,49 @@ Quick Start
     * ``models``: a directory for trained models in every save interval
 
 Data availability
-  * `MELANOMA`_ :
-      8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected.
-      Its `loom-formatted`_ file after cell filtering is provide `here`__.
+  * MELANOMA :
+      8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected (`MELANOMA`_).
+      In addition, RNA FISH experiment of across 7,000-88,000 cells from the same cell line was conducted and 26 genes were detected (`MELANOMA_FISH`_).
+      The original, raw and imputed RNA-seq data and the original and raw FISH data in `loom-formatted`_ are provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/melanoma/raw.loom
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA
 
-  * `MELANOMA_FISH`_ :
-      RNA FISH experiment of across 7,000-88,000 melanoma cells from the same cell line was conducted and 26 genes were detected.
-      Its `loom-formatted`_ file is provide `here`__.
+  * SSCORTEX :
+      Mouse somatosensory cortex of CD-1 mice at age of p28 and p29 were profiled by 10X where 7,477 cells were detected (`SSCORTEX`_).
+      In addition, osmFISH experiment of 4,839 cells from somatosensory cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected (`SSCORTEX_FISH`_).
+      The original, raw and imputed RNA-seq data and the original and raw FISH data in `loom-formatted`_ are provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/melanoma/fish.loom
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/SSCORTEX
 
-  * `SSCORTEX`_ :
-      Mouse somatosensory cortex of CD-1 mice at age of p28 and p29 were profiled by 10X where 7,477 cells were detected in total.
-      Its `loom-formatted`_ file after cell filtering is provide `here`__.
+  * PBMC :
+      2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from a healthy donor were profiled by 10X, where 32,738 genes were detect (`PBMC`_).
+      The original, raw and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/sscortex/raw.loom
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC
 
-  * `SSCORTEX_FISH`_ :
-      osmFISH experiment of 4,839 cells from somatosensory cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected.
-      Its `loom-formatted`_ file of 4,388 cells from somatosensory cortex is provide `here`__.
+  * CBMC :
+      Cord blood mononuclear cells were profiled by CITE-seq, where 8,005 human cells were detected in total (`CBMC`_).
+      The original, raw and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/sscortex/fish.loom
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
 
-  * `PBMC`_ :
-      2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from a healthy donor were profiled by 10X, where 32,738 genes were detect.
-      Its `loom-formatted`_ file after cell filtering is provide `here`__.
+  * RETINA :
+      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+      The original and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/pbmc3k/pbmc3k_filtered.loom
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
 
-  * `CBMC`_ :
-      Cord blood mononuclear cells were profiled by CITE-seq, where 8,005 human cells were detected in total.
-      Its `loom-formatted`_ file after cell and with all human genes is provide `here`__.
+  * BRAIN_SPLiT :
+      156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
+      The original and imputed RNA-seq data in `loom-formatted`_ are provide `here`__.
 
-      .. __: https://raw.githubusercontent.com/iyhaoo/DISC/master/reproducibility/data/cite_seq/raw.loom
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
-  * `RETINA`_ :
-      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected.
+  * BRAIN_1.3M :
+      1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected (`BRAIN_1.3M`_).
+      The original and raw RNA-seq data in `loom-formatted`_ are provide `here`__.
 
-  * `BRAIN_SPLiT`_ :
-      156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected
-
-  * `BRAIN_1.3M`_ :
-      1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected.
-
+      .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_1.3M
 
 Tutorials
  1. Imputation
@@ -145,11 +143,11 @@ History
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
-.. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing.ipynb
+.. _`Data pre-processing`: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/tutorials/data_preprocessing_MELANOMA.ipynb
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md
-.. _`Gene expression structures recovery validated by FISH`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH.nb.html
-.. _`Dropout event recovery`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Dropout_event_recovery.nb.html
-.. _`Cell type identification improvement`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/cell_type_identification/Cell_type_identification_improvement.nb.html
+.. _`Gene expression structures recovery validated by FISH`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+.. _`Dropout event recovery`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+.. _`Cell type identification improvement`: https://rawcdn.githack.com/iyhaoo/DISC/d207c15306cd6aa73ce492953971d6e84c42fbc3/reproducibility/cell_type_identification/Cell_type_identification_improvement_PBMC.nb.html
 .. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/
 .. _MELANOMA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE99330
