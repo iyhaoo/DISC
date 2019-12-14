@@ -115,7 +115,7 @@ Data availability
       .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_1.3M
 
 Tutorials
- 1. Imputation
+ 1. Data preparation and imputation
 
     * `Data pre-processing (MELANOMA)`_
     * `Run imputation`_
