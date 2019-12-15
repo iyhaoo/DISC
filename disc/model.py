@@ -284,7 +284,7 @@ if __name__ == '__main__':
     with h5py.File(loom_path, "r", libver='latest', swmr=True) as f:
         gene_name = f["row_attrs/Gene"][...].astype(np.str)
     model = DISC(gene_name, np.ones_like(gene_name))
-    model.training(0.001, 3, gene_express_rate=np.ones_like(gene_name))
+    model.training(0.001, 3)
     with tf.compat.v1.Session() as sess:
         print(model.gene_name.eval())
 
