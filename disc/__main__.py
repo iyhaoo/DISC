@@ -74,7 +74,7 @@ def main():
     parser.add_argument("--batch-size", required=False, type=int, default=128, help="Batch size")
     parser.add_argument("--compress-dimensions", required=False, type=int, default=50, help="Latent dimensions")
     parser.add_argument("--noise-intensity", required=False, type=float, default=0.1, help="noise-intensity")
-    parser.add_argument("--feature-l2-factor", required=False, type=float, default=1, help="feature_l2_factor")
+    parser.add_argument("--feature-l2-factor", required=False, type=float, default=1, help="constraint_factor")
     parser.add_argument("--z-score-library-size-factor", required=False, type=float, default=1000000, help="z-score-library-size-factor")
     parser.add_argument("--learning-rate", required=False, type=float, default=0.001, help="learning-rate")
     parser.add_argument("--training", required=False, type=int, default=1, help="is training")
@@ -143,7 +143,7 @@ def main():
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager)
             evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], manager=manager)
-            model.training(FLAGS["learning_rate"], feature_l2_factor=FLAGS["feature_l2_factor"], push_factor=None, gene_express_rate=dataset.gene_express_rate)
+            model.training(FLAGS["learning_rate"], constraint_factor=["constraint_factor"])
             feed_dict[model.is_training] = True
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
@@ -158,7 +158,7 @@ def main():
                 evaluator.evaluation_list.append({"next_cell_cutoff": next_cell_cutoff})
                 while run_cells < next_cell_cutoff:
                     _, feed_dict[model.input_raw], feed_dict[model.batch_library_size] = next(train_generator)
-                    _, f_loss, run_cells = sess.run([model.train_op1, model.feature_loss, model.run_cells], feed_dict=feed_dict)
+                    _, f_loss, run_cells = sess.run([model.train_op1, model.latent_representation_loss, model.run_cells], feed_dict=feed_dict)
                     _, current_batch_size = sess.run([model.train_op2, model.current_batch_size], feed_dict=feed_dict)
                     #  backend evaluation
                     evaluator.evaluation_list.append({"batch_size": current_batch_size, "feature_loss": f_loss})
