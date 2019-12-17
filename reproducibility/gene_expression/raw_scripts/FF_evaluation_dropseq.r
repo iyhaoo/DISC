@@ -10,8 +10,8 @@ print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ### DISC
-our_result = get_optimal_point33("/home/yuanhao/data/fn/melanoma/DeSCI_2.7.4.33/log.txt")
-dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
+our_result = "/home/yuanhao/DISC_imputation_result/melanoma/result/imputation.loom"
+dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### Other methods
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/melanoma/imputation/SAVER_tmp/dropseq_filt_ls_SAVER_mc_10_mce_1.rds")
 set.seed(42)
