@@ -10,7 +10,7 @@ print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ### DISC
-our_result = "/home/yuanhao/DISC_imputation_result/melanoma/result/imputation.loom"
+our_result = "/home/yuanhao/DISC_imputation_result/MELANOMA/result/imputation.loom"
 dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### Other methods
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/melanoma/imputation/SAVER_tmp/dropseq_filt_ls_SAVER_mc_10_mce_1.rds")

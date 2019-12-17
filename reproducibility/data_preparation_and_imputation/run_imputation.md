@@ -41,8 +41,7 @@ and get `output_file_resume_dim.loom` with complete dimension (only genes as we 
 For `DISC`, the loom-formatted result with complete genes is saved in `out_dir/result/imputation.loom`, we also provide a low dimensional recovery result which is saved in `out_dir/result/feature.loom` and the reduced dimension can be difined as `50` here. 
 
     disc \
-    --datase=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
+    --dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --out-dir=/home/yuanhao/DISC_imputation_result/melanoma \
     --min-expressed-cell=10 \
-    --compress-dimensions=50 \
     --library-size-factor=median
