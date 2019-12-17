@@ -115,21 +115,21 @@ Data availability
   * RETINA :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
 
-      The `loom-formatted`_ original and imputed RNA-seq data are provide `here`__.
+      The `loom-formatted`_ original and imputed RNA-seq data are provide `here`__. (in progress)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
 
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
 
-      The `loom-formatted`_ original and imputed RNA-seq data are provide `here`__.
+      The `loom-formatted`_ original and imputed RNA-seq data are provide `here`__. (in progress)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
   * BRAIN_1.3M :
       1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected (`BRAIN_1.3M`_).
 
-      The `loom-formatted`_ original and raw RNA-seq data are provide `here`__.
+      The `loom-formatted`_ original and raw RNA-seq data are provide `here`__. (in progress)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_1.3M
 
@@ -149,7 +149,7 @@ Tutorials
     * `Gene expression structures recovery validated by FISH (MELANOMA)`_
     * `Dropout event recovery (MELANOMA)`_
     * `Cell type identification improvement (PBMC)`_
-    * `Ultra-large dataset analysis`_
+    * `Ultra-large dataset analysis`_ (in progress)
 
 ..
  3. Supplementary topics:
