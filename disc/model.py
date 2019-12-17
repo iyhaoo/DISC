@@ -95,7 +95,7 @@ class DISC:
         with tf.compat.v1.variable_scope("imputer", reuse=False):
             self._imputer()
             self.merge_gene_features = tf.add_n([feature_ * tf.expand_dims(tf.transpose(a_t), 2) for feature_, a_t in zip(self.gene_features, self.attention_coefficients_list)])
-        with tf.compat.v1.variable_scope("decoder", reuse=False):
+        with tf.compat.v1.variable_scope("reconstructor", reuse=False):
             self._reconstructor()
             self.feature = tf.concat(tf.split(self.hidden_feature[0], self.repeats, 0), 1)
         with tf.compat.v1.variable_scope("compression", reuse=False):
@@ -196,7 +196,7 @@ class DISC:
         self.compressed_feature = [self.en_de_act_fn(tf.matmul(feature_, self.weight_compressor) + bias_compressor) for feature_ in self.hidden_feature_compression]
         bias_compressor_reverse = tf.compat.v1.get_variable("bias_compressor_reverse", [self.dimension_number * (self.repeats + 1)], dtype=tf.float32, initializer=tf.zeros_initializer())
         self.reconst_feature_compression = [self.en_de_act_fn(tf.matmul(feature_, tf.transpose(self.weight_compressor)) + bias_compressor_reverse) for feature_ in self.compressed_feature]
-        self.compressed_prediction = [tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficients_merged), num_or_size_splits=self.repeats, axis=0)) for feature_ in self.reconst_feature_compression]
+        self.compressed_prediction = [tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficients_merged), self.repeats, 0)) for feature_ in self.reconst_feature_compression]
 
     def training(self, learning_rate, constraint_factor=1, var_list=None):
         """
@@ -213,7 +213,7 @@ class DISC:
                 The factor to limits the total capacity of imputation counts.
 
             var_list : list, optional, default: None
-                List for variables to training.
+                List for variables to train.
         """
         self.global_step = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="global_step", trainable=False)
         tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.GLOBAL_STEP, self.global_step)

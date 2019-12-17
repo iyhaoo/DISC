@@ -90,17 +90,18 @@ def main():
     result_dir = "{}/result".format(FLAGS["out_dir"])
     os.makedirs(result_dir, exist_ok=True)
     makeLog = MakeLogClass("{}/log.tsv".format(FLAGS["out_dir"])).make
-    #running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
+    running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
     if not FLAGS["training"]:
         assert FLAGS["pretrained_model"] is not None
         model_dir = None
     else:
         model_dir = "{}/models".format(FLAGS["out_dir"])
         os.makedirs(model_dir, exist_ok=True)
+    makeLog("Dataset: {}".format(FLAGS["dataset"]))
+    makeLog("Output Dir: {}".format(FLAGS["out_dir"]))
     makeLog("Batch size: {}".format(FLAGS["batch_size"]))
-
     if FLAGS["pretrained_model"] is not None:
-        use_target_gene, use_norm_max =  get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name", "norm_max"])
+        use_target_gene, use_norm_max = get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name", "norm_max"])
         kwargs = {"target_gene": use_target_gene}
     else:
         use_norm_max = None
@@ -143,7 +144,7 @@ def main():
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager)
             evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], manager=manager)
-            model.training(FLAGS["learning_rate"], constraint_factor=["constraint_factor"])
+            model.training(FLAGS["learning_rate"], constraint_factor=FLAGS["feature_l2_factor"])
             feed_dict[model.is_training] = True
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
@@ -183,6 +184,7 @@ def main():
         sess.run(read_model(use_pretrained_model, log_fn=makeLog))
         makeLog("Use {} for inference".format(use_pretrained_model))
         inference(dataset, model, sess, result_dir, FLAGS["batch_size"], FLAGS["generator_workers"], manager, makeLog)
+    makeLog("View result at:\n{}".format(result_dir))
 
 
 if __name__ == "__main__":
