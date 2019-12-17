@@ -90,7 +90,7 @@ def main():
     result_dir = "{}/result".format(FLAGS["out_dir"])
     os.makedirs(result_dir, exist_ok=True)
     makeLog = MakeLogClass("{}/log.tsv".format(FLAGS["out_dir"])).make
-    running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
+    #running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
     if not FLAGS["training"]:
         assert FLAGS["pretrained_model"] is not None
         model_dir = None
