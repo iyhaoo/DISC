@@ -181,12 +181,12 @@ class DISC:
         self.merge_impute_denorm = [self._denormalization(impute_) for impute_ in self.merge_impute]
 
     def _reconstructor(self):
-        predictions = [tf.stop_gradient(prediction_) for prediction_ in [self.input_norm] + [predict_[0] for predict_ in self.predictions[:-1]]]
+        predictions = [tf.stop_gradient(prediction_) for prediction_ in [self.input_norm] + [predict_[0] for predict_ in self.predictions]]
         inputs = [tf.concat([tf.where(self.known_expressed, self.input_norm, prediction_) for prediction_ in predictions], axis=0),
                   tf.concat([tf.where(self.known_expressed, self.input_norm, tf.nn.dropout(prediction_, rate=1 - self.dropout_rate)) for prediction_ in predictions], axis=0)]
         self.hidden_feature = [self.en_de_act_fn(tf.matmul(input_, self.weights_encoder)) for input_ in inputs]
         self.bias_decoder = tf.compat.v1.get_variable("bias_decoder", [self.gene_number], dtype=tf.float32, initializer=tf.zeros_initializer())
-        self.split_reconst_prediction = [tf.split(self.output_activation_function(self.output_scale_factor * (self.phi + 1) * (tf.matmul(feature_, tf.transpose(self.weights_encoder)) + self.bias_decoder)), num_or_size_splits=self.repeats + 1, axis=0) for feature_ in self.hidden_feature]
+        self.split_reconst_prediction = [tf.split(self.output_activation_function(self.output_scale_factor * (self.phi + 1) * (tf.matmul(feature_, tf.transpose(self.weights_encoder)) + self.bias_decoder)), num_or_size_splits=self.repeats + 1, axis=0)[:-1] for feature_ in self.hidden_feature]
         self.reconst_prediction = [tf.add_n([predict_ * a_t for predict_, a_t in zip(reconst_predict_, self.attention_coefficients_list)]) for reconst_predict_ in self.split_reconst_prediction]
 
     def _compression(self):
