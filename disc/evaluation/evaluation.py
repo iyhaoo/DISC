@@ -171,13 +171,14 @@ if __name__ == "__main__":
     out_dir = "E:/DeSCI/fn/DeSCI_3/test"
     evaluator = Evaluation(out_dir, 10000, log_fn=print, batch_window=5)
     save_interval = 50000
+    batch_cell = 12000
     run_cells = 0
     next_cell_cutoff = save_interval
     evaluator.evaluation_list.append({"next_cell_cutoff": next_cell_cutoff})
     jj = 0
     for ii in range(100):
         while run_cells < next_cell_cutoff:
-            evaluator.evaluation_list.append({"batch_size": 10000,
+            evaluator.evaluation_list.append({"batch_size": batch_cell,
                                               "loss": ii,
                                               "feature_loss": 3 + jj / (ii + 1e-12),
                                               "feature_loss_report": 3.5,
@@ -185,7 +186,7 @@ if __name__ == "__main__":
                                               "merge_impute_loss": 3,
                                               "compression_loss": 1})
             jj += 1
-            run_cells += 10000
+            run_cells += batch_cell
         next_cell_cutoff += save_interval
         evaluator.evaluation_list.append({"next_cell_cutoff": next_cell_cutoff})
     time.sleep(5)

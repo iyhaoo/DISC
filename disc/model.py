@@ -246,7 +246,9 @@ class DISC:
         self.loss_element = [self.loss1, self.loss2]
         gradients, v = zip(*optimizer.compute_gradients(self.loss1, var_list=var_list))
         gradients, _ = tf.clip_by_global_norm(gradients, 5)
-        self.train_op1 = optimizer.apply_gradients(zip(gradients, v), global_step=self.global_step)
+        train_op1 = optimizer.apply_gradients(zip(gradients, v), global_step=self.global_step)
+        with tf.control_dependencies([tf.group(train_op1, tf.compat.v1.assign_add(self.run_cells, self.current_batch_size))]):
+            self.train_op1 = tf.no_op()
         self.train_op2 = optimizer.minimize(self.loss2)
 
 

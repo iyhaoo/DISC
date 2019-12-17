@@ -70,7 +70,7 @@ def main():
     parser.add_argument("--library-size-factor", required=False, type=str, default="1500", help="int or median")
     parser.add_argument("--depth", required=False, type=str, default="16_8_1", help="depth")
     parser.add_argument("--dimension-number", required=False, type=int, default=512, help="Dimension number")
-    parser.add_argument("--memory-usage-rate", required=False, type=float, help="How many memory to use")
+    parser.add_argument("--memory-usage-rate", required=False, type=float, help="How many GPU memory to use (percentage)")
     parser.add_argument("--batch-size", required=False, type=int, default=128, help="Batch size")
     parser.add_argument("--compress-dimensions", required=False, type=int, default=50, help="Latent dimensions")
     parser.add_argument("--noise-intensity", required=False, type=float, default=0.1, help="noise-intensity")
@@ -83,6 +83,7 @@ def main():
     parser.add_argument("--generator-workers", required=False, type=int, default=3, help="thread number")
     parser.add_argument("--converge-number", required=False, type=int, default=10000000, help="Max cell number for training")
     parser.add_argument("--warm-up-cells", required=False, type=int, default=5000000, help="warm-up-cells")
+    parser.add_argument("--detect-cells", required=False, type=int, default=250000, help="detect-cells")
     parser.add_argument("--save-interval", required=False, type=int, default=50000, help="save-interval")
     FLAGS = vars(parser.parse_args())
     manager = Manager()
@@ -143,7 +144,7 @@ def main():
             makeLog("Max cell number for training: {:.0f}".format(FLAGS["converge_number"]))
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager)
-            evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], manager=manager)
+            evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], detect_cells=FLAGS["detect_cells"], manager=manager)
             model.training(FLAGS["learning_rate"], constraint_factor=FLAGS["feature_l2_factor"])
             feed_dict[model.is_training] = True
             sess.run(tf.global_variables_initializer())
