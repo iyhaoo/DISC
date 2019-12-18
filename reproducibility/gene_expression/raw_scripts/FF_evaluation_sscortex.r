@@ -10,8 +10,8 @@ print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
 ### our imputation
-our_result = get_optimal_point33("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/DeSCI_2.7.4.33/log.txt")
-dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
+our_result = "/home/yuanhao/DISC_imputation_result/SSCORTEX/result/imputation.loom"
+dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### theirs
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/SAVER_tmp/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_SAVER_mc_10_mce_1.rds")
 set.seed(42)
