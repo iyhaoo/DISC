@@ -88,7 +88,7 @@ Data availability
       8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected (`MELANOMA`_).
       In addition, RNA FISH experiment of across 7,000-88,000 cells from the same cell line was conducted and 26 genes were detected (`MELANOMA_FISH`_).
 
-      The `loom-formatted`_ original, raw, imputed raw RNA-seq data and FISH data are provide `here`__.
+      The `loom-formatted`_ original, raw, imputed raw/DS RNA-seq data and FISH data are provide `here`__.
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA
 
