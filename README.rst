@@ -88,7 +88,7 @@ Data availability
       8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected (`MELANOMA`_).
       In addition, RNA FISH experiment of across 7,000-88,000 cells from the same cell line was conducted and 26 genes were detected (`MELANOMA_FISH`_).
 
-      The original, raw, imputed raw/DS RNA-seq data and FISH data are provide `here`__.
+      The original, raw, DS (0.5), imputed raw/DS RNA-seq data and FISH data are provide `here`__.
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA
 
@@ -103,7 +103,7 @@ Data availability
   * PBMC :
       2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from a healthy donor were profiled by 10X, where 32,738 genes were detect (`PBMC`_).
 
-      The  original, raw, DS and imputed DS RNA-seq data are provide `here`__.
+      The  original, raw, DS (0.3), imputed DS RNA-seq data are provide `here`__.
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC
 
