@@ -122,16 +122,12 @@ Data availability
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
 
-      The `loom-formatted`_ raw data and `RDS-formatted`_ cell type from the original study are provide `here`__. (in progress)
+      The `loom-formatted`_ raw data and `RDS-formatted`_ cell type from the original study are provide `here`__. (coming soon)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
   * BRAIN_1.3M :
       1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected (`BRAIN_1.3M`_).
-
-      The `loom-formatted`_ original and raw RNA-seq data are provide `here`__. (in progress)
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_1.3M
 
 Tutorials
  1. Data preparation and imputation
@@ -149,7 +145,7 @@ Tutorials
     * `Gene expression structures recovery validated by FISH (MELANOMA)`_
     * `Dropout event recovery (MELANOMA)`_
     * `Cell type identification improvement (PBMC)`_
-    * `Ultra-large dataset analysis`_ (in progress)
+    * `Ultra-large dataset analysis`_ (coming soon)
 
 ..
  3. Supplementary topics:
