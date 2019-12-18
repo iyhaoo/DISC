@@ -132,7 +132,7 @@ Data availability
 Tutorials
  1. Data preparation and imputation
 
-    * `Data pre-processing`_ (`MELANOMA`__, `SSCORTEX`__, `CBMC`__, `RETINA`__)
+    * Data pre-processing (`MELANOMA`__, `SSCORTEX`__, `CBMC`__, `RETINA`__)
 
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_SSCORTEX.ipynb
@@ -173,7 +173,6 @@ History
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
-.. _`Data pre-processing`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _`Gene expression structures recovery validated by FISH (MELANOMA)`: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 .. _`Dropout event recovery (MELANOMA)`: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
