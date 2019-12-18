@@ -185,7 +185,7 @@ def main():
         sess.run(read_model(use_pretrained_model, log_fn=makeLog))
         makeLog("Use {} for inference".format(use_pretrained_model))
         inference(dataset, model, sess, result_dir, FLAGS["batch_size"], FLAGS["generator_workers"], manager, makeLog)
-    makeLog("View result at:\n{}".format(result_dir))
+    makeLog("View results at:\n{}".format(result_dir))
 
 
 if __name__ == "__main__":
