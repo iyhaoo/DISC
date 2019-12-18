@@ -38,7 +38,7 @@ We can easily run
 and get `output_file_resume_dim.loom` with complete dimension (only genes as we don't resume cells here) as `/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom`.
 
 #### DISC
-For `DISC`, the loom-formatted result with complete genes is saved in `out_dir/result/imputation.loom`, we also provide a low dimensional recovery result which is saved in `out_dir/result/feature.loom` and the reduced dimension can be difined as `50` here. 
+For `DISC`, the loom-formatted result with complete genes is saved in `out_dir/result/imputation.loom`, we also provide a low dimensional (default 50) recovery result which is saved in `out_dir/result/feature.loom`. 
 
     disc \
     --dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
