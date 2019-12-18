@@ -162,7 +162,7 @@ Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
 History
 -------
 
-1.0.0 (2019-12-15)
+1.0.0 (2019-12-16)
 ^^^^^^^^^^^^^^^^^^
 * First release on PyPI_.
 

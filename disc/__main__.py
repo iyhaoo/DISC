@@ -143,7 +143,7 @@ def main():
             #  train information
             makeLog("Max cell number for training: {:.0f}".format(FLAGS["converge_number"]))
             #  make generator evaluator and training part of model
-            train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager)
+            train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager, debug=False)
             evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], detect_cells=FLAGS["detect_cells"], manager=manager)
             model.training(FLAGS["learning_rate"], constraint_factor=FLAGS["feature_l2_factor"])
             feed_dict[model.is_training] = True
