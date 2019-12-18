@@ -122,7 +122,7 @@ Data availability
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
 
-      The `loom-formatted`_ raw data and RDS-formatted cell type from the original study are provide `here`__. (in progress)
+      The `loom-formatted`_ raw data and `RDS-formatted`_ cell type from the original study are provide `here`__. (in progress)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
