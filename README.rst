@@ -132,10 +132,12 @@ Data availability
 Tutorials
  1. Data preparation and imputation
 
-    * `Data pre-processing`_ (`MELANOMA`__, `CBMC`__)
+    * `Data pre-processing`_ (`MELANOMA`__, `SSCORTEX`__, `CBMC`__, `RETINA`__)
 
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
+      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_SSCORTEX.ipynb
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
 
 
     * `Run imputation`_
