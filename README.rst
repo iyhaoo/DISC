@@ -115,14 +115,14 @@ Data availability
   * RETINA :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
 
-      The `loom-formatted`_ raw data and `RDS-formatted`_ cell type from the original study are provide `here`__.
+      The `loom-formatted`_ raw data and the `RDS-formatted`_ cluster assignments from the original study are provide `here`__.
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
 
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
 
-      The `loom-formatted`_ raw data and `RDS-formatted`_ cell type from the original study are provide `here`__. (coming soon)
+      The `loom-formatted`_ raw data and the `RDS-formatted`_ cluster assignments from the original study are provide `here`__. (coming soon)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
