@@ -115,14 +115,14 @@ Data availability
   * RETINA :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
 
-      The `loom-formatted`_ raw data and cell type from the original study are provide `here`__.
+      The `loom-formatted`_ raw data and `RDS-formatted`_ cell type from the original study are provide `here`__.
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
 
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
 
-      The `loom-formatted`_ raw data and cell type from the original study are provide `here`__. (in progress)
+      The `loom-formatted`_ raw data and RDS-formatted cell type from the original study are provide `here`__. (in progress)
 
         .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
 
@@ -174,6 +174,7 @@ History
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`loom-formatted`: http://loompy.org/
+.. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Data pre-processing`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _`Gene expression structures recovery validated by FISH (MELANOMA)`: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
