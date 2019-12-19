@@ -959,7 +959,6 @@ FindVariableFeatures_vst_by_genes = function(gene_bc_mat){
     span = loess.span
   )
   hvf.info$variance.expected[not.const] <- 10 ^ fit$fitted
-  # use c function to get variance after feature standardization
   hvf.info$variance.standardized = sapply(seq(nrow(gene_bc_mat)), function(x){
     standardized_value = (gene_bc_mat[x, ] - hvf.info$mean[x]) / sqrt(hvf.info$variance.expected[x])
     standardized_value[standardized_value > clip.max] = clip.max
