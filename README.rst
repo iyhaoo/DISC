@@ -158,10 +158,11 @@ Tutorials
 
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Cell_type_identification_improvement_PBMC.nb.html
 
-    * `Ultra-large dataset analysis`_ (coming soon)
-
-..
  3. Supplementary topics:
+
+    * Use DISC compressed features for Seurat clustering (coming soon)
+
+    * Violin plots of marker genes across cell types (coming soon)
 
 References
 ----------
@@ -185,7 +186,6 @@ History
 .. _`loom-formatted`: http://loompy.org/
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
-.. _`Ultra-large dataset analysis`: https://github.com/iyhaoo/DISC#
 .. _PyPI: https://pypi.org/project/disc/
 .. _MELANOMA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE99330
 .. _`the previous pipeline`: https://www.nature.com/articles/s41592-018-0033-z
