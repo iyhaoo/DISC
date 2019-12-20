@@ -167,7 +167,9 @@ Tutorials
 References
 ----------
 Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
-**"Reliable and efficient gene expression recovery in single-cell transcriptomes using DISC"**
+**"Reliable and efficient gene expression recovery in single-cell transcriptomes using DISC"** `[pdf]`__
+
+.. __: https://github.com/iyhaoo/DISC/tree/master/reproducibility/DISC_paper.pdf
 
 History
 -------

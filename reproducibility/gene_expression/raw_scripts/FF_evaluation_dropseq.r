@@ -1,5 +1,5 @@
-generic_functions_path = "/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utility.r"
-source(generic_functions_path)
+utilities_path = "/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utilities.r"
+source(utilities_path)
 ####################main###############
 dataset_list = list()
 dataset_list[["FISH"]] = readh5_loom("/home/yuanhao/data/fn/melanoma/fishSubset.loom")
@@ -212,9 +212,9 @@ pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
 library(parallel)
 no_cores <- detectCores() - 1
 cl <- makeCluster(no_cores)
-clusterExport(cl, varlist = c("dist_outdir", "text_color", "bar_color", "max_points", "rescale_mean_list", "method_names", "used_cells", "mfrow", "fish_gene_mat", "fish_mask_mat", "dataset_list", "generic_functions_path"))
+clusterExport(cl, varlist = c("dist_outdir", "text_color", "bar_color", "max_points", "rescale_mean_list", "method_names", "used_cells", "mfrow", "fish_gene_mat", "fish_mask_mat", "dataset_list", "utilities_path"))
 return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
-  source(generic_functions_path)
+  source(utilities_path)
   gene_x = fish_gene_mat[t(fish_mask_mat)][ii]
   gene_y = t(fish_gene_mat)[t(fish_mask_mat)][ii]
   x_dropout_rate = round(100 * (1 - sum(dataset_list[["Raw"]][gene_x, ] > 0) / length(used_cells)), digits = 4)
