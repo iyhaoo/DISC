@@ -160,7 +160,9 @@ Tutorials
 
  3. Supplementary topics:
 
-    * Use DISC compressed features for Seurat clustering (coming soon)
+    * Use DISC compressed features for Seurat clustering (`PBMC`__)
+
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
     * Violin plots of marker genes across cell types (coming soon)
 
