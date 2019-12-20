@@ -34,13 +34,15 @@ if(!file.exists("./data/PBMC/raw.loom")){
   save_h5("./data/PBMC/raw.loom", t(raw_data))
 }else{
   raw_data = readh5_loom("./data/PBMC/raw.loom")
+  keep_gene_names = readRDS("./results/PBMC/used_gene_names.rds")
 }
 
 ```
 ### Classify cell types as Seurat tutorial
 Following the <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we classify cells.
 ```{r fig.height=8, fig.width=11}
-cell_type_identification = seurat_clustering(expression = raw_data, gene_selection_rds = "./results/PBMC/used_gene_names.rds", pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
+gene_mask = gsub(pattern = "_", replacement = "-", rownames(raw_data)) %in% keep_gene_names
+cell_type_identification = seurat_classification(gene_bc_mat = raw_data[gene_mask, ], pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
 cell_type= cell_type_identification$assignment
 saveRDS(cell_type, "./results/PBMC/cell_type.rds")
 ```
@@ -87,7 +89,7 @@ gene_number = length(used_genes)
 ```{r}
 cell_type_identification_result_list = list()
 for(ii in names(data_list)){
-  cell_type_identification_result_list[[ii]] = seurat_clustering(expression = data_list[[ii]], cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
+  cell_type_identification_result_list[[ii]] = seurat_classification(gene_bc_mat = data_list[[ii]], cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
 }
 ```
 ```{r fig.height=5, fig.width=4.5}
