@@ -1,5 +1,5 @@
 ---
-title: "Cell type identification improvement"
+title: "Use DISC compressed features for Seurat clustering"
 output: html_notebook
 ---
 ### Setup knitr and load utility functions
