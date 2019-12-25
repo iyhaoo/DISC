@@ -21,6 +21,18 @@ save_h5("./data/RETINA/raw.loom", t(gene_bc_mat))
 ```
 ```{r}
 cell_type = as.matrix(read.table("./data/RETINA/original_data/retina_clusteridentities.txt", sep = "\t", row.names = 1))[, 1]
+cell_type[cell_type == 1] = "Horizontal"
+cell_type[cell_type == 2] = "Retinal Ganglion"
+cell_type[cell_type %in% seq(3, 23)] = "Amacrine"
+cell_type[cell_type == 24] = "Rod"
+cell_type[cell_type == 25] = "Cone"
+cell_type[cell_type %in% seq(26, 33)] = "Bipolar"
+cell_type[cell_type == 34] = "Muller glia"
+cell_type[cell_type == 35] = "Astrocytes"
+cell_type[cell_type == 36] = "Fibroblasts"
+cell_type[cell_type == 37] = "Vascular endothelium"
+cell_type[cell_type == 38] = "Pericytes"
+cell_type[cell_type == 39] = "Microglia"
 saveRDS(cell_type, "./data/RETINA/cell_type.rds")
 ```
 ### Reference
