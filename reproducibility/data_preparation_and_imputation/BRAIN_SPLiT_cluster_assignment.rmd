@@ -1,0 +1,21 @@
+---
+title: "Data preparation for CBMC"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Load Data
+The cluster assignments for 156,049 mice nuclei were extracted as <a href="https://www.sciencedirect.com/science/article/pii/S0092867415005498">this script</a>.
+```{r}
+cell_type = as.matrix(read.table("./data/BRAIN_SPLiT/original_data/cluster_assignment.tsv", sep = "\t", row.names = 1))[, 1]
+saveRDS(cell_type, "./data/BRAIN_SPLiT/cell_type.rds")
+```
+### Reference
+Rosenberg, A. B. et al. Single-cell profiling of the developing mouse brain and spinal cord with split-pool barcoding. Science 360, 176-182 (2018).
