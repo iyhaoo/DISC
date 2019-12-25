@@ -165,7 +165,11 @@ Tutorials
 
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
-    * Violin plots of marker genes across cell types (coming soon)
+    * Violin plots of marker genes across cell types (`script`__, `PBMC`__, `RETINA`__)
+
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/violin_plot.py
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/PBMC/violin_plot.pdf
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/RETINA/violin_plot.pdf
 
 References
 ----------
