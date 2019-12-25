@@ -12,7 +12,7 @@ utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
 ### Load Data
-The cluster assignments for 156,049 mice nuclei were extracted as <a href="https://www.sciencedirect.com/science/article/pii/S0092867415005498">this script</a>.
+The cluster assignments for 156,049 mice nuclei were extracted as <a href="https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb">this script</a>.
 ```{r}
 cell_type = as.matrix(read.table("./data/BRAIN_SPLiT/original_data/cluster_assignment.tsv", sep = "\t", row.names = 1))[, 1]
 saveRDS(cell_type, "./data/BRAIN_SPLiT/cell_type.rds")
