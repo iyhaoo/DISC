@@ -197,7 +197,6 @@ History
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _PyPI: https://pypi.org/project/disc/
 .. _MELANOMA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE99330
-.. _`the previous pipeline`: https://www.nature.com/articles/s41592-018-0033-z
 .. _MELANOMA_FISH: https://www.dropbox.com/s/ia9x0iom6dwueix/fishSubset.txt?dl=0
 .. _SSCORTEX: http://loom.linnarssonlab.org/clone/Mousebrain.org.level1/L1_Cortex2.loom
 .. _SSCORTEX_FISH: http://linnarssonlab.org/osmFISH/availability/
