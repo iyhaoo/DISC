@@ -46,14 +46,14 @@ Installation
 **Install DISC with pip**
   To install with ``pip``, run the following from a terminal::
 
-    pip install DISC
+    pip install disc
 
 **Install DISC from GitHub**
   To clone the repository and install manually, run the following from a terminal::
 
     git clone git://github.com/iyhaoo/DISC.git
 
-    cd DISC
+    cd disc
 
     python setup.py install
 
