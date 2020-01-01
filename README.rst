@@ -175,6 +175,7 @@ References
 ----------
 Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
 **"Reliable and efficient imputation and cell type identification for single-cell transcriptomes using a semi-supervised deep learning approach"**
+
 History
 -------
 
