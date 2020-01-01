@@ -174,10 +174,7 @@ Tutorials
 References
 ----------
 Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
-**"Reliable and efficient gene expression recovery in single-cell transcriptomes using DISC"** `[pdf]`__
-
-.. __: https://github.com/iyhaoo/DISC/tree/master/reproducibility/DISC_paper.pdf
-
+**"Reliable and efficient imputation and cell type identification for single-cell transcriptomes using a semi-supervised deep learning approach"**
 History
 -------
 
