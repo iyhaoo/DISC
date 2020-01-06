@@ -9,7 +9,7 @@ requirements = [
 
 setup(
     name="disc",
-    version="1.0.0",
+    version="1.0.1",
     author="Zhongshan Ophthalmic Centre (ZOC), Sun Yat-sen University (SYSU)",
     author_email="904469382@qq.com",
     description="A deep learning method with semi-supervised learning, aiming to accurately recover true gene expression and expression structures for large scRNA-seq data.",

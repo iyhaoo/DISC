@@ -93,8 +93,8 @@ class DataQueue:
         self._queue_t = manager.list()
         self._queue_f = manager.list()
         self._queue_local = []
-        self._running_t = manager.Value("i", 0)
-        self._running_f = manager.Value("i", 0)
+        self._pool_t = manager.list()
+        self._pool_f = manager.list()
         self._lock_t = manager.Value("i", 0)
         self._lock_f = manager.Value("i", 0)
         self.steps_per_epoch = np.ceil(self.cell_number / batch_size).astype(int)
@@ -133,9 +133,9 @@ class DataQueue:
 
     def _select_queue(self, channel):
         if channel:
-            return self._queue_t, self._running_t, self._lock_t
+            return self._queue_t, self._pool_t, self._lock_t
         else:
-            return self._queue_f,  self._running_f, self._lock_f
+            return self._queue_f,  self._pool_f, self._lock_f
 
     def _init_worker(self):
         self._pool_process = list(filter(lambda x: not x.ready(), self._pool_process))
@@ -144,9 +144,9 @@ class DataQueue:
             self._chunk_index = np.arange(np.ceil(self.cell_number / self._chunk_size).astype(np.int32))
             if self._permutation:
                 self._chunk_index = np.random.permutation(self._chunk_index)
-            if self._fill_queue_channel and self._running_t.value > 0:
+            if self._fill_queue_channel and len(self._pool_t) > 0:
                 self._lock_t.value = 1
-            if not self._fill_queue_channel and self._running_f.value > 0:
+            if not self._fill_queue_channel and len(self._pool_f) > 0:
                 self._lock_f.value = 1
         if (self._fill_queue_channel and self._lock_t.value) or (not self._fill_queue_channel and self._lock_f.value):
             return False
@@ -164,10 +164,12 @@ class DataQueue:
             while len(self._queue_task) == 0:
                 pass
             use_chunk_index, this_queue_channel = self._queue_task.pop(0)
-            this_queue, this_running, this_lock = self._select_queue(this_queue_channel)
-            this_running.value += 1
-            #self.log_fn("T", len(self._queue_t), self._running_t.value, self._lock_t.value)
-            #self.log_fn("F", len(self._queue_f), self._running_f.value, self._lock_f.value)
+            this_queue, this_pool, this_lock = self._select_queue(this_queue_channel)
+            this_pool.append(1)
+            #self.log_fn("OPEN", this_queue_channel)
+            #self.log_fn("T", len(self._queue_t), len(self._pool_t), self._lock_t.value)
+            #self.log_fn("F", len(self._queue_f), len(self._pool_f), self._lock_f.value)
+            #self.log_fn("##########")
             #  use memory cache to reduce disk reading operations
             if self.is_overlap:
                 chunk_id = np.arange(self.cell_number)
@@ -206,9 +208,13 @@ class DataQueue:
                 while len(self._queue_t) + len(self._queue_f) > self.refill_cutoff:
                     pass
                 this_queue.append({"index": this_chunk_id, "data": this_chunk_data, "library_size": this_chunk_library_size})
-            this_running.value -= 1
-            if not this_running.value:
+            this_pool.pop(0)
+            if not len(this_pool):
                 this_lock.value = 0
+            #self.log_fn("CLOSE", this_queue_channel)
+            #self.log_fn("T", len(self._queue_t), len(self._pool_t), self._lock_t.value)
+            #self.log_fn("F", len(self._queue_f), len(self._pool_f), self._lock_f.value)
+            #self.log_fn("##########")
         except Exception as e:
             self.log_fn(e)
 
@@ -223,7 +229,7 @@ class DataQueue:
 
     def _queue_localize(self):
         finished_batch = len(self._queue_t) + len(self._queue_f)
-        running_batch = (self._running_t.value + self._running_f.value) * self._chunk_size * self._chunk_number / self.batch_size
+        running_batch = (len(self._pool_t) + len(self._pool_f)) * self._chunk_size * self._chunk_number / self.batch_size
         if finished_batch + running_batch < self.refill_cutoff:
             self._init_worker()
         #  when an epoch is used, switch
@@ -268,7 +274,7 @@ if __name__ == '__main__':
     #loom_path = "/home/yuanhao/data/drop_seq/dropseq_filt_ls.loom"
     #loom_path = "E:/DeSCI/fn/pbmc3k/ds_to_500/downsampling_first_repeat_4/pbmc3k_filtered_ds_to_500.loom"
     with h5py.File(loom_path, "r", libver='latest', swmr=True) as f:
-        gene_name = f["row_attrs/Gene"][...].astype(np.str)
+        gene_name = f["row_attrs/Gene"][...].astype(np.str)[:10]
     queue = DataQueue(loom_path, gene_name, workers=3, prefetch=10, permutation=False, debug=True)
     print(queue.is_overlap)
     ii = 0
@@ -298,9 +304,9 @@ if __name__ == '__main__':
     last_time = time.time()
     while True:
         next(queue)
-        # print(ii)
+        print(ii)
         ii += 1
-        if time.time() - last_time > 15:
+        if time.time() - last_time > 6000:
             queue.terminate()
             del queue
             print(ii)
