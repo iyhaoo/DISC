@@ -66,7 +66,7 @@ def main():
     parser.add_argument("--out-dir", required=True, type=str, help="output folder")
     parser.add_argument("--min-expressed-cell", required=False, type=int, default=10, help="min-expressed-cell")
     parser.add_argument("--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
-    parser.add_argument("--repeats", required=False, type=int, default=1, help="repeats")
+    parser.add_argument("--repeats", required=False, type=int, default=3, help="repeats")
     parser.add_argument("--library-size-factor", required=False, type=str, default="1500", help="int or median")
     parser.add_argument("--depth", required=False, type=str, default="16_8_1", help="depth")
     parser.add_argument("--dimension-number", required=False, type=int, default=512, help="Dimension number")
