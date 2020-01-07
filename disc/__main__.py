@@ -64,27 +64,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", required=True, type=str, help="loom")
     parser.add_argument("--out-dir", required=True, type=str, help="output folder")
-    parser.add_argument("--min-expressed-cell", required=False, type=int, default=10, help="min-expressed-cell")
-    parser.add_argument("--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
-    parser.add_argument("--repeats", required=False, type=int, default=3, help="repeats")
-    parser.add_argument("--library-size-factor", required=False, type=str, default="1500", help="int or median")
-    parser.add_argument("--depth", required=False, type=str, default="16_8_1", help="depth")
-    parser.add_argument("--dimension-number", required=False, type=int, default=512, help="Dimension number")
+    parser.add_argument("-mc", "--min-expressed-cell", required=False, type=int, default=10, help="min-expressed-cell")
+    parser.add_argument("-me", "--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
+    parser.add_argument("-t", "--repeats", required=False, type=int, default=3, help="repeats")
+    parser.add_argument("-sf", "--library-size-factor", required=False, type=str, default="1500", help="int or median")
+    parser.add_argument("-d", "--depth", required=False, type=str, default="16_8_1", help="depth")
+    parser.add_argument("-s", "--dimension-number", required=False, type=int, default=512, help="Dimension number")
     parser.add_argument("--memory-usage-rate", required=False, type=float, help="How many GPU memory to use (percentage)")
-    parser.add_argument("--batch-size", required=False, type=int, default=128, help="Batch size")
-    parser.add_argument("--compress-dimensions", required=False, type=int, default=50, help="Latent dimensions")
-    parser.add_argument("--noise-intensity", required=False, type=float, default=0.1, help="noise-intensity")
-    parser.add_argument("--feature-l2-factor", required=False, type=float, default=1, help="constraint_factor")
-    parser.add_argument("--z-score-library-size-factor", required=False, type=float, default=1000000, help="z-score-library-size-factor")
-    parser.add_argument("--learning-rate", required=False, type=float, default=0.001, help="learning-rate")
-    parser.add_argument("--training", required=False, type=int, default=1, help="is training")
+    parser.add_argument("-b", "--batch-size", required=False, type=int, default=128, help="Batch size")
+    parser.add_argument("-w", "--compress-dimensions", required=False, type=int, default=50, help="Latent dimensions")
+    parser.add_argument("-l", "--learning-rate", required=False, type=float, default=0.001, help="learning-rate")
+    parser.add_argument("-tr", "--training", required=False, type=int, default=1, help="is training")
     parser.add_argument("--pretrained-model", required=False, type=str, help="pretrained model path (.pb)")
     parser.add_argument("--scan-workers", required=False, type=int, default=7, help="thread number")
     parser.add_argument("--generator-workers", required=False, type=int, default=3, help="thread number")
-    parser.add_argument("--converge-number", required=False, type=int, default=10000000, help="Max cell number for training")
     parser.add_argument("--warm-up-cells", required=False, type=int, default=5000000, help="warm-up-cells")
-    parser.add_argument("--detect-cells", required=False, type=int, default=250000, help="detect-cells")
-    parser.add_argument("--save-interval", required=False, type=int, default=50000, help="save-interval")
+    parser.add_argument("--round-number", required=False, type=int, default=5, help="round number to stop training")
+    parser.add_argument("-trs", "--training-round-size", required=False, type=int, default=50000, help="training round size")
     FLAGS = vars(parser.parse_args())
     manager = Manager()
     FLAGS["return_elements_str"] = ""
@@ -110,8 +106,8 @@ def main():
                   "min_avg_exp": FLAGS["min_expressed_cell_average_expression"]}
     dataset = ScanLoom(loom_path=FLAGS["dataset"],
                        library_size_factor=FLAGS["library_size_factor"],
-                       noise_intensity=FLAGS["noise_intensity"],
-                       z_score_library_size_factor=FLAGS["z_score_library_size_factor"],
+                       noise_intensity=0.1,
+                       z_score_library_size_factor=1000000,
                        workers=FLAGS["scan_workers"],
                        log_fn=makeLog, **kwargs)
     #  dataset
@@ -141,11 +137,15 @@ def main():
     with tf.Session(config=config) as sess:
         if FLAGS["training"]:
             #  train information
-            makeLog("Max cell number for training: {:.0f}".format(FLAGS["converge_number"]))
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager, debug=False)
-            evaluator = Evaluation(out_dir=FLAGS["out_dir"], batch_size=FLAGS["batch_size"], log_fn=makeLog, warm_up_cells=FLAGS["warm_up_cells"], detect_cells=FLAGS["detect_cells"], manager=manager)
-            model.training(FLAGS["learning_rate"], constraint_factor=FLAGS["feature_l2_factor"])
+            evaluator = Evaluation(out_dir=FLAGS["out_dir"],
+                                   batch_size=FLAGS["batch_size"],
+                                   log_fn=makeLog,
+                                   warm_up_cells=FLAGS["warm_up_cells"],
+                                   detect_cells=FLAGS["round_number"] * FLAGS["training_round_size"],
+                                   manager=manager)
+            model.training(FLAGS["learning_rate"])
             feed_dict[model.is_training] = True
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
@@ -153,7 +153,7 @@ def main():
                 sess.run(read_model(FLAGS["pretrained_model"], log_fn=makeLog))
             #  initiate
             runnable = True
-            next_cell_cutoff = FLAGS["save_interval"]
+            next_cell_cutoff = FLAGS["training_round_size"]
             run_cells = 0
             #  training
             while runnable:
@@ -170,8 +170,8 @@ def main():
                 makeLog("Run cells: {}\tOptimal Point: {}".format(run_cells, evaluator.optimal_point.value))
                 makeLog("Use {:.2f} seconds\n".format(time.time() - last_time))
                 last_time = time.time()
-                next_cell_cutoff += FLAGS["save_interval"]
-                if run_cells >= FLAGS["converge_number"] or evaluator.is_converge.value:
+                next_cell_cutoff += FLAGS["training_round_size"]
+                if evaluator.is_converge.value:
                     runnable = False
             train_generator.terminate()
             del train_generator

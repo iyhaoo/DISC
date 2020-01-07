@@ -198,7 +198,7 @@ class DISC:
         self.reconst_feature_compression = [self.en_de_act_fn(tf.matmul(feature_, tf.transpose(self.weight_compressor)) + bias_compressor_reverse) for feature_ in self.compressed_feature]
         self.compressed_prediction = [tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficients_merged), self.repeats, 0)) for feature_ in self.reconst_feature_compression]
 
-    def training(self, learning_rate, constraint_factor=1, var_list=None):
+    def training(self, learning_rate, var_list=None):
         """
             Training function for DISC model.
 
@@ -208,9 +208,6 @@ class DISC:
 
             learning_rate : float
                 Learning rate for DISC training.
-
-            constraint_factor : int, optional, default: 1
-                The factor to limits the total capacity of imputation counts.
 
             var_list : list, optional, default: None
                 List for variables to train.
@@ -240,7 +237,7 @@ class DISC:
         regularizer6 = tf.add_n([tf.nn.l2_loss(w) for w in [self.weight_compressor]])
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate)
         self.loss1 = prediction_loss + reconstruction_loss + imputation_loss + \
-                     0.000021 * constraint_factor * self.constraint + 0.165 * self.gene_number / 10000 * self.latent_representation_loss + \
+                     0.000021 * self.constraint + 0.165 * self.gene_number / 10000 * self.latent_representation_loss + \
                      0.000001 * regularizer1 + 0.000001 * regularizer2 + 0.00001 * regularizer3 + 0.000001 * regularizer4 + 0.0001 * regularizer5
         self.loss2 = compression_loss + 0.0001 * regularizer6
         self.loss_element = [self.loss1, self.loss2]
