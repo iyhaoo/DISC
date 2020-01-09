@@ -126,7 +126,7 @@ def main():
                  z_score_library_size_factor=dataset.z_score_library_size_factor,
                  log_fn=makeLog)
     makeLog("Use {} as depth".format(FLAGS["depth"]))
-    makeLog("Repeats {}".format(FLAGS["repeats"]))
+    makeLog("Repeats {}\n".format(FLAGS["repeats"]))
     feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
                  model.zscore_cutoff: dataset.zscore_cutoff,
