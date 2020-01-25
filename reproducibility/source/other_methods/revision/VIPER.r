@@ -33,10 +33,6 @@ print(filt_data[1:5, 1:5])
 gene_name_filt = gene_name[gene_filter]
 rownames(filt_data) = paste0("Gene_", 1:length(gene_name_filt))
 colnames(filt_data) = paste0("Cell_", 1:length(cell_id))
-out_dir = paste(method_dir, sub(".loom", paste0("_VIPER_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
-dir.create(out_dir, showWarnings = F, recursive = T)
-output_rds_name = sub(".loom", paste0("_VIPER_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".rds"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE)
-
 if(args[2] == "cell"){
   res <- VIPER(gene.expression, num = 5000, percentage.cutoff = 0.1, minbool = FALSE, alpha = 1, report = FALSE, outdir = out_dir, prefix = NULL)
   rownames(res$imputed_log) = gene_name_filt
@@ -44,6 +40,8 @@ if(args[2] == "cell"){
   colnames(res$imputed_log) = cell_id
   colnames(res$imputed) = cell_id
   imputed_mat = res$imputed
+  out_dir = paste(method_dir, sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
+  output_rds_name = sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".rds"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE)
 }elif(args[2] == "gene"){
   res = VIPER(t(filt_data), num = 1000, percentage.cutoff = 0.5, minbool = FALSE, alpha = 0.5, report = FALSE, outdir = out_dir, prefix = NULL)
   colnames(res$imputed_log) = gene_name_filt
@@ -51,9 +49,12 @@ if(args[2] == "cell"){
   rownames(res$imputed_log) = cell_id
   rownames(res$imputed) = cell_id
   imputed_mat = t(res$imputed)
+  out_dir = paste(method_dir, sub(".loom", paste0("_VIPER_gene_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
+  output_rds_name = sub(".loom", paste0("_VIPER_gene_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".rds"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE)
 }else{
   stop("args[2] must be cell or gene")
 }
+dir.create(out_dir, showWarnings = F, recursive = T)
 saveRDS(res, paste(method_dir, output_rds_name, sep = "/"))
 h5createFile(output_h5)
 h5createDataset(file = output_h5,
