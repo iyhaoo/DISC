@@ -26,105 +26,105 @@
 
 # MAGIC
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 # DCA
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 # scScope
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 # scVI
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
@@ -196,105 +196,105 @@
 
 # MAGIC
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 # DCA
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/DCA.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 # scScope
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scScope.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 # scVI
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
 /home/yuanhao/softwares/memusg  python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scVI.py \
---filt-loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
+--loom=/home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom \
 --min-expressed-cell=1 \
 --min-expressed-cell-average-expression=-1
 
