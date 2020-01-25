@@ -1050,7 +1050,7 @@ dropout_rate_plot = function(gene_bc_mat, main){
 
 ###cell_type_mapping###
 cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=NULL){
-  return(cell_type_identification_fun(this_markers, this_metadata, prior_cell_type))
+  return(cell_type_identification_pbmc(this_markers, this_metadata, prior_cell_type))
 }
 
 cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell_type=NULL){
