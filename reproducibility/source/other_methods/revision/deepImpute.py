@@ -42,7 +42,7 @@ gene_filter = np.bitwise_and(expressed_cell >= min_expressed_cell, gene_expressi
 input_gene_bc_mat = gene_bc_mat[gene_filter, :]
 print(input_gene_bc_mat.shape)
 # dimension = (cells x genes)
-data = pd.DataFrame(input_gene_bc_mat.toarray(), index=gene_name[gene_filter], columns=cell_id).T
+data = pd.DataFrame(input_gene_bc_mat, index=gene_name[gene_filter], columns=cell_id).T
 print(data)
 imputed = deepImpute(data, NN_lim='auto', n_cores=FLAGS["n_cores"], cell_subset=1)
 print(imputed)
