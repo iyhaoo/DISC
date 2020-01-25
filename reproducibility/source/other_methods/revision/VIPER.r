@@ -4,7 +4,6 @@ if(length(args) != 2){
 }
 source("/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utilities.r")
 library(VIPER)
-
 starttime = Sys.time()
 loom_path = args[1]
 dir_path = paste(delete_last_element(unlist(strsplit(loom_path, "/", fixed = T))), collapse = "/")
@@ -42,7 +41,7 @@ if(args[2] == "cell"){
   imputed_mat = res$imputed
   out_dir = paste(method_dir, sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
   output_rds_name = sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".rds"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE)
-}elif(args[2] == "gene"){
+}else if(args[2] == "gene"){
   res = VIPER(t(filt_data), num = 1000, percentage.cutoff = 0.5, minbool = FALSE, alpha = 0.5, report = FALSE, outdir = out_dir, prefix = NULL)
   colnames(res$imputed_log) = gene_name_filt
   colnames(res$imputed) = gene_name_filt

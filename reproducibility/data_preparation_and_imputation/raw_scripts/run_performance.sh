@@ -10,19 +10,19 @@
 # 1k
 # SAVER
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom gene
 
 # MAGIC
 /home/yuanhao/softwares/memusg python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
@@ -180,19 +180,19 @@
 # 10k
 # SAVER
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/SAVER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom gene
 
 # MAGIC
 /home/yuanhao/softwares/memusg python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/MAGIC.py \
@@ -352,19 +352,19 @@
 # 1k
 # VIPER
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_1k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_1k.loom gene
 
 # deepImpute
 /home/yuanhao/softwares/memusg python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/deepImpute.py \
@@ -399,19 +399,19 @@
 # 10k
 # VIPER
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_50000_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_100000_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_500000_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_all_10k.loom gene
 
 /home/yuanhao/softwares/memusg R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom 16 1 -1
+--args /home/yuanhao/data/fn/neuron1.3m/performance_test_set/1M_neurons_2.57M_10k.loom gene
 
 # deepImpute
 /home/yuanhao/softwares/memusg python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/deepImpute.py \
