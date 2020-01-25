@@ -42,11 +42,9 @@ gene_filter = np.bitwise_and(expressed_cell >= min_expressed_cell, gene_expressi
 input_gene_bc_mat = gene_bc_mat[gene_filter, :]
 print(input_gene_bc_mat.shape)
 # dimension = (cells x genes)
-data = pd.DataFrame(input_gene_bc_mat, index=gene_name[gene_filter], columns=cell_id).T
-print(data)
-imputed = deepImpute(data, NN_lim='auto', ncores=FLAGS["n_cores"], cell_subset=1)
-print(imputed)
-input_loom_name = FLAGS["filt_loom"].rsplit("/", 1)[1]
+input_pd = pd.DataFrame(input_gene_bc_mat).T
+imputed = deepImpute(input_pd, NN_lim='auto', ncores=FLAGS["n_cores"], cell_subset=1)
+input_loom_name = FLAGS["loom"].rsplit("/", 1)[1]
 output_h5 = input_loom_name.replace(".loom", "_deepImpute_mc_{}_mce_{}.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))
 with h5py.File("{}/{}".format(output_dir, output_h5), "w") as f:
     f["cell_id"] = cell_id.astype(h5py.special_dtype(vlen=str))
