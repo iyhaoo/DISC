@@ -9,7 +9,7 @@ print(length(use_genes))
 print(use_genes)
 dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
 used_cells = colnames(dataset_list[["Raw"]])
-### our imputation
+### DISC
 our_result = "/home/yuanhao/DISC_imputation_result/SSCORTEX/result/imputation.loom"
 dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### theirs
@@ -18,11 +18,12 @@ set.seed(42)
 dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
 dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_MAGIC_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_DCA_mc_10_mce_1.hdf5", use_genes, used_cells)
+dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scScope_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
-### loaded
-method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
-method_color = c("gray80", "red", "blue4", "yellow4", "green", "purple", "cyan")
+### Output settings
+method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_color = c("gray80", "red", "blue4", "yellow4", "green", "orange", "purple", "cyan")
 names(method_color) = method_names
 bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
@@ -246,7 +247,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   nbin = 128
   x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
   y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in c("Raw", "FISH", "DISC", "SAVER", "MAGIC", "scVI", "DCA", "scScope")){
+  for(jj in method_names){
     if(jj == "DISC"){
       col.main = "red"
     }else{

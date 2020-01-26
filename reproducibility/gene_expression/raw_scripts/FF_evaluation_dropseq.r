@@ -18,11 +18,12 @@ set.seed(42)
 dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
 dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_MAGIC_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_DCA_mc_10_mce_1.hdf5", use_genes, used_cells)
+dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scScope_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
 ### Output settings
-method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
-method_color = c("gray80", "red", "blue4", "yellow4", "green", "purple", "cyan")
+method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_color = c("gray80", "red", "blue4", "yellow4", "green", "orange", "purple", "cyan")
 names(method_color) = method_names
 bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
@@ -246,7 +247,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   nbin = 128
   x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
   y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in c("Raw", "FISH", "DISC", "SAVER", "MAGIC", "scVI", "DCA", "scScope")){
+  for(jj in method_names){
     if(jj == "DISC"){
       col.main = "red"
     }else{
