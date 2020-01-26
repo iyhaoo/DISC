@@ -1,5 +1,5 @@
 args<-commandArgs(trailingOnly=TRUE)
-if(length(args) != 4){
+if(length(args) < 2){
   stop("R --slave < this_code.r --args <loom> <cell/gene> <min_expressed_cell> <min_expressed_cell_average_expression>")
 }
 source("/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utilities.r")
