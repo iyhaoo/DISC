@@ -1,6 +1,6 @@
 args<-commandArgs(trailingOnly=TRUE)
-if(length(args) != 2){
-  stop("R --slave < this_code.r --args <loom> <cell/gene>")
+if(length(args) != 4){
+  stop("R --slave < this_code.r --args <loom> <cell/gene> <min_expressed_cell> <min_expressed_cell_average_expression>")
 }
 source("/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utilities.r")
 library(VIPER)
@@ -12,9 +12,23 @@ method_dir = paste0(dir_path, "/imputation/VIPER_tmp")
 dir.create(output_dir, recursive = T, showWarnings = F)
 dir.create(method_dir, showWarnings = F)
 print(loom_path)
-min_expressed_cell = 10
-min_expressed_cell_average_expression = 1
-output_h5 = paste(output_dir, sub(".loom", paste0("_VIPER_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".hdf5"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
+if(length(args) >= 3){
+  min_expressed_cell = as.integer(args[3])
+}else{
+  min_expressed_cell = 10
+}
+if(length(args) >= 4){
+  min_expressed_cell_average_expression = as.numeric(args[4])
+}else{
+  min_expressed_cell_average_expression = 1
+}
+if(args[2] == "cell"){
+  output_h5 = paste(output_dir, sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".hdf5"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
+}else if(args[2] == "gene"){
+  output_h5 = paste(output_dir, sub(".loom", paste0("_VIPER_gene_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".hdf5"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
+}else{
+  stop("args[2] must be cell or gene")
+}
 print(output_h5)
 if(file.exists(output_h5)){
   print("pass")
@@ -41,7 +55,7 @@ if(args[2] == "cell"){
   imputed_mat = res$imputed
   out_dir = paste(method_dir, sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
   output_rds_name = sub(".loom", paste0("_VIPER_cell_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".rds"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE)
-}else if(args[2] == "gene"){
+}else{
   res = VIPER(t(filt_data), num = 1000, percentage.cutoff = 0.5, minbool = FALSE, alpha = 0.5, report = FALSE, outdir = out_dir, prefix = NULL)
   colnames(res$imputed_log) = gene_name_filt
   colnames(res$imputed) = gene_name_filt
@@ -50,8 +64,6 @@ if(args[2] == "cell"){
   imputed_mat = t(res$imputed)
   out_dir = paste(method_dir, sub(".loom", paste0("_VIPER_gene_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
   output_rds_name = sub(".loom", paste0("_VIPER_gene_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".rds"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE)
-}else{
-  stop("args[2] must be cell or gene")
 }
 dir.create(out_dir, showWarnings = F, recursive = T)
 saveRDS(res, paste(method_dir, output_rds_name, sep = "/"))
