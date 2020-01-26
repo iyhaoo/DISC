@@ -12,7 +12,7 @@ used_cells = colnames(dataset_list[["Raw"]])
 ### DISC
 our_result = "/home/yuanhao/DISC_imputation_result/SSCORTEX/result/imputation.loom"
 dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
-### theirs
+### Other methods
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/SAVER_tmp/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_SAVER_mc_10_mce_1.rds")
 set.seed(42)
 dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
@@ -192,8 +192,8 @@ for(ii in plot_genes){
     lines(use_density[[this_density_name]], lwd = 3, col=method_color[this_density_name])
   }
   if(ii %in% plot_genes[mfrow[2] + (mfrow[1] * mfrow[2] * seq(0, floor(length(plot_genes) / mfrow[1] * mfrow[2])))]){
-    legend("topright", c("RNA FISH", names(use_density)), lty = rep(1, 1 + length(names(use_density))),
-           lwd = rep(3, 1 + length(names(use_density))), col = c("gray80", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
+    legend("topright", c("FISH", names(use_density)), lty = c(4, rep(1, length(names(use_density)))),
+           lwd = rep(3, 1 + length(names(use_density))), col = c("black", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
   }
 }
 dev.off()

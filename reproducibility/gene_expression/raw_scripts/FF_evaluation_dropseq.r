@@ -192,8 +192,8 @@ for(ii in plot_genes){
     lines(use_density[[this_density_name]], lwd = 3, col=method_color[this_density_name])
   }
   if(ii %in% plot_genes[mfrow[2] + (mfrow[1] * mfrow[2] * seq(0, floor(length(plot_genes) / mfrow[1] * mfrow[2])))]){
-    legend("topright", c("RNA FISH", names(use_density)), lty = rep(1, 1 + length(names(use_density))),
-           lwd = rep(3, 1 + length(names(use_density))), col = c("gray80", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
+    legend("topright", c("FISH", names(use_density)), lty = c(4, rep(1, length(names(use_density)))),
+           lwd = rep(3, 1 + length(names(use_density))), col = c("black", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
   }
 }
 dev.off()
