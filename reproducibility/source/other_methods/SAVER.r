@@ -81,7 +81,7 @@ h5createDataset(file = output_h5,
                 dataset = "imputation", 
                 dims = c(length(gene_name_filt), length(cell_id)),
                 storage.mode = "double",
-                chunk=c(length(gene_name_filt),1))
+                chunk=c(length(gene_name_filt), 1))
 h5write(cell_id, output_h5,"cell_id")
 h5write(gene_name_filt, output_h5,"gene_name")
 h5write(gamma_res, file=output_h5, name="imputation")

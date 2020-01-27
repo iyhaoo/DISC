@@ -1,9 +1,8 @@
 args<-commandArgs(trailingOnly=TRUE)
-if(length(args) != 2){
-  stop("R --slave < this_code.r --args <filtdata_dir> <use_core>")
+if(length(args) < 2){
+  stop("R --slave < this_code.r --args <loom> <use_core> <min_expressed_cell> <min_expressed_cell_average_expression>")
 }
 library(scImpute)
-library(loomR)
 library(rhdf5)
 
 delete_last_element <- function(x){
@@ -23,8 +22,16 @@ method_dir = paste0(dir_path, "/imputation/scImpute_tmp")
 dir.create(output_dir, recursive = T, showWarnings = F)
 dir.create(method_dir, showWarnings = F)
 print(loom_path)
-min_expressed_cell = 10
-min_expressed_cell_average_expression = 1
+if(length(args) >= 3){
+  min_expressed_cell = as.integer(args[3])
+}else{
+  min_expressed_cell = 10
+}
+if(length(args) >= 4){
+  min_expressed_cell_average_expression = as.numeric(args[4])
+}else{
+  min_expressed_cell_average_expression = 1
+}
 output_h5 = paste(output_dir, sub(".loom", paste0("_scImpute_mc_", min_expressed_cell, "_mce_", min_expressed_cell_average_expression, ".hdf5"), get_last_element(unlist(strsplit(loom_path, "/", fixed = T))), fixed = TRUE), sep = "/")
 print(output_h5)
 if(file.exists(output_h5)){
@@ -71,3 +78,5 @@ h5write(cell_id, output_h5,"cell_id")
 h5write(gene_name_filt, output_h5,"gene_name")
 h5write(impute_result, file=output_h5, name="imputation")
 print(Sys.time() - starttime)
+
+
