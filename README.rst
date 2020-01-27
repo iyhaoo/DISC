@@ -81,7 +81,7 @@ Quick Start
 
     * ``models``: a directory for trained models in every save interval
 
-Data availability
+`Data availability`_
   We provide `loom-formatted`_ original, raw, down-sampled (DS), imputed raw/DS RNA-seq data and FISH data.
 
   * MELANOMA :
@@ -198,6 +198,7 @@ History
 .. _pandas: https://pandas.pydata.org/
 .. _h5py: https://www.h5py.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
+.. _`Data availability`: https://github.com/iyhaoo/DISC_data_availability/
 .. _`loom-formatted`: http://loompy.org/
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
