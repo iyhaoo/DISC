@@ -3,6 +3,7 @@ if(length(args) < 2){
   stop("R --slave < this_code.r --args <loom> <use_core> <min_expressed_cell> <min_expressed_cell_average_expression>")
 }
 source("/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utilities.r")
+library(doParallel)
 library(SAVER)
 starttime = Sys.time()
 loom_path = args[1]
