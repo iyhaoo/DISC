@@ -1,4 +1,4 @@
-from deepimpute.multinet import MultiNet
+from deepimpute.deepImpute import deepImpute
 import numpy as np
 import h5py
 import pandas as pd
@@ -43,9 +43,7 @@ input_gene_bc_mat = gene_bc_mat[gene_filter, :]
 print(input_gene_bc_mat.shape)
 # dimension = (cells x genes)
 input_pd = pd.DataFrame(input_gene_bc_mat).T
-model = MultiNet(ncores=FLAGS["ncores"])
-model.fit(input_pd)
-imputed = model.predict(input_pd)
+imputed = deepImpute(input_pd, NN_lim='auto', ncores=FLAGS["ncores"], cell_subset=1)
 input_loom_name = FLAGS["loom"].rsplit("/", 1)[1]
 output_h5 = input_loom_name.replace(".loom", "_deepImpute_mc_{}_mce_{}.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))
 with h5py.File("{}/{}".format(output_dir, output_h5), "w") as f:
