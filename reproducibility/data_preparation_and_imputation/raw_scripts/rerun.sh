@@ -46,6 +46,13 @@ python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/sing
 --min-expressed-cell=10
 
 
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom 16 10 1
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/raw.loom 16 10 1
+
+
 
 
 
