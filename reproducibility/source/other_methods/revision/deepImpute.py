@@ -44,8 +44,8 @@ print(input_gene_bc_mat.shape)
 # dimension = (cells x genes)
 input_pd = pd.DataFrame(input_gene_bc_mat).T
 model = MultiNet(ncores=FLAGS["ncores"])
-model.fit(input_pd, genes_to_impute=input_pd.columns.values)
-imputed = model.predict(input_pd, imputed_only=True)
+model.fit(input_pd)
+imputed = model.predict(input_pd)
 print(imputed)
 input_loom_name = FLAGS["loom"].rsplit("/", 1)[1]
 output_h5 = input_loom_name.replace(".loom", "_deepImpute_mc_{}_mce_{}.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))
