@@ -787,7 +787,9 @@ correlogram_plot = function(correlation_matrix, xlab = "", ylab = "", main = "",
 }
 
 layout_correlogram_plot = function(cor_all, lab_cex = 3, this_xlab = "Gene2", this_ylab = "Gene1", plot_width = 3.5, plot_height = 4, plot_row = 2, use_order=NULL, ...){
-  plot_region = t(matrix(seq(length(cor_all)), ncol = plot_row))
+  plot_region_raw = matrix(0, ncol = plot_row, nrow = ceiling(length(cor_all) / plot_row))
+  plot_region_raw[1:length(cor_all)] = seq(length(cor_all))
+  plot_region = t(plot_region_raw)
   this_height = rep(plot_height, nrow(plot_region))
   this_width = rep(plot_width, ncol(plot_region))
   this_index = max(plot_region)
