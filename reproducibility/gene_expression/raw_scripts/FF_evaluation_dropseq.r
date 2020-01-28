@@ -15,14 +15,14 @@ dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### Other methods
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/melanoma/imputation/SAVER_tmp/dropseq_filt_ls_SAVER_mc_10_mce_1.rds")
 set.seed(42)
-dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
-dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_scImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_VIPER_gene_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_MAGIC_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_DCA_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scScope_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
+dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, ]
+dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_scImpute_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_VIPER_gene_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_MAGIC_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_DCA_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scScope_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scVI_mc_10_mce_1.hdf5", use_genes)
 ### Output settings
 method_names = c("Raw", "DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
 method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")

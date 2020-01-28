@@ -15,14 +15,14 @@ dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### Other methods
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/SAVER_tmp/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_SAVER_mc_10_mce_1.rds")
 set.seed(42)
-dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
-dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_scImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_VIPER_gene_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_MAGIC_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_DCA_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scScope_mc_10_mce_1.hdf5", use_genes, used_cells)
-dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
+dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, ]
+dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_scImpute_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_VIPER_gene_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_MAGIC_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_DCA_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scScope_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scVI_mc_10_mce_1.hdf5", use_genes)
 ### Output settings
 method_names = c("Raw", "DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
 method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
