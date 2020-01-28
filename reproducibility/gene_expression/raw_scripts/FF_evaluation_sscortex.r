@@ -16,14 +16,16 @@ dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/SAVER_tmp/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_SAVER_mc_10_mce_1.rds")
 set.seed(42)
 dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
+dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_scImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
+dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_VIPER_gene_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_MAGIC_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_DCA_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scScope_mc_10_mce_1.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_scVI_mc_10_mce_1.hdf5", use_genes, used_cells)
 ### Output settings
-method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
-method_color = c("gray80", "red", "blue4", "yellow4", "green", "orange", "purple", "cyan")
+method_names = c("Raw", "DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
 names(method_color) = method_names
 bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
@@ -45,7 +47,7 @@ for(ii in c("FISH", method_names)){
 }
 for(ii in use_genes){
   for(jj in use_genes){
-    cat(ii, "\t", jj, "\n")
+    #cat(ii, "\t", jj, "\n")
     for(kk in c("FISH", method_names)){
       if(kk == "SAVER"){
         cor_all[["SAVER"]][ii, jj] = cor(dataset_list[["SAVER_gamma"]][ii, ], dataset_list[["SAVER_gamma"]][jj, ], use = "pairwise.complete.obs")
@@ -63,7 +65,7 @@ for(ii in 1:length(use_genes)){
 fish_mask = as.vector(fish_mask_mat)
 fish_gene_mat = apply(fish_mask_mat, 1, names)
 outfile = paste0(outdir, "/correlation_map.pdf")
-mfrow = c(2, 4)
+mfrow = c(2, 5)
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
 dev.off()
@@ -73,7 +75,7 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
   x[is.na(x)] = 0
   return(x)
 })[t(t(fish_gene_mat) != colnames(fish_gene_mat))], nrow = nrow(cor_all[["FISH"]]) - 1, ncol = ncol(cor_all[["FISH"]]), dimnames = list(c(), colnames(cor_all[["FISH"]])))), decreasing = T)
-pdf(outfile, height = 7, width = 12.5)
+pdf(outfile, height = 7, width = 17)
 cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
 dev.off()
 names(cmd_vector) = names(cor_all)
@@ -147,7 +149,7 @@ for(ii in names(saver_style_filt_norm_list)){
 color_point = c("#31a354", "#a63603")
 names(color_point) = example_gene
 outfile = paste0(outdir, "/Gini.pdf")
-mfrow = c(2, 4)
+mfrow = c(2, 5)
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
 dev.off()
@@ -182,7 +184,7 @@ for(ii in plot_genes){
     }
     ks_matrix[ii, method_index] = ks.test(delete_lt0.5(this_method_expression), delete_lt0.5(this_fish))$statistic
   }
-  plot(fish_density, lwd = 4, col = "gray80",
+  plot(fish_density, lwd = 2, col = "black", lty = 1,
        xlim = c(min(fish_density$x, 0), xlim_max + 5),
        ylim = c(0, ylim_max), yaxt = "s", bty="n",
        main = paste0(firstup(ii), " (", zero_proportion, "%)"),
@@ -192,7 +194,7 @@ for(ii in plot_genes){
     lines(use_density[[this_density_name]], lwd = 3, col=method_color[this_density_name])
   }
   if(ii %in% plot_genes[mfrow[2] + (mfrow[1] * mfrow[2] * seq(0, floor(length(plot_genes) / mfrow[1] * mfrow[2])))]){
-    legend("topright", c("FISH", names(use_density)), lty = c(4, rep(1, length(names(use_density)))),
+    legend("topright", c("FISH", names(use_density)), lty = rep(1, 1 + length(names(use_density))),
            lwd = rep(3, 1 + length(names(use_density))), col = c("black", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
   }
 }
@@ -208,7 +210,7 @@ dev.off()
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
 dir.create(dist_outdir, showWarnings = F)
-mfrow = c(2, 4)
+mfrow = c(2, 5)
 pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
 library(parallel)
 no_cores <- detectCores() - 1
@@ -290,7 +292,7 @@ saveRDS(ks_stat_mat, paste(outdir, "/ks_stat_mat.rds", sep = ""))
 mean_ks_stat = Matrix::colMeans(ks_stat_mat)
 standard_error_ks_stat = apply(ks_stat_mat, 2, function(x) sqrt(var(x)/length(x)))
 outfile = paste(outdir, "/score_compare.pdf", sep = "")
-pdf(outfile, height = 5, width = 9)
+pdf(outfile, height = 5, width = 11)
 par(mfrow = c(1, 2))
 barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5,bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks_stat)
 corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
@@ -298,7 +300,7 @@ barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.
 dev.off()
 
 outfile = paste(outdir, "/Bar_plot.pdf", sep = "")
-pdf(outfile, height = 3, width = 8)
+pdf(outfile, height = 3, width = 9.5)
 plot_height = 4
 plot_width = 3.5
 plot_region = matrix(seq(3), nrow = 1)

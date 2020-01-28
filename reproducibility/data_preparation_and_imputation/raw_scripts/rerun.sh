@@ -410,3 +410,83 @@ disc \
 
 
 
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/melanoma/ds/downsampling_first_repeat_1/dropseq_filt_ls_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/melanoma/ds/downsampling_first_repeat_2/dropseq_filt_ls_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/melanoma/ds/downsampling_first_repeat_3/dropseq_filt_ls_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/melanoma/ds/downsampling_first_repeat_4/dropseq_filt_ls_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/melanoma/ds/downsampling_first_repeat_5/dropseq_filt_ls_ds_0.5.loom 16
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds/downsampling_first_repeat_1/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds/downsampling_first_repeat_2/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds/downsampling_first_repeat_3/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds/downsampling_first_repeat_4/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds/downsampling_first_repeat_5/L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_ds_0.5.loom 16
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/CITE-seq/downsampling_first_repeat_1/GSE100866_CBMC_8K_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/CITE-seq/downsampling_first_repeat_2/GSE100866_CBMC_8K_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/CITE-seq/downsampling_first_repeat_3/GSE100866_CBMC_8K_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/CITE-seq/downsampling_first_repeat_4/GSE100866_CBMC_8K_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/CITE-seq/downsampling_first_repeat_5/GSE100866_CBMC_8K_filtered_ds_0.5.loom 16
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.5.loom 16
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.5.loom 16
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
