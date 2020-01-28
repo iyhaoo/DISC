@@ -47,10 +47,15 @@ scimpute(# full path to raw count matrix
   count_path = rds_file, 
   infile = "rds",           # format of input file
   outfile = "rds",          # format of output file
-  out_dir = out_dir,           # full path to output directory
-  drop_thre = 0.5,          # threshold set on dropout probability
-  Kcluster = 1,
-  ncores = use_core)              # number of cores used in parallel computation   3g/cpu
+  out_dir = out_dir,        # full path to output directory
+  labeled = FALSE,          # cell type labels not available
+  drop_thre = 0.5,          # The second parameter is drop_thre. Only the values that have dropout probability larger
+                            # than drop_thre are imputed by scImpute. A default threshold drop_thre = 0.5 is sufficient
+                            # for most scRNA-seq data.
+  Kcluster = 2,             # The number of initial clusters to help identify candidate neighbors of each cell.
+                            # The imputation results does not heavily rely on the choice of Kcluster, since scImpute
+                            # uses a model-based method to select similar cells in a later stage.
+  ncores = use_core)        # number of cores used in parallel computation   3g/cpu
 saveRDS(filt_data, rds_file)
 impute_path = paste(out_dir, "scimpute_count.rds", sep = "/")
 imputed_mat = readRDS(impute_path)
