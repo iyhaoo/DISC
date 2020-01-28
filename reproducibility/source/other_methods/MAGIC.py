@@ -25,6 +25,7 @@ def read_loom(loom_path):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--loom', required=True, type=str, help="Loom")
+parser.add_argument('--ncores', required=False, type=int, default=16, help="Number of cores.")
 parser.add_argument('--min-expressed-cell', required=False, type=int, default=10, help="min-expressed-cell")
 parser.add_argument("--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
 FLAGS = vars(parser.parse_args())
@@ -45,7 +46,7 @@ raw_library_size = np.asarray(bc_gene_filtered.sum(0)).astype(np.float32)
 bc_gene_norm = bc_gene_filtered / raw_library_size * np.median(raw_library_size.squeeze())
 bc_gene_norm_sqrt = np.sqrt(bc_gene_norm)
 pd_input_norm_sqrt = pd.DataFrame(bc_gene_norm_sqrt, columns=gene_name[gene_filter])
-magic_operator = magic.MAGIC()
+magic_operator = magic.MAGIC(n_jobs=FLAGS["ncores"])
 impute_norm_sqrt = magic_operator.fit_transform(bc_gene_norm_sqrt)
 impute_norm = np.square(impute_norm_sqrt)
 input_loom_name = FLAGS["loom"].rsplit("/", 1)[1]
