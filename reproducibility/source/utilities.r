@@ -760,6 +760,32 @@ calc_cmd = function(R1, R2) {
   return(1 - traceR1R2 / (R1.norm * R2.norm))
 }
 
+calc_corr = function(ref_gene_bc_mat, test_gene_bc_mat, type){
+  if(dimnames(ref_gene_bc_mat) != dimnames(test_gene_bc_mat)){
+    stop("dimnames(ref_gene_bc_mat) != dimnames(test_gene_bc_mat)")
+  }
+  if(type == "cell"){
+    ref_mat = t(ref_gene_bc_mat)
+    test_mat = t(test_gene_bc_mat)
+  }else if(type == "gene"){
+    ref_mat = ref_gene_bc_mat
+    test_mat = test_gene_bc_mat
+  }else{
+    stop("Unknown type.")
+  }
+  number = ncol(ref_mat)
+  corr_vec = c()
+  for(ii in seq(number)){
+    ref_expression = ref_mat[ii, ]
+    ref_expressed_mask = ref_expression != 0
+    ref_expressed_entries = ref_expression[ref_expressed_mask]
+    if(length(table(ref_expressed_entries)) > 1 & length(ref_expressed_entries) >= (0.1 * number)){
+      corr_vec = c(corr_vec, cor(ref_expressed_entries, test_mat[ii, ref_expressed_mask], method = "pearson"))
+    }
+  }
+  return(corr_vec)
+}
+
 make_mfrow = function(n_row, n){
   return(c(n_row, ceiling(n / n_row)))
 }

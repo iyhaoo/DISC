@@ -108,14 +108,14 @@ for(ii in names(data_list)){
   print(ii)
 }
 saveRDS(cor_all, paste0(CMD_output_dir, "/cor_all.rds"))
-cmd_result = c()
-for(method in method_names){
-  cmd_result = c(cmd_result, calc_cmd(cor_all[["Raw"]], cor_all[[method]]))
+cmd_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
+for(ii in method_names){
+  for(jj in repeats){
+    cmd_mat[ii, jj] = calc_cmd(cor_all[["Raw"]], cor_all[[ii]][[jj]])
+  }
 }
-names(cmd_result) = method_names
-print(cmd_result)
 pdf(paste0(output_dir, "/CMD.pdf"), height = 5, width = 4.5)
-barplot_usage(cmd_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Gene correlation
 gene_correlation_mat = matrix(nrow = gene_number, ncol = length(method_names), dimnames = list(compare_gene, method_names))
