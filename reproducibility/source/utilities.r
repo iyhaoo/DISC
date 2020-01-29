@@ -347,6 +347,10 @@ delete_lt0.5 = function(gene_bc_mat){
   return(gene_bc_mat)
 }
 
+ste = function(x){
+  return(sqrt(var(x)/length(x)))
+}
+
 rmse = function(x, y){
   return(sqrt(mean((x - y)^2)))
 }
