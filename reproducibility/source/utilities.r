@@ -761,8 +761,8 @@ calc_cmd = function(R1, R2) {
 }
 
 calc_corr = function(ref_gene_bc_mat, test_gene_bc_mat, type){
-  if(dimnames(ref_gene_bc_mat) != dimnames(test_gene_bc_mat)){
-    stop("dimnames(ref_gene_bc_mat) != dimnames(test_gene_bc_mat)")
+  if(!all.equal(dimnames(ref_gene_bc_mat), dimnames(test_gene_bc_mat))){
+    stop("!all.equal(dimnames(ref_gene_bc_mat), dimnames(test_gene_bc_mat))")
   }
   if(type == "cell"){
     ref_mat = t(ref_gene_bc_mat)

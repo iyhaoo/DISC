@@ -79,7 +79,7 @@ for(ii in method_names){
   }
   print(mae_eq0[ii, ])
 }
-pdf(paste0(output_dir, "/MAE.pdf"), height = 5, width = 4.5)
+pdf(paste0(output_dir, "/MAE.pdf"), height = 6, width = 5)
 barplot_usage(rowMeans(mae_eq0), standard_error = apply(mae_eq0, 1, ste), main = "Zero entries", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "Log (MAE + 1)", use_log1p = T, cex.lab = 1.5, font.main = 1)
 dev.off()
 ### CMD
@@ -114,25 +114,19 @@ for(ii in method_names){
     cmd_mat[ii, jj] = calc_cmd(cor_all[["Raw"]], cor_all[[ii]][[jj]])
   }
 }
-pdf(paste0(output_dir, "/CMD.pdf"), height = 5, width = 4.5)
+pdf(paste0(output_dir, "/CMD.pdf"), height = 6, width = 5)
 barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Gene correlation
-gene_correlation_mat = matrix(nrow = gene_number, ncol = length(method_names), dimnames = list(compare_gene, method_names))
-
-for(method in method_names){
-  for(ii in compare_gene){
-  	raw_expression = data_list[["Raw"]][ii, ]
-  	raw_expressed_mask = raw_expression != 0
-  	raw_expressed_entries = raw_expression[raw_expressed_mask]
-  	if(length(table(raw_expressed_entries)) > 1 & length(raw_expressed_entries) >= (0.1 * cell_number)){
-    	gene_correlation_mat[ii, method] <- cor(raw_expressed_entries, data_list[[method]][ii, raw_expressed_mask], method = "pearson")
-  	}
+gene_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
+for(ii in method_names){
+  for(jj in repeats){
+    gene_corr_mat[ii, jj] = mean(calc_corr(cor_all[["Raw"]], cor_all[[ii]][[jj]], "gene"), na.rm = T)
   }
-  print(method)
+  print(ii)
 }
 print(colMeans(gene_correlation_mat, na.rm = T))
-pdf(paste0(output_dir, "/CORR_GENE.pdf"), height = 5, width = 4.5)
+pdf(paste0(output_dir, "/CORR_GENE.pdf"), height = 6, width = 5)
 barplot_usage(colMeans(gene_correlation_mat, na.rm = T), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Cell correlation
@@ -149,7 +143,7 @@ for(method in method_names){
   print(method)
 }
 print(colMeans(cell_correlation_mat, na.rm = T))
-pdf(paste0(output_dir, "/CORR_CELL.pdf"), height = 5, width = 4.5)
+pdf(paste0(output_dir, "/CORR_CELL.pdf"), height = 6, width = 5)
 barplot_usage(colMeans(cell_correlation_mat, na.rm = T), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Cell correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 
