@@ -712,14 +712,52 @@ barplot_usage_new = function(data_vector, main, bar_color, use_log1p=F, use_data
   }
 }
 
-calc_cmd <- function(R1, R2) {
+calc_cor_mat = function(input_mat){
+  used_feature_genes = rownames(input_mat)
+  cor_mat = matrix(nrow = length(used_feature_genes), ncol = length(used_feature_genes), dimnames = list(used_feature_genes, used_feature_genes))
+  no_cores <- detectCores() - 1
+  cl <- makeCluster(no_cores)
+  this_env = new.env()
+  assign("input_mat", input_mat, envir = this_env)
+  clusterExport(cl, varlist = c("input_mat"), envir = this_env)
+  return_list = parLapply(cl, seq(nrow(input_mat) - 1), function(x){
+    return_vector = rep(NA, nrow(input_mat) - x)
+    ii_express = input_mat[x, ]
+    ii_mask = ii_express > 0
+    for(jj in (x + 1):nrow(input_mat)){
+      jj_express = input_mat[jj, ]
+      express_mask = ii_mask | jj_express > 0
+      if(sum(express_mask) > 0){
+        this_corr = cor(ii_express[express_mask], jj_express[express_mask], use = "pairwise.complete.obs")
+        if(is.na(this_corr)){
+          return_vector[jj - x] = 0
+        }else{
+          return_vector[jj - x] = this_corr
+        }
+      }else{
+        return_vector[jj - x] = 0
+      }
+    }
+    return(list("return_vector" = return_vector))
+  })
+  stopCluster(cl)
+  cor_mat[1, 1] = 1
+  for(ii in 1:length(return_list)){
+    cor_mat[ii, (ii + 1): nrow(input_mat)] = return_list[[ii]][["return_vector"]]
+    cor_mat[(ii + 1): nrow(input_mat), ii] = return_list[[ii]][["return_vector"]]
+    cor_mat[(ii + 1), (ii + 1)] = 1
+  }
+  return(cor_mat)
+}
+
+calc_cmd = function(R1, R2) {
   na_mask = is.na(R1) | is.na(R2)
   R1[na_mask] = 0
   R2[na_mask] = 0
-  traceR1R2 <- sum(R1 * t(R2))
-  R1.norm <- norm(R1, type = "F")
-  R2.norm <- norm(R2, type = "F")
-  return(1-traceR1R2/(R1.norm*R2.norm))
+  traceR1R2 = sum(R1 * t(R2))
+  R1.norm = norm(R1, type = "F")
+  R2.norm = norm(R2, type = "F")
+  return(1 - traceR1R2 / (R1.norm * R2.norm))
 }
 
 make_mfrow = function(n_row, n){

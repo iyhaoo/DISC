@@ -96,44 +96,16 @@ if(file.exists(vst_file)){
 }
 used_feature_genes = rownames(hvg_info)[1:300]
 cor_all = list()
-for(method in names(data_list)){
-  cor_all[[method]] = matrix(nrow = length(used_feature_genes), ncol = length(used_feature_genes), dimnames = list(used_feature_genes, used_feature_genes))
-  this_mat = delete_lt0.5(data_list[[method]])[used_feature_genes, ]
-  no_cores <- detectCores() - 1
-  cl <- makeCluster(no_cores)
-  clusterExport(cl, varlist = c("this_mat", "method"))
-  return_list = parLapply(cl, seq(nrow(this_mat) - 1), function(x){
-    return_vector = rep(NA, nrow(this_mat) - x)
-    ii_express = this_mat[x, ]
-    ii_mask = ii_express > 0
-    for(jj in (x + 1):nrow(this_mat)){
-      jj_express = this_mat[jj, ]
-      if(method %in% c("")){
-        express_mask = rep(T, length(ii_mask))
-      }else{
-        express_mask = ii_mask | jj_express > 0
-      }
-      if(sum(express_mask) > 0){
-        this_corr = cor(ii_express[express_mask], jj_express[express_mask], use = "pairwise.complete.obs")
-        if(is.na(this_corr)){
-          return_vector[jj - x] = 0
-        }else{
-          return_vector[jj - x] = this_corr
-        }
-      }else{
-        return_vector[jj - x] = 0
-      }
+for(ii in names(data_list)){
+  if(ii == "Raw"){
+    cor_all[[ii]] = calc_cor_mat(data_list[[ii]][used_feature_genes, ])
+  }else{
+    cor_all[[ii]] = list()
+    for(jj in repeats){
+      cor_all[[ii]][[jj]] = calc_cor_mat(delete_lt0.5(data_list[[ii]][[jj]])[used_feature_genes, ])
     }
-    return(list("return_vector" = return_vector))
-  })
-  stopCluster(cl)
-  cor_all[[method]][1, 1] = 1
-  for(jj in 1:length(return_list)){
-    cor_all[[method]][jj, (jj + 1): nrow(this_mat)] = return_list[[jj]][["return_vector"]]
-    cor_all[[method]][(jj + 1): nrow(this_mat), jj] = return_list[[jj]][["return_vector"]]
-    cor_all[[method]][(jj + 1), (jj + 1)] = 1
   }
-  print(method)
+  print(ii)
 }
 saveRDS(cor_all, paste0(CMD_output_dir, "/cor_all.rds"))
 cmd_result = c()
