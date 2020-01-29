@@ -77,7 +77,7 @@ for(ii in method_names){
     }))
     mae_eq0[ii, jj] = sae_eq0 / eq0
   }
-  print(mae_eq0[ii, ])
+  print(ii)
 }
 pdf(paste0(output_dir, "/MAE.pdf"), height = 6, width = 5)
 barplot_usage(rowMeans(mae_eq0), standard_error = apply(mae_eq0, 1, ste), main = "Zero entries", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "Log (MAE + 1)", use_log1p = T, cex.lab = 1.5, font.main = 1)
