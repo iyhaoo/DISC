@@ -614,6 +614,18 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
       standard_error = standard_error[data_order]
     }
   }
+  if(is.null(ylim)){
+    if(is.null(standard_error)){
+      ylim = c(NA, max(plot_data) * 1.01)
+    }else{
+      ylim = c(NA, max(plot_data + plot_data_up) * 1.01)
+    }
+    if(!is.null(text_color)){
+      ylim[1] = -0.1 * ylim[2]
+    }else{
+      ylim[1] = 0
+    }
+  }
   if(use_log1p){
     plot_data = log1p(data_vector)
     ylim = log1p(ylim)
@@ -626,18 +638,6 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
     if(!is.null(standard_error)){
       plot_data_up = data_vector + standard_error
       plot_data_down = data_vector - standard_error
-    }
-  }
-  if(is.null(ylim)){
-    if(is.null(standard_error)){
-      ylim = c(NA, max(plot_data) * 1.01)
-    }else{
-      ylim = c(NA, max(plot_data + plot_data_up) * 1.01)
-    }
-    if(!is.null(text_color)){
-      ylim[1] = -0.1 * ylim[2]
-    }else{
-      ylim[1] = 0
     }
   }
   if(use_border){
@@ -676,11 +676,11 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
 }
 
 
-barplot_usage_new = function(data_vector, main, method_color, use_log1p=F, use_data_order=F, decreasing=F, standard_error=NULL, cex.main = 2, ylim = NULL, ...){
+barplot_usage_new = function(data_vector, main, bar_color, use_log1p=F, use_data_order=F, decreasing=F, standard_error=NULL, cex.main=2, ylim=NULL, ...){
   data_order = c(1, order(data_vector[-1], decreasing = decreasing) + 1)
   if(use_data_order){
     data_vector = data_vector[data_order]
-    method_color = method_color[data_order]
+    bar_color = bar_color[data_order]
     if(!is.null(standard_error)){
       standard_error = standard_error[data_order]
     }
@@ -706,7 +706,7 @@ barplot_usage_new = function(data_vector, main, method_color, use_log1p=F, use_d
       plot_data_down = data_vector - standard_error
     }
   }
-  bp = barplot(plot_data, main = main, las=1, names.arg="", col = method_color, cex.axis = 1.2, cex.main = cex.main, border = NA, ylim = ylim, ...)
+  bp = barplot(plot_data, main = main, las=1, names.arg="", col = bar_color, cex.axis = 1.2, cex.main = cex.main, border = NA, ylim = ylim, ...)
   if(!is.null(standard_error)){
     arrows(bp, plot_data_down, bp, plot_data_up, length=0.05, angle=90, code=3)
   }

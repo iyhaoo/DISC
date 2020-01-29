@@ -63,7 +63,7 @@ names(text_color) = method_names
 text_color["DISC"] = "red"
 bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
-bar_color["Raw"] = "gray80"
+bar_color["Observed"] = "gray80"
 bar_color["DISC"] = "red"
 ### MAE
 mae_eq0 = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
@@ -80,7 +80,7 @@ for(ii in method_names){
   print(mae_eq0[ii, ])
 }
 pdf(paste0(output_dir, "/MAE.pdf"), height = 5, width = 4.5)
-barplot_usage(rowMeans(mae_eq0), standard_error = apply(mae_eq0, 1, ste), main = "Zero entries", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "MAE", cex.lab = 1.5, font.main = 1)
+barplot_usage(rowMeans(mae_eq0), standard_error = apply(mae_eq0, 1, ste), main = "Zero entries", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "Log (MAE + 1)", use_log1p = T, cex.lab = 1.5, font.main = 1)
 dev.off()
 ### CMD
 CMD_output_dir = paste0(output_dir, "/CMD")
