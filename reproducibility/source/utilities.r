@@ -1052,12 +1052,13 @@ dropout_rate_plot = function(gene_bc_mat, main){
 
 ###cell_type_mapping###
 cluster_evaluation_pbmc = function(this_markers, this_metadata, prior_cell_type=NULL){
+  print("cluster_evaluation_pbmc is deprecated, please use cell_type_identification_pbmc")
   return(cell_type_identification_pbmc(this_markers, this_metadata, prior_cell_type))
 }
 
 cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell_type=NULL){
   if(!is.null(prior_cell_type)){
-    use_cell <-intersect(rownames(this_metadata), names(prior_cell_type))
+    use_cell = intersect(rownames(this_metadata), names(prior_cell_type))
     this_metadata = this_metadata[use_cell, ]
     this_metadata$label = prior_cell_type[use_cell]
     cell_number = length(use_cell)
@@ -1066,31 +1067,31 @@ cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell
     cell_number = nrow(this_metadata)
   }
   this_markers$cluster = as.numeric(as.character(this_markers$cluster))
-  ind1 <-which(this_markers[,7]=="IL7R")
+  ind1 <-which(toupper(this_markers[,7])=="IL7R")
   a <- this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="CD14")
+  ind1 <-which(toupper(this_markers[,7])=="CD14")
   b <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="LYZ")
+  ind1 <-which(toupper(this_markers[,7])=="LYZ")
   c <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="MS4A1")
+  ind1 <-which(toupper(this_markers[,7])=="MS4A1")
   d <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="CD8A")
+  ind1 <-which(toupper(this_markers[,7])=="CD8A")
   e <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="FCGR3A")
+  ind1 <-which(toupper(this_markers[,7])=="FCGR3A")
   f <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="MS4A7")
+  ind1 <-which(toupper(this_markers[,7])=="MS4A7")
   g <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="GNLY")
+  ind1 <-which(toupper(this_markers[,7])=="GNLY")
   h <- this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="NKG7")
+  ind1 <-which(toupper(this_markers[,7])=="NKG7")
   i <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="FCER1A")
+  ind1 <-which(toupper(this_markers[,7])=="FCER1A")
   j <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="CST3")
+  ind1 <-which(toupper(this_markers[,7])=="CST3")
   k <-this_markers[ind1,][,6]
-  ind1 <-which(this_markers[,7]=="PPBP")
+  ind1 <-which(toupper(this_markers[,7])=="PPBP")
   l <-this_markers[ind1,][,6]
-  
+
   CD4 <-setdiff(a,e)
   CD14 <-intersect(b,c)
   B <-d
@@ -1099,7 +1100,7 @@ cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell
   NK <-setdiff(intersect(h,i),e)
   DC <-intersect(j,k)
   Platelet <-l
-  
+
   union <-c(CD4,CD14,B,CD8,Mono,NK,DC,Platelet)
   dup <- unique(union[duplicated(union)])
   CD41 <-setdiff(CD4,dup)
@@ -1110,9 +1111,9 @@ cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell
   NK1 <-setdiff(NK,dup)
   DC1 <-setdiff(DC,dup)
   Platelet1 <-setdiff(Platelet,dup)
-  
+
   assigned <-unique(c(CD41,CD141,B1,CD81,Mono1,NK1,DC1,Platelet1))
-  A <-unique(this_markers[,6])
+  A = unique(this_markers[,6])
   unknown = setdiff(A,assigned)
   assignment_list = list()
   assignment_list[["CD4 T"]] = CD41
@@ -1147,16 +1148,16 @@ cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell
     }
     acc_mask = this_metadata[, "assignment"] == this_metadata[, "label"]
     ACC = sum(acc_mask) / cell_number
-    ARI <-adjustedRandIndex(this_metadata[, "assignment"], this_metadata[, "label"])
+    ARI = adjustedRandIndex(this_metadata[, "assignment"], this_metadata[, "label"])
     return_list[["recall_type"]] = unique(this_metadata[acc_mask, "label"])
     return_list[["miss_type"]] = setdiff(names(cell_type_table), return_list[["recall_type"]])
     return_list[["cell_type_result"]] = result_cell_type
     recall_number = length(return_list[["recall_type"]])
     miss_number = length(return_list[["miss_type"]])
-    result_summary <-c(ACC, ARI, recall_number, miss_number, length(assigned_cluster), length(dup), length(unknown))
+    result_summary = c(ACC, ARI, recall_number, miss_number, length(assigned_cluster), length(dup), length(unknown))
     names(result_summary) = c("ACC", "ARI", "Recall", "Miss", "Assigned", "Mix", "Unknown")
   }else{
-    result_summary <-c(length(assigned_cluster), length(dup), length(unknown))
+    result_summary = c(length(assigned_cluster), length(dup), length(unknown))
     names(result_summary) = c("Assigned", "Mix", "Unknown")
     return_list[["assignment"]] = this_metadata[, "assignment"]
   }
@@ -1164,6 +1165,132 @@ cell_type_identification_pbmc = function(this_markers, this_metadata, prior_cell
   return(return_list)
 }
 
+cell_type_identification_retina = function(this_markers, this_metadata, prior_cell_type=NULL){
+  if(!is.null(prior_cell_type)){
+    use_cell = intersect(rownames(this_metadata), names(prior_cell_type))
+    this_metadata = this_metadata[use_cell, ]
+    this_metadata$label = prior_cell_type[use_cell]
+    cell_number = length(use_cell)
+  }else{
+    this_metadata$label
+    cell_number = nrow(this_metadata)
+  }
+  this_markers$cluster = as.numeric(as.character(this_markers$cluster))
+  ind1 <-which(toupper(this_markers[,7])=="LHX1")
+  a <- this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="SLC17A6")
+  b <- this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="PAX6")
+  c <- this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="GAD1")
+  d <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="SLC6A9")
+  e <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="OPN1MW")
+  f <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="VSX2")
+  g <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="RLBP1")
+  h <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="GFAP")
+  i <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="PECAM1")
+  l <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="KCNJ8")
+  m <-this_markers[ind1,][,6]
+  ind1 <-which(toupper(this_markers[,7])=="CX3CR1")
+  n <-this_markers[ind1,][,6]
+
+  Hori <-intersect(a,c)
+  Gang <-intersect(b,c)
+  Astr <-intersect(h,i)
+  Fibr <-intersect(intersect(c,e),g)
+  Vasc <-setdiff(intersect(l,m),Fibr)
+  Mull <-intersect(intersect(c,g),h)
+  Amac <-union(intersect(c,d),intersect(c,e))
+  Bipo <-setdiff(setdiff(g,Mull),Fibr)
+  Peri <-setdiff(m,Vasc)
+  Micr <-n
+  Cone <-f
+
+  union <-c(Hori,Gang,Astr,Fibr,Vasc,Mull,Amac,Bipo,Peri,Micr,Cone)
+  dup <- unique(union[duplicated(union)])
+  Hori1 <-setdiff(Hori,dup)
+  Gang1 <-setdiff(Gang,dup)
+  Astr1 <-setdiff(Astr,dup)
+  Fibr1 <-setdiff(Fibr,dup)
+  Vasc1 <-setdiff(Vasc,dup)
+  Mull1 <-setdiff(Mull,dup)
+  Amac1 <-setdiff(Amac,dup)
+  Bipo1 <-setdiff(Bipo,dup)
+  Peri1 <-setdiff(Peri,dup)
+  Micr1 <-setdiff(Micr,dup)
+  Cone1 <-setdiff(Cone,dup)
+
+  non_rod = unique(c(Hori,Gang,Astr,Fibr,Vasc,Mull,Amac,Bipo,Peri,Micr,Cone))
+  A = unique(this_markers[,6])
+  rod = setdiff(A,union(union(union(union(union(union(union(union(union(union(union(a,b),c),d),e),f),g),h),i),l),m),n))
+  assigned = unique(c(non_rod, rod))
+  unknown = setdiff(A,assigned)
+  assignment_list = list()
+  assignment_list[["Horizontal"]] = Hori1
+  assignment_list[["Retinal Ganglion"]] = Gang1
+  assignment_list[["Amacrine"]] = Amac1
+  assignment_list[["Cone"]] = Cone1
+  assignment_list[["Bipolar"]] = Bipo1
+  assignment_list[["Muller glia"]] = Mull1
+  assignment_list[["Astrocytes"]] = Astr1
+  assignment_list[["Fibroblasts"]] = Fibr1
+  assignment_list[["Vascular endothelium"]] = Vasc1
+  assignment_list[["Pericytes"]] = Peri1
+  assignment_list[["Microglia"]] = Micr1
+  assignment_list[["Rod"]] = rod
+  assignment_list[["unknown"]] = unknown
+  assignment_list[["mix"]] = dup
+  this_metadata$assignment = "outliers"
+  for(ii in names(assignment_list)){
+    this_metadata$assignment[this_metadata$seurat_clusters %in% assignment_list[[ii]]] = ii
+  }
+  this_metadata = as.matrix(this_metadata)
+  return_list = list()
+  return_list[["Rod Rate"]] = sum(this_metadata[, "assignment"] == "Rod") / cell_number
+  return_list[["Non Rod Rate"]] = sum(this_metadata[, "seurat_clusters"] %in% non_rod) / cell_number
+  return_list[["unknown Rate"]] = sum(this_metadata[, "assignment"] == "unknown") / cell_number
+  return_list[["Mixed Rate"]] = sum(this_metadata[, "assignment"] == "mix") / cell_number
+  return_list[["Outlier Rate"]] = sum(this_metadata[, "assignment"] == "outliers") / cell_number
+  assigned_cluster = setdiff(unlist(assignment_list), c(unknown, dup))
+  if(!is.null(prior_cell_type)){
+    cell_type_table = table(this_metadata[, "label"])
+    result_cell_type = matrix(nrow = length(cell_type_table), ncol = 3, dimnames = list(names(cell_type_table), c("Jaccard", "F1-score", "ACC")))
+    for(ii in names(cell_type_table)){
+      assignment_set = names(this_metadata[, "assignment"][this_metadata[, "assignment"] == ii])
+      label_set = names(this_metadata[this_metadata[, "label"] == ii, "label"])
+      result_cell_type[ii, "Jaccard"] = jaccard(assignment_set, label_set)
+      result_cell_type[ii, "F1-score"] = f1_score(assignment_set, label_set)
+      result_cell_type[ii, "ACC"] = sum(assignment_set %in% label_set) / length(label_set)
+    }
+    acc_mask = this_metadata[, "assignment"] == this_metadata[, "label"]
+    ACC = sum(acc_mask) / cell_number
+    ARI = adjustedRandIndex(this_metadata[, "assignment"], this_metadata[, "label"])
+    rod_mask = this_metadata$assignment == "Rod"
+    rod_purity = sum(purity_mask[rod_mask]) / sum(rod_mask)
+    non_rod_mask = this_metadata$assignment != "Rod"
+    non_rod_purity = sum(purity_mask[non_rod_mask]) / sum(non_rod_mask)
+    return_list[["recall_type"]] = unique(this_metadata[acc_mask, "label"])
+    return_list[["miss_type"]] = setdiff(names(cell_type_table), return_list[["recall_type"]])
+    return_list[["cell_type_result"]] = result_cell_type
+    recall_number = length(return_list[["recall_type"]])
+    miss_number = length(return_list[["miss_type"]])
+    result_summary = c(ACC, ARI, rod_purity, non_rod_purity, recall_number, miss_number, length(assigned_cluster), length(dup), length(unknown))
+    names(result_summary) = c("ACC", "ARI", "Rods", "Non-rods", "Recall", "Miss", "Assigned", "Mix", "Unknown")
+  }else{
+    result_summary = c(length(assigned_cluster), length(dup), length(unknown))
+    names(result_summary) = c("Assigned", "Mix", "Unknown")
+    return_list[["assignment"]] = this_metadata[, "assignment"]
+  }
+  return_list[["summary"]] = result_summary
+  return(return_list)
+}
 
 seurat_clustering = function(expression = NULL, feature = NULL, expression_path = NULL, feature_path = NULL,
                              cell_type_identification_fun = NULL, cell_type = NULL, gene_selection_rds = NULL,

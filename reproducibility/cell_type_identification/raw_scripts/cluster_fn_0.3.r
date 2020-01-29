@@ -27,7 +27,10 @@ if(args[6] != ""){
 if(args[7] != ""){
   switch(args[7],
          "pbmc"={
-           mapping_function = cluster_evaluation_pbmc
+           mapping_function = cell_type_identification_pbmc
+         },
+         "retina"={
+           mapping_function = cell_type_identification_retina
          },{
            stop("no such mapping")
          })
