@@ -718,6 +718,10 @@ calc_cmd <- function(R1, R2) {
   return(1-traceR1R2/(R1.norm*R2.norm))
 }
 
+make_mfrow = function(n_row, n){
+  return(c(n_row, ceiling(n / n_row)))
+}
+
 correlogram_plot = function(correlation_matrix, xlab = "", ylab = "", main = "", col.main = "black", plot.cex = 0.8, cex.axis = 0.9, diag = T, use_label = F, plot_color_legend = F, plot_NA_legend = F){
   correlation_matrix = as.matrix(correlation_matrix)
   if(!use_label){

@@ -65,7 +65,7 @@ for(ii in 1:length(use_genes)){
 fish_mask = as.vector(fish_mask_mat)
 fish_gene_mat = apply(fish_mask_mat, 1, names)
 outfile = paste0(outdir, "/correlation_map.pdf")
-mfrow = c(2, 5)
+mfrow = make_mfrow(2, length(method_names))
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
 dev.off()
@@ -149,7 +149,7 @@ for(ii in names(saver_style_filt_norm_list)){
 color_point = c("#31a354", "#a63603")
 names(color_point) = example_gene
 outfile = paste0(outdir, "/Gini.pdf")
-mfrow = c(2, 5)
+mfrow = make_mfrow(2, length(method_names))
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
 dev.off()
@@ -210,7 +210,7 @@ dev.off()
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
 dir.create(dist_outdir, showWarnings = F)
-mfrow = c(2, 5)
+mfrow = make_mfrow(2, length(c("FISH", method_names)))
 pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
 library(parallel)
 no_cores <- detectCores() - 1
@@ -249,7 +249,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   nbin = 128
   x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
   y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in method_names){
+  for(jj in c("FISH", method_names)){
     if(jj == "DISC"){
       col.main = "red"
     }else{
