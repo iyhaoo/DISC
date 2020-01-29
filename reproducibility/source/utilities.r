@@ -616,9 +616,9 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
   }
   if(is.null(ylim)){
     if(is.null(standard_error)){
-      ylim = c(NA, max(plot_data) * 1.01)
+      ylim = c(NA, max(data_vector) * 1.01)
     }else{
-      ylim = c(NA, max(plot_data + plot_data_up) * 1.01)
+      ylim = c(NA, max(data_vector + standard_error) * 1.01)
     }
     if(!is.null(text_color)){
       ylim[1] = -0.1 * ylim[2]
