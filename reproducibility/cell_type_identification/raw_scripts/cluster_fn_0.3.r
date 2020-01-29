@@ -15,9 +15,9 @@ if(args[5] == ""){
 }
 if(args[2] != ""){
   feature_bc_mat = readh5_loom(args[2], is_feature = TRUE)
-  output_dir = paste(c(delete_last_element(unlist(strsplit(args[1], "/", fixed = T))), "cluster_evaluation_0.2", get_last_element(delete_last_element(unlist(strsplit(args[1], "[/\\.]", perl = T)))), "feature"), collapse = "/")
+  output_dir = paste(c(delete_last_element(unlist(strsplit(args[1], "/", fixed = T))), "cluster_evaluation_0.3", get_last_element(delete_last_element(unlist(strsplit(args[1], "[/\\.]", perl = T)))), "feature"), collapse = "/")
 }else{
-  output_dir = paste(c(delete_last_element(unlist(strsplit(args[1], "/", fixed = T))), "cluster_evaluation_0.2", get_last_element(delete_last_element(unlist(strsplit(args[1], "[/\\.]", perl = T)))), "pca"), collapse = "/")
+  output_dir = paste(c(delete_last_element(unlist(strsplit(args[1], "/", fixed = T))), "cluster_evaluation_0.3", get_last_element(delete_last_element(unlist(strsplit(args[1], "[/\\.]", perl = T)))), "pca"), collapse = "/")
   feature_bc_mat = NULL
 }
 gene_bc_mat = get_gene_bc_mat(args[1])

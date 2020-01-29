@@ -1,24 +1,28 @@
-utilities_path = "/home/yuanhao/github_repositories/DISC/reproducibility/source/utilities.r"
+utilities_path = "/home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/utilities.r"
 source(utilities_path)
 min_expressed_cell = 10
 min_expressed_cell_average_expression = 1
+ds_mode = 0.5
+method_names = c("DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
 ### Load raw data and downsampling
 raw_data = readh5_loom("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom")
 compare_gene = rownames(raw_data)
+cell_number = ncol(raw_data)
 data_list = list(Raw = raw_data)
 rm(raw_data)
 ds_dir = "/home/yuanhao/data/fn/melanoma/ds"
 dir.create(ds_dir, showWarnings = F, recursive = T)
-output_dir = "/home/yuanhao/data/fn/melanoma/ds/ds_0.5_results"
+output_dir = paste0("/home/yuanhao/data/fn/melanoma/ds/ds_", ds_mode, "_results")
 dir.create(output_dir, showWarnings = F, recursive = T)
 repeats = paste0("downsampling_first_repeat_", seq(5))
-observed_file = "dropseq_filt_ls_ds_0.5.loom"
+observed_file = paste0("dropseq_filt_ls_ds_", ds_mode, ".loom")
+observed_name = paste(delete_last_element(unlist(strsplit(observed_file, ".", fixed = T))), collapse = ".")
 data_list[["Observed"]] = list()
 for(ii in repeats){
   observed_path = paste(ds_dir, ii, observed_file, sep = "/")
   if(!file.exists(observed_path)){
     cat("Generate ", observed_path, " ...")
-    data_list[["Observed"]][[ii]] = downsampling_cell(0.5, raw_data)
+    data_list[["Observed"]][[ii]] = downsampling_cell(ds_mode, raw_data)
     save_h5(observed_path, t(data_list[["Observed"]][[ii]]))
   }else{
     data_list[["Observed"]][[ii]] = readh5_loom(observed_path)
@@ -29,24 +33,30 @@ for(ii in repeats){
   this_used_genes = rownames(data_list[["Observed"]][[ii]])[gene_filter]
   compare_gene = intersect(compare_gene, this_used_genes)
 }
-cat("Use ", length(compare_gene), " genes for comparison.")
+gene_number = length(compare_gene)
+cat("Use ", gene_number, " genes for comparison.\n")
 data_list[["Raw"]] = data_list[["Raw"]][compare_gene, ]
+for(ii in method_names){
+  data_list[[ii]] = list()
+}
 for(ii in repeats){
   data_list[["Observed"]][[ii]] = data_list[["Observed"]][[ii]][compare_gene, ]
+  ### Load downsampling data and imputation results
+  data_list[["DISC"]][[ii]] = readh5_imputation(get_optimal_point33(paste(ds_dir, ii, paste0("DeSCI_2.7.4.33/ds_", ds_mode, "/log.txt"), sep = "/")), with_outliers = T)[compare_gene, ]
+  print(dim(data_list[["DISC"]][[ii]]))
+  for(jj in setdiff(method_names, "DISC")){
+    if(jj == "VIPER"){
+      tmp_name = "VIPER_gene"
+    }else{
+      tmp_name = jj
+    }
+    data_list[[jj]][[ii]] = readh5_imputation(paste0(paste(ds_dir, ii, "imputation", paste(observed_name, tmp_name, "mc", min_expressed_cell, "mce", min_expressed_cell_average_expression, sep = "_"), sep = "/"), ".hdf5"))[compare_gene, ]
+    print(dim(data_list[[jj]][[ii]]))
+  }
 }
-### Load downsampling data and imputation results
-data_list[["DISC"]] = readh5_imputation(get_optimal_point33(paste(ds_dir, ii, "DeSCI_2.7.4.33/ds_0.5/log.txt", sep = "/")), with_outliers = T)[compare_gene, ]
-print(dim(data_list[["DISC"]]))
-data_list[["SAVER"]] = readh5_imputation(paste0(ds_dir, "/SAVER.hdf5"))
-data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
-data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
-data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
-data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
-cell_number = ncol(data_list[["Raw"]])
-gene_number = length(compare_gene)
 ### Settings
 method_names = setdiff(names(data_list), "Raw")
-method_color = c("gray80", "red", "blue4", "yellow4", "green", "purple", "cyan")
+method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
 names(method_color) = method_names
 text_color = rep("black", length(method_names))
 names(text_color) = method_names
@@ -56,25 +66,17 @@ names(bar_color) = method_names
 bar_color["Raw"] = "gray80"
 bar_color["DISC"] = "red"
 ### MAE
-mae_gt0 = c()
 mae_eq0 = c()
-scale_factor = 1 / 0.5
+scale_factor = 1 / ds_mode
 for(this_method in method_names){
   eq0 = sum(data_list[["Raw"]] > 0 & data_list[["Observed"]] == 0)
-  gt0 = sum(data_list[["Raw"]] > 0 & data_list[["Observed"]] > 0)
-  sae_gt0 = sum(sapply(compare_gene, function(x){
-    expressed_mask = data_list[["Raw"]][x, ] > 0 & data_list[["Observed"]][x, ] > 0
-    return(sum(abs(data_list[["Raw"]][x, expressed_mask] - (data_list[[this_method]][x, expressed_mask] * scale_factor))))
-  }))
   sae_eq0 = sum(sapply(compare_gene, function(x){
     expressed_mask = data_list[["Raw"]][x, ] > 0 & data_list[["Observed"]][x, ] == 0
     return(sum(abs(data_list[["Raw"]][x, expressed_mask] - (data_list[[this_method]][x, expressed_mask] * scale_factor))))
   }))
-  mae_gt0 = c(mae_gt0, sae_gt0 / gt0)
   mae_eq0 = c(mae_eq0, sae_eq0 / eq0)
   print(this_method)
 }
-names(mae_gt0) = method_names
 names(mae_eq0) = method_names
 pdf(paste0(output_dir, "/MAE.pdf"), height = 5, width = 4.5)
 barplot_usage(mae_eq0, main = "Zero entries", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "Log (MAE + 1)", cex.lab = 1.5, font.main = 1)
