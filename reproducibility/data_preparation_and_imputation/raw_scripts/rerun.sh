@@ -486,12 +486,12 @@ python3 /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/sing
 
 
 python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
---raw-loom=/home/yuanhao/data/fn/split_seq/downsampling_first_repeat_5/GSM3017261_150000_CNS_nuclei_ds_0.5.loom \
---impute-h5=/home/yuanhao/data/fn/split_seq/downsampling_first_repeat_5/imputation/GSM3017261_150000_CNS_nuclei_ds_0.5_deepImpute_mc_150_mce_1.hdf5
+--raw-loom=/home/yuanhao/data/fn/retina/merged_set.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/imputation/merged_set_deepImpute_mc_49_mce_1.hdf5
 
 
 R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_evaluation_retina1_with_outliers.r \
---args /home/yuanhao/DISC_imputation_result/0.45/RETINA2/result/imputation.loom \
+--args /home/yuanhao/data/fn/retina/imputation/merged_set_deepImpute_mc_49_mce_1_resume_dim.loom \
 "" \
 "" \
 /home/yuanhao/data/fn/retina/retina_cell_type_main.tsv
@@ -531,9 +531,38 @@ R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/
 
 
 
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.3.loom gene 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.3.loom gene 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_2/merged_set_unique_rename_ds_0.3.loom gene 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.3.loom gene 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_4/merged_set_unique_rename_ds_0.3.loom gene 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.3.loom gene 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.3.loom gene 49
+
+
+
+
 
 R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
 --args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.5.loom 16 49
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.5.loom 16 49
+
 
 
 R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
@@ -551,6 +580,40 @@ R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/
 R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
 --args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.3.loom 16
 
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_1/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_2/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_3/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_4/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_5/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_1/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_2/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_3/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_4/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_5/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
 
 
 
