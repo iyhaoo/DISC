@@ -5,17 +5,17 @@ min_expressed_cell_average_expression = 1
 ds_mode = 0.5
 method_names = c("DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
 ### Load raw data and downsampling
-raw_data = readh5_loom("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom")
+raw_data = readh5_loom("/home/yuanhao/github_repositories/DISC/reproducibility/data/PBMC/raw.loom")
 compare_gene = rownames(raw_data)
 cell_number = ncol(raw_data)
 data_list = list(Raw = raw_data)
 rm(raw_data)
-ds_dir = "/home/yuanhao/data/fn/melanoma/ds"
+ds_dir = "/home/yuanhao/data/fn/pbmc3k/ds"
 dir.create(ds_dir, showWarnings = F, recursive = T)
 output_dir = paste0(ds_dir, "/ds_", ds_mode, "_results")
 dir.create(output_dir, showWarnings = F, recursive = T)
 repeats = paste0("downsampling_first_repeat_", seq(5))
-observed_file = paste0("dropseq_filt_ls_ds_", ds_mode, ".loom")
+observed_file = paste0("pbmc3k_filtered_ds_", ds_mode, ".loom")
 observed_name = paste(delete_last_element(unlist(strsplit(observed_file, ".", fixed = T))), collapse = ".")
 data_list[["Observed"]] = list()
 for(ii in repeats){

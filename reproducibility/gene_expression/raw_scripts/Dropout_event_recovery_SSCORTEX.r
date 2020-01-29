@@ -12,7 +12,7 @@ data_list = list(Raw = raw_data)
 rm(raw_data)
 ds_dir = "/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds"
 dir.create(ds_dir, showWarnings = F, recursive = T)
-output_dir = paste0("/home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/ds/ds_", ds_mode, "_results")
+output_dir = paste0(ds_dir, "/ds_", ds_mode, "_results")
 dir.create(output_dir, showWarnings = F, recursive = T)
 repeats = paste0("downsampling_first_repeat_", seq(5))
 observed_file = paste0("L1_Cortex2_filt_ls_merged_s1_s2_unique_rename_ds_", ds_mode, ".loom")
@@ -117,34 +117,33 @@ for(ii in method_names){
 pdf(paste0(output_dir, "/CMD.pdf"), height = 6, width = 5)
 barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
+for(ii in method_names){
+  for(jj in repeats){
+    dimnames(data_list[[ii]][[jj]]) = dimnames(data_list[["Raw"]])
+  }
+  print(ii)
+}
 ### Gene correlation
 gene_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
 for(ii in method_names){
   for(jj in repeats){
-    gene_corr_mat[ii, jj] = mean(calc_corr(cor_all[["Raw"]], cor_all[[ii]][[jj]], "gene"), na.rm = T)
+    gene_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene", 4), na.rm = T)
   }
   print(ii)
 }
-print(colMeans(gene_correlation_mat, na.rm = T))
 pdf(paste0(output_dir, "/CORR_GENE.pdf"), height = 6, width = 5)
-barplot_usage(colMeans(gene_correlation_mat, na.rm = T), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+barplot_usage(rowMeans(gene_corr_mat), standard_error = apply(gene_corr_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Cell correlation
-cell_correlation_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
-for(method in method_names){
-  for(ii in seq(cell_number)){
-  	raw_expression = data_list[["Raw"]][, ii]
-  	raw_expressed_mask = raw_expression != 0
-  	raw_expressed_entries = raw_expression[raw_expressed_mask]
-  	if(length(table(raw_expressed_entries)) > 1 & length(raw_expressed_entries) >= (0.1 * gene_number)){
-    	cell_correlation_mat[ii, method] <- cor(raw_expressed_entries, data_list[[method]][raw_expressed_mask, ii], method = "pearson")
-  	}
+cell_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
+for(ii in method_names){
+  for(jj in repeats){
+    cell_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell", 4), na.rm = T)
   }
-  print(method)
+  print(ii)
 }
-print(colMeans(cell_correlation_mat, na.rm = T))
 pdf(paste0(output_dir, "/CORR_CELL.pdf"), height = 6, width = 5)
-barplot_usage(colMeans(cell_correlation_mat, na.rm = T), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Cell correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+barplot_usage(rowMeans(cell_corr_mat), standard_error = apply(cell_corr_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 
 
