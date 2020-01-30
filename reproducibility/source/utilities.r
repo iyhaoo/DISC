@@ -796,12 +796,13 @@ calc_corr = function(ref_gene_bc_mat, test_gene_bc_mat, type){
   }else{
     stop("Unknown type.")
   }
-  number = nrow(ref_mat)
-  corr_vec = sapply(seq(number), function(x){
+  number1 = nrow(ref_mat)
+  number2 = ncol(ref_mat)
+  corr_vec = sapply(seq(number1), function(x){
     ref_expression = ref_mat[x, ]
     ref_expressed_mask = ref_expression != 0
     ref_expressed_entries = ref_expression[ref_expressed_mask]
-    if(length(table(ref_expressed_entries)) > 1 & length(ref_expressed_entries) >= (0.1 * number)){
+    if(length(table(ref_expressed_entries)) > 1 & length(ref_expressed_entries) >= (0.1 * number2)){
       return(cor(ref_expressed_entries, test_mat[x, ref_expressed_mask], method = "pearson"))
     }else{
       return(NA)
