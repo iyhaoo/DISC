@@ -119,7 +119,13 @@ barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main =
 dev.off()
 for(ii in method_names){
   for(jj in repeats){
-    colnames(data_list[[ii]][[jj]]) = colnames(data_list[["Raw"]])
+    if(grep("_s", colnames(data_list[[ii]][[jj]]))){
+      data_list[[ii]][[jj]] = data_list[[ii]][[jj]][, order(sapply(colnames(data_list[["Observed"]][[ii]]), function(x){
+        return(as.numeric(unlist(strsplit(x, "_", fixed = T))[1]))
+      }))]
+      colnames(data_list[[ii]][[jj]]) = colnames(data_list[["Raw"]])
+      
+    }
   }
   print(ii)
 }
