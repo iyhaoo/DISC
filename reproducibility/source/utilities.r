@@ -650,8 +650,8 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
     arrows(bp, plot_data_down, bp, plot_data_up, length=0.05, angle=90, code=3)
   }
   if(!is.null(text_color)){
-    text_position = -0.015 * max(data_vector)
-    text(bp, sapply(data_vector,
+    text_position = -0.015 * max(plot_data)
+    text(bp, sapply(plot_data,
                     function(x){
                       if(x >= 0){
                         return(text_position)
@@ -660,9 +660,9 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
                         return(x - text_position)
                       }
                     }),
-         srt = 90, adj= 1, xpd = TRUE, labels = names(data_vector), cex=1.5, col = text_color)
+         srt = 90, adj= 1, xpd = TRUE, labels = names(plot_data), cex=1.5, col = text_color)
     if(show_number){
-      text(bp, sapply(data_vector,
+      text(bp, sapply(plot_data,
                       function(x){
                         if(x >= 0){
                           return(x)
@@ -670,7 +670,7 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
                         else{
                           return(0)
                         }}),
-           srt = 90, adj= 0, xpd = TRUE, labels = round(data_vector, digits = 3) , cex=1.5, col = text_color)
+           srt = 90, adj= 0, xpd = TRUE, labels = round(plot_data, digits = 3) , cex=1.5, col = text_color)
     }
   }
 }
@@ -710,6 +710,26 @@ barplot_usage_new = function(data_vector, main, bar_color, use_log1p=F, use_data
   if(!is.null(standard_error)){
     arrows(bp, plot_data_down, bp, plot_data_up, length=0.05, angle=90, code=3)
   }
+}
+
+boxplot_usage = function(data_matrix, main, bar_color, text_color=NULL, use_data_order=F, decreasing=F, cex.main=2, ...){
+  data_means = colMeans(data_matrix, na.rm = T)
+  data_order = c(1, order(data_means[-1], decreasing = decreasing) + 1)
+  if(use_data_order){
+    data_matrix = data_matrix[, data_order]
+    bar_color = bar_color[data_order]
+    if(!is.null(text_color)){
+      text_color = text_color[data_order]
+    }
+  }
+  boxplot(data_matrix, main = main, axes = F, at = seq(ncol(data_matrix)), names = rep("", ncol(data_matrix)), las = 2, names.arg="", col = bar_color, cex.axis = 1.2, cex.main = cex.main, outline = F, ...)
+  if(is.null(text_color)){
+    text_color = rep("black", ncol(data_matrix))
+  }
+  for(ii in seq(ncol(data_matrix))){
+    mtext(colnames(data_matrix)[ii], side = 1, line = -0.25, at = ii, las = 2, font = 1, col = text_color[ii], cex=1)
+  }
+  axis(side = 2, seq(0, 1, by = 0.25))
 }
 
 calc_cor_mat = function(input_mat){
@@ -776,7 +796,7 @@ calc_corr = function(ref_gene_bc_mat, test_gene_bc_mat, type){
   }else{
     stop("Unknown type.")
   }
-  number = ncol(ref_mat)
+  number = nrow(ref_mat)
   corr_vec = sapply(seq(number), function(x){
     ref_expression = ref_mat[x, ]
     ref_expressed_mask = ref_expression != 0

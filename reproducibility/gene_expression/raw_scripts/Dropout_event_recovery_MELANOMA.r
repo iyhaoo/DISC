@@ -118,26 +118,30 @@ pdf(paste0(output_dir, "/CMD.pdf"), height = 6, width = 5)
 barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Gene correlation
-gene_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
+gene_corr_mat = matrix(nrow = length(repeats) * gene_number, ncol = length(method_names), dimnames = list(c(), method_names))
 for(ii in method_names){
+  cor_vec = c()
   for(jj in repeats){
-    gene_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene"), na.rm = T)
+    cor_vec = c(cor_vec, calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene"))
   }
+  gene_corr_mat[, ii] = cor_vec
   print(ii)
 }
 pdf(paste0(output_dir, "/CORR_GENE.pdf"), height = 6, width = 5)
-barplot_usage(rowMeans(gene_corr_mat), standard_error = apply(gene_corr_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+boxplot_usage(gene_corr_mat, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Cell correlation
-cell_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
+cell_corr_mat = matrix(nrow = length(repeats) * cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
 for(ii in method_names){
+  cor_vec = c()
   for(jj in repeats){
-    cell_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell"), na.rm = T)
+    cor_vec = c(cor_vec, calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell"))
   }
+  cell_corr_mat[, ii] = cor_vec
   print(ii)
 }
 pdf(paste0(output_dir, "/CORR_CELL.pdf"), height = 6, width = 5)
-barplot_usage(rowMeans(cell_corr_mat), standard_error = apply(cell_corr_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+boxplot_usage(cell_corr_mat, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Cell correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 
 
