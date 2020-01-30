@@ -777,22 +777,35 @@ calc_corr = function(ref_gene_bc_mat, test_gene_bc_mat, type, no_cores){
     stop("Unknown type.")
   }
   number = ncol(ref_mat)
-  cl <- makeCluster(no_cores)
-  this_env = new.env()
-  assign("ref_mat", ref_mat, envir = this_env)
-  assign("test_mat", test_mat, envir = this_env)
-  clusterExport(cl, varlist = names(this_env), envir = this_env)
-  corr_vec = parSapply(cl, seq(number), function(x){
-    ref_expression = ref_mat[ii, ]
-    ref_expressed_mask = ref_expression != 0
-    ref_expressed_entries = ref_expression[ref_expressed_mask]
-    if(length(table(ref_expressed_entries)) > 1 & length(ref_expressed_entries) >= (0.1 * number)){
-      return(cor(ref_expressed_entries, test_mat[ii, ref_expressed_mask], method = "pearson"))
-    }else{
-      return(NA)
-    }
-  })
-  stopCluster(cl)
+  if(no_cores == 1){
+    corr_vec = sapply(seq(number), function(x){
+      ref_expression = ref_mat[ii, ]
+      ref_expressed_mask = ref_expression != 0
+      ref_expressed_entries = ref_expression[ref_expressed_mask]
+      if(length(table(ref_expressed_entries)) > 1 & length(ref_expressed_entries) >= (0.1 * number)){
+        return(cor(ref_expressed_entries, test_mat[ii, ref_expressed_mask], method = "pearson"))
+      }else{
+        return(NA)
+      }
+    })
+  }else{
+    cl <- makeCluster(no_cores)
+    this_env = new.env()
+    assign("ref_mat", ref_mat, envir = this_env)
+    assign("test_mat", test_mat, envir = this_env)
+    clusterExport(cl, varlist = names(this_env), envir = this_env)
+    corr_vec = parSapply(cl, seq(number), function(x){
+      ref_expression = ref_mat[ii, ]
+      ref_expressed_mask = ref_expression != 0
+      ref_expressed_entries = ref_expression[ref_expressed_mask]
+      if(length(table(ref_expressed_entries)) > 1 & length(ref_expressed_entries) >= (0.1 * number)){
+        return(cor(ref_expressed_entries, test_mat[ii, ref_expressed_mask], method = "pearson"))
+      }else{
+        return(NA)
+      }
+    })
+    stopCluster(cl)
+  }
   return(corr_vec)
 }
 
