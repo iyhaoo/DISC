@@ -143,6 +143,8 @@ for(ii in method_names){
 pdf(paste0(output_dir, "/CORR_CELL.pdf"), height = 6, width = 5)
 boxplot_usage(cell_corr_mat, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Cell correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
+result_list = list(MAE = mae_eq0, CMD = cmd_mat, CORR_GENE = gene_corr_mat, CORR_CELL = cell_corr_mat)
+saveRDS(result_list, paste0(output_dir, "/result.rds"))
 
 
 
