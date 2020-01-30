@@ -119,7 +119,7 @@ barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main =
 dev.off()
 for(ii in method_names){
   for(jj in repeats){
-    dimnames(data_list[[ii]][[jj]]) = dimnames(data_list[["Raw"]])
+    colnames(data_list[[ii]][[jj]]) = colnames(data_list[["Raw"]])
   }
   print(ii)
 }
