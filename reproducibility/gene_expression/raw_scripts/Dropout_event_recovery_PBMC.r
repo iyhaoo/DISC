@@ -121,18 +121,20 @@ dev.off()
 gene_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
 for(ii in method_names){
   for(jj in repeats){
-    gene_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene", 4), na.rm = T)
+    gene_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene"), na.rm = T)
   }
   print(ii)
 }
 pdf(paste0(output_dir, "/CORR_GENE.pdf"), height = 6, width = 5)
+barplot_usage(rowMeans(gene_corr_mat), standard_error = apply(gene_corr_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+boxplot(gene_corr_mat)
 barplot_usage(rowMeans(gene_corr_mat), standard_error = apply(gene_corr_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
 ### Cell correlation
 cell_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
 for(ii in method_names){
   for(jj in repeats){
-    cell_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell", 4), na.rm = T)
+    cell_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell"), na.rm = T)
   }
   print(ii)
 }

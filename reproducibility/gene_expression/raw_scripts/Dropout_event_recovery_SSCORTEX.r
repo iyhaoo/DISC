@@ -127,7 +127,7 @@ for(ii in method_names){
 gene_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
 for(ii in method_names){
   for(jj in repeats){
-    gene_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene", 4), na.rm = T)
+    gene_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene"), na.rm = T)
   }
   print(ii)
 }
@@ -138,7 +138,7 @@ dev.off()
 cell_corr_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
 for(ii in method_names){
   for(jj in repeats){
-    cell_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell", 4), na.rm = T)
+    cell_corr_mat[ii, jj] = mean(calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell"), na.rm = T)
   }
   print(ii)
 }
