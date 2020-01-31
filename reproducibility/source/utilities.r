@@ -628,7 +628,11 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
   }
   if(use_log1p){
     plot_data = log1p(data_vector)
+    ylim[1] = 0
     ylim = log1p(ylim)
+    if(!is.null(text_color)){
+      ylim[1] = -0.1 * ylim[2]
+    }
     if(!is.null(standard_error)){
       plot_data_up = log1p(data_vector + standard_error)
       plot_data_down = log1p(data_vector - standard_error)
