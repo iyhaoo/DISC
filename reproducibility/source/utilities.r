@@ -1478,7 +1478,7 @@ seurat_classification = function(gene_bc_mat, feature_bc_mat=NULL, cell_type_ide
 cell_type_heatmap = function(method_type_mat, title){
   plot_df = melt(method_type_mat)
   ggplot(data = plot_df, aes(x = Var2, y = Var1, fill = value)) + geom_tile() +
-    labs(x="Method", y = "Cell Type") + theme_classic() +
+    labs(x="Cell Type", y = "Method") + theme_classic() +
     scale_fill_gradient(low='white',high='red') + geom_text(aes(Var2, Var1, label = round(value,2)), color = "black", size = 4) + 
     ggtitle(title) + scale_y_discrete(limits = rev(levels(plot_df$Var1))) +
     theme(axis.text.x = element_text(size = 10,angle = 45, hjust = 1, vjust = 1),
