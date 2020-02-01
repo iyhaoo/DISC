@@ -34,8 +34,10 @@ if(args[7] != ""){
          },{
            stop("no such mapping")
          })
-  seurat_classification(gene_bc_mat = gene_bc_mat, feature_bc_mat = feature_bc_mat, cell_type = readRDS(args[3]),
-                        output_dir = output_dir, pca_dim = pca_dim, res = res, min_pct = 0.25, show_plots = F, cell_type_identification_fun = mapping_function)
+  classification_result = seurat_classification(gene_bc_mat = gene_bc_mat, feature_bc_mat = feature_bc_mat, cell_type = readRDS(args[3]),
+                                                output_dir = output_dir, pca_dim = pca_dim, res = res, min_pct = 0.25, show_plots = F, 
+                                                cell_type_identification_fun = mapping_function)
+  print(classification_result)
 }
 
 

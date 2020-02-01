@@ -34,7 +34,7 @@ We can easily run
 
     python3 reproducibility/source/resume_dim.py \
     --raw-loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
-    --impute-h5=output_file    
+    --impute-h5=output_file
 and get `output_file_resume_dim.loom` with complete dimension (only genes as we don't resume cells here) as `/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom`.
 
 #### DISC

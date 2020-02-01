@@ -1469,7 +1469,9 @@ seurat_classification = function(gene_bc_mat, feature_bc_mat=NULL, cell_type_ide
     save(this_markers, this_metadata, cluster_cell_type, file = paste0(output_dir, "/tmp.rdata"))
   }
   if(!is.null(cell_type_identification_fun)){
-    return(cell_type_identification_fun(this_markers, this_metadata, prior_cell_type = cell_type))
+    identification_result = cell_type_identification_fun(this_markers, this_metadata, prior_cell_type = cell_type)
+    saveRDS(identification_result, paste0(output_dir, "/identification_result.rds"))
+    return(identification_result)
   }
 }
 
