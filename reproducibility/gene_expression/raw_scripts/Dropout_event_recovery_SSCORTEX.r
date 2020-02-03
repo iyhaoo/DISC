@@ -54,6 +54,17 @@ for(ii in repeats){
     print(dim(data_list[[jj]][[ii]]))
   }
 }
+### Settings
+method_names = setdiff(names(data_list), "Raw")
+method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
+names(method_color) = method_names
+text_color = rep("black", length(method_names))
+names(text_color) = method_names
+text_color["DISC"] = "red"
+bar_color = rep("gray50", length(method_names))
+names(bar_color) = method_names
+bar_color["Observed"] = "gray80"
+bar_color["DISC"] = "red"
 ### SSCORTEX
 for(ii in method_names){
   for(jj in repeats){
@@ -66,17 +77,6 @@ for(ii in method_names){
   }
   print(ii)
 }
-### Settings
-method_names = setdiff(names(data_list), "Raw")
-method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
-names(method_color) = method_names
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
-text_color["DISC"] = "red"
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
-bar_color["Observed"] = "gray80"
-bar_color["DISC"] = "red"
 ### MAE
 mae_eq0 = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
 scale_factor = 1 / ds_mode
