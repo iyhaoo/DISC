@@ -54,6 +54,18 @@ for(ii in repeats){
     print(dim(data_list[[jj]][[ii]]))
   }
 }
+### SSCORTEX
+for(ii in method_names){
+  for(jj in repeats){
+    if(length(grep("_s", colnames(data_list[[ii]][[jj]]), fixed = T)) != 0){
+      data_list[[ii]][[jj]] = data_list[[ii]][[jj]][, order(sapply(colnames(data_list[[ii]][[jj]]), function(x){
+        return(as.numeric(unlist(strsplit(x, "_", fixed = T))[1]))
+      }))]
+      colnames(data_list[[ii]][[jj]]) = colnames(data_list[["Raw"]])
+    }
+  }
+  print(ii)
+}
 ### Settings
 method_names = setdiff(names(data_list), "Raw")
 method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
@@ -117,18 +129,6 @@ for(ii in method_names){
 pdf(paste0(output_dir, "/CMD.pdf"), height = 6, width = 5)
 barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
 dev.off()
-### SSCORTEX
-for(ii in method_names){
-  for(jj in repeats){
-    if(length(grep("_s", colnames(data_list[[ii]][[jj]]), fixed = T)) != 0){
-      data_list[[ii]][[jj]] = data_list[[ii]][[jj]][, order(sapply(colnames(data_list[[ii]][[jj]]), function(x){
-        return(as.numeric(unlist(strsplit(x, "_", fixed = T))[1]))
-      }))]
-      colnames(data_list[[ii]][[jj]]) = colnames(data_list[["Raw"]])
-    }
-  }
-  print(ii)
-}
 ### Gene correlation
 gene_corr_mat = matrix(nrow = length(repeats) * gene_number, ncol = length(method_names), dimnames = list(c(), method_names))
 for(ii in method_names){
