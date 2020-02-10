@@ -38,18 +38,17 @@ class ScanLoom:
         noise_intensity : float, optional, default: 0.1
             Use in norm max calculation for our model
 
-        target_gene : str, optional, default: None
-            Only calculate specific genes, is useful in our transfer learning module
+        gene_range : str, optional, default: None
+            Gene range for this calculation. After gene selection, the residue of gene_range is used for output.
 
-        min_cell : int, optional, default: 10
-            Minimum expressed cell cutoff for gene filtering. If target_gene is provided, min_cell and min_avg_exp will
-            be ignored.
+        min_cell : int, optional, default: -1
+            Minimum expressed cell cutoff for gene selection. The default value is set to be -1 to not remove any gene
+            using this standard.
 
-        min_avg_exp : float, optional, default: 1
-            Minimum average expression in expressed cells. Use for gene filtering. The default value is set to be 1 to
-            filter most noise likely expressed genes that expression is 1 in all expressed entries. You can set this as
-            -1 or other values that < 0 to ensure not use this standard for filtering. Note that if target_gene is
-            provided, min_cell and min_avg_exp will be ignored.
+        min_avg_exp : float, optional, default: -1
+            Minimum average expression in expressed cells, used for gene selection. The value is set to be 1 in our
+            paper to filter most noise likely expressed genes that expression is 1 in all expressed entries.
+            The default value is set to be -1 to not remove any gene using this standard.
 
         z_score_library_size_factor : int, optional, default: 1000000
             Library size factor when doing normalization for z-score filtering.
@@ -66,7 +65,7 @@ class ScanLoom:
             Logging function used for this class. Can be specified as a custom function.
 
         """
-    def __init__(self, loom_path, library_size_factor, noise_intensity=0.1, target_gene=None, min_cell=10, min_avg_exp=1,
+    def __init__(self, loom_path, library_size_factor, noise_intensity=0.1, gene_range=None, min_cell=-1, min_avg_exp=-1,
                  z_score_library_size_factor=1000000, workers=1, scanning_batch_size=2048, log_fn=print):
         self.log_fn = log_fn
         self.loom_path = loom_path
@@ -85,15 +84,20 @@ class ScanLoom:
             self.cell_number = this_shape[1]
             cell_id = f["col_attrs/CellID"][...].astype(np.str) if "CellID" in f["col_attrs"].keys() else np.arange(self.cell_number).astype(np.str)
         self.task_number = np.ceil(self.cell_number / self._scanning_batch_size).astype(int)
-        if target_gene is not None:
-            self.calculate_mask = np.isin(gene_name, target_gene)
+        if gene_range is not None:
+            gene_range = np.array(gene_range)
+            self.calculate_mask = np.isin(gene_name, gene_range)
         else:
-            self.calculate_mask = None
+            self.calculate_mask = np.ones_like(gene_name).astype(np.bool)
         #  z_* is for z-score calculation
         z_norm_sum, expressed_cell, gene_expression = self._memory_economically_scanning(self._dataset_scanning, ["plus"] * 3)
-        if target_gene is None:
-            self.calculate_mask = np.bitwise_and(expressed_cell >= min_cell, gene_expression > expressed_cell * min_avg_exp)
-            z_norm_sum = z_norm_sum[self.calculate_mask]
+        if min_cell > 0 and min_avg_exp > 0:
+            gene_selection = True
+            calculate_mask1 = np.bitwise_and(expressed_cell >= min_cell, gene_expression > expressed_cell * min_avg_exp)
+            z_norm_sum = z_norm_sum[calculate_mask1[self.calculate_mask]]
+            self.calculate_mask = np.bitwise_and(self.calculate_mask, calculate_mask1)
+        else:
+            gene_selection = False
         expressed_cell_calculate = expressed_cell[self.calculate_mask]
         self.z_norm_mean = np.divide(z_norm_sum, expressed_cell_calculate, out=np.zeros(self.calculate_mask.sum()), where=expressed_cell_calculate != 0)
         pre_z_norm_std, = self._memory_economically_scanning(self._calculate_norm_std, ["plus"])
@@ -112,7 +116,11 @@ class ScanLoom:
             self.library_size_factor = float(library_size_factor)
         self.norm_max = np.log1p(pre_inner_norm_max * self.library_size_factor)
         #  gene_name based modification
-        if target_gene is not None:
+        if gene_range is not None:
+            if gene_selection:
+                target_gene = gene_range[np.isin(gene_range, gene_name[self.calculate_mask])]
+            else:
+                target_gene = gene_range
             calculate_mapping_series = pd.Series(range(self.calculate_mask.sum()), index=self.gene_name[self.calculate_mask]).reindex(target_gene[np.isin(target_gene, self.gene_name)])
             calculate_use_index = calculate_mapping_series.values.astype(np.int32)
             extra_genes = np.setdiff1d(target_gene, self.gene_name)
@@ -146,7 +154,7 @@ class ScanLoom:
         this_library_size = np.sum(this_batch, 0)
         this_expressed_cell = (this_batch > 0).sum(1)
         this_gene_expression = this_batch.sum(1)
-        use_data = this_batch if self.calculate_mask is None else this_batch[self.calculate_mask, :]
+        use_data = this_batch[self.calculate_mask, :]
         this_z_norm_sum = np.log1p(np.divide(use_data, this_library_size, out=np.zeros_like(use_data), where=this_library_size != 0) * self.z_score_library_size_factor).sum(1)
         return this_z_norm_sum, this_expressed_cell, this_gene_expression
 
@@ -258,8 +266,4 @@ if __name__ == '__main__':
     print("Mean Library Size : {}".format(np.mean(data.library_size)))
     print("Median Library Size : {}".format(np.median(data.library_size)))
     print("Dropout rate : {}".format(1 - np.sum(data.expressed_cell) / data.gene_number / data.cell_number))
-
-
-
-
 

@@ -145,8 +145,6 @@ class DISC:
         self.predictor_bias_list.append(tf.compat.v1.get_variable("bias_output_layer_1", [self.gene_number, 1, self.depth[-1]], dtype=tf.float32, initializer=tf.zeros_initializer()))
         self.predictor_weights_list.append(tf.compat.v1.get_variable("weights_output_layer_2", [self.gene_number, self.depth[-2], self.depth[-1]], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.25, 0.25)))
         self.predictor_bias_list.append(tf.compat.v1.get_variable("bias_output_layer_2", [self.gene_number, 1, self.depth[-1]], dtype=tf.float32, initializer=tf.zeros_initializer()))
-        self.predictor_weights_list.append(tf.compat.v1.get_variable("predictor_weights_{}".format(len(self.depth) - 1), [self.gene_number, self.depth[-2], self.depth[-1]], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.25, 0.25)))
-        self.predictor_bias_list.append(tf.compat.v1.get_variable("predictor_bias_{}".format(len(self.depth) - 1), [self.gene_number, 1, self.depth[-1]], dtype=tf.float32, initializer=tf.zeros_initializer()))
         self.weights_psi = tf.compat.v1.get_variable("weights_psi", [self.gene_number, self.depth[-2], 1], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.25, 0.25))
         #  predictor
         for _ in range(self.repeats):
@@ -256,7 +254,7 @@ if __name__ == '__main__':
     with h5py.File(loom_path, "r", libver='latest', swmr=True) as f:
         gene_name = f["row_attrs/Gene"][...].astype(np.str)
     model = DISC(gene_name, np.ones_like(gene_name))
-    model.training(0.001, 3)
+    model.training(0.001)
     with tf.compat.v1.Session() as sess:
         print(model.gene_name.eval())
 

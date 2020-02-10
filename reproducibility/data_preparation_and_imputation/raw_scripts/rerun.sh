@@ -498,10 +498,10 @@ R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/clu
 
 
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.2.r \
---args /home/yuanhao/DISC_imputation_result/0.45/PBMC_transfer/result/imputation.loom \
-"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
-10 0.5 "" "pbmc"
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/imputation/merged_set_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
 
 
 
@@ -559,9 +559,52 @@ R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/
 R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
 --args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.5.loom 16 49
 
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.5.loom 16 49
 
 R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
---args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.5.loom 16 49
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_2/merged_set_unique_rename_ds_0.5.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.5.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_4/merged_set_unique_rename_ds_0.5.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.5.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.5.loom 16 49
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.3.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.3.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_2/merged_set_unique_rename_ds_0.3.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.3.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_4/merged_set_unique_rename_ds_0.3.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.3.loom 16 49
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.3.loom 16 49
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/scImpute.r \
+--args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_1/GSM3017261_150000_CNS_nuclei_ds_0.5.loom 16 150
 
 
 
@@ -583,37 +626,625 @@ R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/
 
 
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_1/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
-
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_2/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
-
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_3/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
-
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_4/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
-
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_5/GSM3017261_150000_CNS_nuclei_ds_0.5.loom gene 150
 
 
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_1/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1.hdf5
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_2/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1.hdf5
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_3/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1.hdf5
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_4/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1.hdf5
 
-R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/2_run_methods/single_run/VIPER.r \
---args /home/yuanhao/data/fn/split_seq/downsampling_first_repeat_5/GSM3017261_150000_CNS_nuclei_ds_0.3.loom gene 150
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.5_deepImpute_mc_49_mce_1.hdf5
+
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.3_deepImpute_mc_49_mce_1.hdf5
+
+
+
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.5_VIPER_gene_mc_49_mce_1.hdf5
+
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.3_VIPER_gene_mc_49_mce_1.hdf5
+
+
+
+
+
+
+
+
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1.hdf5
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1.hdf5
+
+
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1.hdf5
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1.hdf5
+
+
+
+
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.5.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1.hdf5
+
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1.hdf5
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/resume_dim.py \
+--raw-loom=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/pbmc3k_filtered_ds_0.3.loom \
+--impute-h5=/home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1.hdf5
+
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.5_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.3_deepImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+
+
+
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.5_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.3_VIPER_gene_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+
+
+
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.5_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_1/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_2/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_3/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_4/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/pbmc3k/ds/downsampling_first_repeat_5/imputation/pbmc3k_filtered_ds_0.3_scImpute_mc_10_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/pbmc3k/cluster_evaluation/pbmc3k_filtered/pca/cell_type.rds \
+10 0.5 "" "pbmc"
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.5_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.5_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.3_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.3_deepImpute_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.5_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.5_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_0/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_1/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/imputation/merged_set_unique_rename_ds_0.3_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/imputation/merged_set_ds_0.3_VIPER_gene_mc_49_mce_1_resume_dim.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+
+
+
+
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_1/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_2/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_3/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_4/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_5/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_6/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_7/DISC/result/imputation.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+
+
+
+
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_1/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_2/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_3/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_4/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_5/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_6/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/cluster_fn_0.3.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.1/downsampling_first_repeat_7/raw_ds_0.1.loom \
+"" /home/yuanhao/data/fn/retina/cell_type.rds \
+30 1.4 "" "retina"
+
 
 
 

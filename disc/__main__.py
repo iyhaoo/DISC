@@ -97,25 +97,31 @@ def main():
     makeLog("Dataset: {}".format(FLAGS["dataset"]))
     makeLog("Output Dir: {}".format(FLAGS["out_dir"]))
     makeLog("Batch size: {}".format(FLAGS["batch_size"]))
+    ScanLoom_kwargs = {}
     if FLAGS["pretrained_model"] is not None:
-        use_target_gene, use_norm_max = get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name", "norm_max"])
-        kwargs = {"target_gene": use_target_gene}
+        pretrained_gene_name, pretrained_norm_max = get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name", "norm_max"])
+        ScanLoom_kwargs["gene_range"] = pretrained_gene_name
     else:
-        use_norm_max = None
-        kwargs = {"min_cell": FLAGS["min_expressed_cell"],
-                  "min_avg_exp": FLAGS["min_expressed_cell_average_expression"]}
+        pretrained_gene_name = None
+        pretrained_norm_max = None
+    if FLAGS["training"]:
+        ScanLoom_kwargs["min_cell"] = FLAGS["min_expressed_cell"]
+        ScanLoom_kwargs["min_avg_exp"] = FLAGS["min_expressed_cell_average_expression"]
+    else:
+        ScanLoom_kwargs["min_cell"] = -1
+        ScanLoom_kwargs["min_avg_exp"] = -1
     dataset = ScanLoom(loom_path=FLAGS["dataset"],
                        library_size_factor=FLAGS["library_size_factor"],
                        noise_intensity=0.1,
                        z_score_library_size_factor=1000000,
                        workers=FLAGS["scan_workers"],
-                       log_fn=makeLog, **kwargs)
+                       log_fn=makeLog, **ScanLoom_kwargs)
     #  dataset
     makeLog("Use {} cells".format(dataset.cell_number))
     makeLog("Use {} genes with min_expressed_cell of {} and min_expressed_cell_average_expression of {}".format(dataset.target_gene.size, FLAGS["min_expressed_cell"], FLAGS["min_expressed_cell_average_expression"]))
     makeLog("Use {} as library_size_factor".format(dataset.library_size_factor))
     #  model
-    input_norm_max = dataset.norm_max if use_norm_max is None else use_norm_max
+    input_norm_max = dataset.norm_max if pretrained_norm_max is None else pretrained_norm_max[np.isin(pretrained_gene_name, dataset.target_gene)]
     model = DISC(gene_name=dataset.target_gene,
                  norm_max=input_norm_max,
                  depth=FLAGS["depth"],
@@ -150,7 +156,7 @@ def main():
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
             if FLAGS["pretrained_model"] is not None:
-                sess.run(read_model(FLAGS["pretrained_model"], log_fn=makeLog))
+                sess.run(read_model(FLAGS["pretrained_model"], target_gene=dataset.target_gene, log_fn=makeLog))
             #  initiate
             runnable = True
             next_cell_cutoff = FLAGS["training_round_size"]
