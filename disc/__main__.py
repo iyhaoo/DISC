@@ -9,8 +9,8 @@ from .evaluation.evaluation import *
 def inference(dataset, model, sess, output_dir, batch_size, workers, manager, log_fn=print):
     with h5py.File("{}/running_info.hdf5".format(output_dir), "w") as rf:
         rf["norm_max"] = dataset.norm_max
-        rf["norm_mean"] = dataset.z_norm_mean
-        rf["norm_std"] = dataset.z_norm_std
+        rf["z_norm_mean"] = dataset.z_norm_mean
+        rf["z_norm_std"] = dataset.z_norm_std
         rf["target_gene"] = np.array(dataset.target_gene, dtype=np.string_)
         rf["library_size_factor"] = dataset.library_size_factor
         rf["library_size"] = dataset.library_size
@@ -41,8 +41,7 @@ def inference(dataset, model, sess, output_dir, batch_size, workers, manager, lo
                                                        fletcher32=False,
                                                        dtype=np.float32)
     generator = DataQueue(dataset.loom_path, dataset.gene_name, False, batch_size=batch_size, log_fn=log_fn, workers=workers, manager=manager)
-    feed_dict = {model.norm_max: dataset.norm_max,
-                 model.z_norm_mean: dataset.z_norm_mean,
+    feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
                  model.zscore_cutoff: dataset.zscore_cutoff,
                  model.library_size_factor: dataset.library_size_factor,
@@ -98,12 +97,9 @@ def main():
     makeLog("Output Dir: {}".format(FLAGS["out_dir"]))
     makeLog("Batch size: {}".format(FLAGS["batch_size"]))
     ScanLoom_kwargs = {}
-    if FLAGS["pretrained_model"] is not None:
-        pretrained_gene_name, pretrained_norm_max = get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name", "norm_max"])
+    if FLAGS["pretrained_model"] is not None and not FLAGS["training"]:
+        pretrained_gene_name, = get_model_values_by_name(FLAGS["pretrained_model"], ["gene_name"])
         ScanLoom_kwargs["gene_range"] = pretrained_gene_name
-    else:
-        pretrained_gene_name = None
-        pretrained_norm_max = None
     if FLAGS["training"]:
         ScanLoom_kwargs["min_cell"] = FLAGS["min_expressed_cell"]
         ScanLoom_kwargs["min_avg_exp"] = FLAGS["min_expressed_cell_average_expression"]
@@ -121,9 +117,8 @@ def main():
     makeLog("Use {} genes with min_expressed_cell of {} and min_expressed_cell_average_expression of {}".format(dataset.target_gene.size, FLAGS["min_expressed_cell"], FLAGS["min_expressed_cell_average_expression"]))
     makeLog("Use {} as library_size_factor".format(dataset.library_size_factor))
     #  model
-    input_norm_max = dataset.norm_max if pretrained_norm_max is None else pretrained_norm_max[np.isin(pretrained_gene_name, dataset.target_gene)]
     model = DISC(gene_name=dataset.target_gene,
-                 norm_max=input_norm_max,
+                 norm_max=dataset.norm_max,
                  depth=FLAGS["depth"],
                  repeats=FLAGS["repeats"],
                  dimension_number=FLAGS["dimension_number"],

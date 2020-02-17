@@ -67,7 +67,7 @@ fish_gene_mat = apply(fish_mask_mat, 1, names)
 outfile = paste0(outdir, "/correlation_map.pdf")
 mfrow = make_mfrow(2, length(method_names))
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
-layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
+layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1), point_size = 2.75)
 dev.off()
 #  heatmap & CMD
 outfile = paste0(outdir, "/correlation_heatmap.pdf")

@@ -716,7 +716,7 @@ barplot_usage_new = function(data_vector, main, bar_color, use_log1p=F, use_data
   }
 }
 
-boxplot_usage = function(data_matrix, main, bar_color, text_color=NULL, use_data_order=F, decreasing=F, cex.main=2, ...){
+boxplot_usage = function(data_matrix, main, bar_color, text_color=NULL, use_data_order=F, decreasing=F, cex.main=2, axis_by=0.25, ...){
   data_means = colMeans(data_matrix, na.rm = T)
   data_order = c(1, order(data_means[-1], decreasing = decreasing) + 1)
   if(use_data_order){
@@ -726,14 +726,14 @@ boxplot_usage = function(data_matrix, main, bar_color, text_color=NULL, use_data
       text_color = text_color[data_order]
     }
   }
-  boxplot(data_matrix, main = main, axes = F, at = seq(ncol(data_matrix)), names = rep("", ncol(data_matrix)), las = 2, names.arg="", col = bar_color, cex.axis = 1.2, cex.main = cex.main, outline = F, ...)
+  bp = boxplot(data_matrix, main = main, axes = F, at = seq(ncol(data_matrix)), names = rep("", ncol(data_matrix)), las = 2, names.arg="", col = bar_color, cex.axis = 1.2, cex.main = cex.main, outline = F, ...)
   if(is.null(text_color)){
     text_color = rep("black", ncol(data_matrix))
   }
   for(ii in seq(ncol(data_matrix))){
     mtext(colnames(data_matrix)[ii], side = 1, line = -0.25, at = ii, las = 2, font = 1, col = text_color[ii], cex=1)
   }
-  axis(side = 2, seq(0, 1, by = 0.25))
+  axis(side = 2, seq(0, ceiling(max(bp$stats) / axis_by) * axis_by, by = axis_by))
 }
 
 calc_cor_mat = function(input_mat){
@@ -953,7 +953,7 @@ layout_correlogram_plot = function(cor_all, lab_cex = 3, this_xlab = "Gene2", th
   return(cmd_vector)
 }
 
-layout_scatter = function(result_list, method_names, mask_or_index=NULL, color_point=NULL, lab_cex = 3, plot_width = 3.5, plot_height = 4, plot_row = 2, this_xlab=NULL, this_ylab=NULL, ...){
+layout_scatter = function(result_list, method_names, mask_or_index=NULL, color_point=NULL, lab_cex=3, plot_width=3.5, plot_height=4, plot_row=2, this_xlab=NULL, this_ylab=NULL, point_size=4.25, ...){
   plot_number = ceiling(length(method_names) / plot_row) * plot_row
   plot_region = t(matrix(seq(plot_number), ncol = plot_row))
   plot_region[plot_region > length(method_names)] = 0
@@ -985,7 +985,7 @@ layout_scatter = function(result_list, method_names, mask_or_index=NULL, color_p
   }
   par(mar = c(2, 2, 3, 1))
   all_rmse = c()
-  cex = 4.25
+  cex = point_size
   cex.text = 1.5
   pch = 21
   for(ii in method_names){

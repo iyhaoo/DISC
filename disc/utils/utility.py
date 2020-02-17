@@ -39,17 +39,17 @@ def read_model(pretrained_model, target_gene=None, log_fn=print):
     with tf.gfile.FastGFile(pretrained_model, 'rb') as f:
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
+    model_gene_name = None
     if target_gene is not None:
-        model_gene_name = None
         for ii in graph_def.node:
             if ii.op == "Const" and ii.name == "gene_name":
                 model_gene_name = tf.make_ndarray(ii.attr['value'].tensor).astype(str)
         assert model_gene_name is not None
-        assert np.alltrue(np.isin(target_gene, model_gene_name))
-        model_gene_number = model_gene_name.size
-        model_target_index = pd.Series(range(model_gene_number), index=model_gene_name).reindex(target_gene).values.astype(np.int32)
+        replace_index, = np.ix_(np.isin(target_gene, model_gene_name))
+        model_target_index = pd.Series(range(model_gene_name.size), index=model_gene_name).reindex(target_gene).dropna().values.astype(np.int32)
+        assert model_target_index.size > 0, "Error: No intersect gene between input dataset and pretrained model."
     else:
-        model_gene_number = None
+        replace_index = None
         model_target_index = None
     assign_parameter_run_list = []
     scope_model_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
@@ -57,35 +57,52 @@ def read_model(pretrained_model, target_gene=None, log_fn=print):
     read_parameters_number = 0
     for ii in graph_def.node:
         if ii.op == "Const" and ii.name in model_variable_name_list:
-            this_value = tf.make_ndarray(ii.attr['value'].tensor)
-            if target_gene is not None:
-                if ii.name in ["attention/weights_attention",
-                               "reconstructor/bias_decoder",
-                               "expression_predictor/weights_encoder",
-                               "expression_predictor/weights_psi"]:
-                    this_value = np.take(this_value, model_target_index, axis=0)
-                elif ii.name in ["expression_predictor/phi"]:
-                    this_value = np.take(this_value, model_target_index, axis=1)
-                elif ii.name in ["expression_predictor/bias_hidden_layer_1"]:
-                    depth0 = int(this_value.shape[0] / model_gene_number)
-                    merge_use_index = np.take(np.arange(depth0 * model_gene_number).reshape(model_gene_number, depth0), model_target_index, axis=0).ravel()
-                    this_value = np.take(this_value, merge_use_index, axis=0)
-                elif ii.name in ["expression_predictor/weights_hidden_layer_1"]:
-                    depth0 = int(this_value.shape[1] / model_gene_number)
-                    merge_use_index = np.take(np.arange(depth0 * model_gene_number).reshape(model_gene_number, depth0), model_target_index, axis=0).ravel()
-                    this_value = np.take(this_value, merge_use_index, axis=1)
-                else:
-                    if ii.name.rsplit("_", 1)[0] in ["expression_predictor/weights_hidden_layer",
-                                                     "expression_predictor/bias_hidden_layer",
-                                                     "expression_predictor/weights_output_layer",
-                                                     "expression_predictor/bias_output_layer"]:
-                        this_value = np.take(this_value, model_target_index, axis=0)
-            read_parameters_number += this_value.size
-            this_tensor = scope_model_variables[model_variable_name_list.index(ii.name)]
-            if this_value.shape == this_tensor.get_shape():
-                assign_parameter_run_list.append(tf.assign(this_tensor, this_value))
+            read_value = tf.make_ndarray(ii.attr['value'].tensor)
+            write_tensor = scope_model_variables[model_variable_name_list.index(ii.name)]
+            assign_this = True
+            if read_value.shape == write_tensor.shape:
+                write_value = read_value
             else:
-                log_fn("{}:\ntensor: {}\tvalue: {}".format(ii.name, this_tensor.get_shape(), this_value.shape))
+                if target_gene is not None:
+                    if ii.name in ["attention/weights_attention",
+                                   "reconstructor/bias_decoder",
+                                   "expression_predictor/weights_encoder",
+                                   "expression_predictor/weights_psi"]:
+                        write_value = write_tensor.eval()
+                        write_value[replace_index] = np.take(read_value, model_target_index, axis=0)
+                    elif ii.name in ["expression_predictor/phi"]:
+                        write_value = write_tensor.eval()
+                        write_value[:, replace_index] = np.take(read_value, model_target_index, axis=1)
+                    elif ii.name in ["expression_predictor/bias_hidden_layer_1"]:
+                        write_value = write_tensor.eval()
+                        depth0 = int(read_value.shape[0] / model_gene_name.size)
+                        merge_read_index = np.take(np.arange(depth0 * model_gene_name.size).reshape(model_gene_name.size, depth0), model_target_index, axis=0).ravel()
+                        merge_write_index = np.take(np.arange(depth0 * target_gene.size).reshape(target_gene.size, depth0), replace_index, axis=0).ravel()
+                        write_value[merge_write_index] = np.take(read_value, merge_read_index, axis=0)
+                    elif ii.name in ["expression_predictor/weights_hidden_layer_1"]:
+                        write_value = write_tensor.eval()
+                        depth0 = int(read_value.shape[1] / model_gene_name.size)
+                        merge_read_index = np.take(np.arange(depth0 * model_gene_name.size).reshape(model_gene_name.size, depth0), model_target_index, axis=0).ravel()
+                        merge_write_index = np.take(np.arange(depth0 * target_gene.size).reshape(target_gene.size, depth0), replace_index, axis=0).ravel()
+                        write_value[:, merge_write_index] = np.take(read_value, merge_read_index, axis=1)
+                    else:
+                        if ii.name.rsplit("_", 1)[0] in ["expression_predictor/weights_hidden_layer",
+                                                         "expression_predictor/bias_hidden_layer",
+                                                         "expression_predictor/weights_output_layer",
+                                                         "expression_predictor/bias_output_layer"]:
+                            write_value = write_tensor.eval()
+                            write_value[replace_index] = np.take(read_value, model_target_index, axis=0)
+                        else:
+                            assign_this = False
+                            write_value = None
+                else:
+                    assign_this = False
+                    write_value = None
+            if assign_this:
+                    assign_parameter_run_list.append(tf.assign(write_tensor, write_value))
+                    read_parameters_number += write_value.size
+            else:
+                log_fn("{}:\ntensor: {}\tvalue: {}".format(ii.name, write_tensor.shape, read_value.shape))
     log_fn("Read {} parameters".format(read_parameters_number))
     return assign_parameter_run_list
 
