@@ -25,6 +25,7 @@ gene_expression = rowSums(raw_data)
 gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
 raw_input_data = raw_data[gene_filter, ]
 use_genes = intersect(rownames(dataset_list[["FISH"]]), rownames(raw_input_data))
+used_cells = colnames(dataset_list[["Raw"]])
 ```
 We use these 19 overlapped genes for analysis below.
 ```{r}
@@ -43,19 +44,22 @@ Note that SAVER needs to generate gene expression values following gamma distrib
 our_result = "./data/MELANOMA/DISC.hdf5"
 dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
 ### Other methods
-dataset_list[["SAVER"]] = readRDS("./data/MELANOMA/SAVER.rds")
-set.seed(42)
-dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
+#dataset_list[["SAVER"]] = readRDS("./data/MELANOMA/SAVER.rds")
+#set.seed(42)
+#dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
+dataset_list[["scImpute"]] = readh5_imputation("./data/MELANOMA/scImpute.hdf5", use_genes, used_cells)
+dataset_list[["VIPER"]] = readh5_imputation("./data/MELANOMA/VIPER.hdf5", use_genes, used_cells)
 dataset_list[["MAGIC"]] = readh5_imputation("./data/MELANOMA/MAGIC.hdf5", use_genes, used_cells)
 dataset_list[["DCA"]] = readh5_imputation("./data/MELANOMA/DCA.hdf5", use_genes, used_cells)
+dataset_list[["deepImpute"]] = readh5_imputation("./data/MELANOMA/deepImpute.hdf5", use_genes)
 dataset_list[["scScope"]] = readh5_imputation("./data/MELANOMA/scScope.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("./data/MELANOMA/scVI.hdf5", use_genes, used_cells)
 ```
 ### Output settings
 The output color for each method and the output directory will be setup here.
 ```{r}
-method_names = c("Raw", "DISC", "SAVER", "MAGIC", "DCA", "scScope", "scVI")
-method_color = c("gray80", "red", "blue4", "yellow4", "green", "purple", "cyan")
+method_names = c("Raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_color = c("gray80", "#FF0000", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
 names(method_color) = method_names
 bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
@@ -93,7 +97,7 @@ for(ii in use_genes){
 }
 ```
 #### correlation map
-```{r fig.height=7.5, fig.width=13}
+```{r fig.height=7.5, fig.width=16}
 fish_mask_mat = !is.na(cor_all[["FISH"]])
 for(ii in 1:length(use_genes)){
   fish_mask_mat[ii, seq(ii)] = FALSE
@@ -101,13 +105,13 @@ for(ii in 1:length(use_genes)){
 fish_mask = as.vector(fish_mask_mat)
 fish_gene_mat = apply(fish_mask_mat, 1, names)
 outfile = paste0(outdir, "/correlation_map.pdf")
-mfrow = c(2, 4)
+mfrow = make_mfrow(2, length(method_names))
 #pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
-layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1))
+layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1), point_size = 2.75)
 #dev.off()
 ```
 #### Correlation heatmap
-```{r fig.height=7, fig.width=12.5}
+```{r fig.height=7, fig.width=16}
 #  heatmap & CMD
 outfile = paste0(outdir, "/correlation_heatmap.pdf")
 use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
@@ -115,13 +119,13 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
   return(x)
 })[t(t(fish_gene_mat) != colnames(fish_gene_mat))], nrow = nrow(cor_all[["FISH"]]) - 1, ncol = ncol(cor_all[["FISH"]]), dimnames = list(c(), colnames(cor_all[["FISH"]])))), decreasing = T)
 #pdf(outfile, height = 7, width = 12.5)
-cmd_vector_all = layout_correlogram_plot(cor_all, use_order=use_order)
+cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
 #dev.off()
 ```
 #### CMD
-```{r fig.height=6, fig.width=4.2}
-names(cmd_vector_all) = names(cor_all)
-cmd_vector = cmd_vector_all[setdiff(names(cmd_vector_all), "FISH")]
+```{r fig.height=6, fig.width=4.5}
+names(cmd_vector) = names(cor_all)
+cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
 ```
@@ -141,7 +145,7 @@ for(ii in rescale_mean_list){
   max_points = max(c(max_points, ncol(ii)))
 }
 saver_style_filt_norm_list = rescale_mean_list
-saver_style_filt_norm_list[["SAVER"]] = binom_result_mean(dataset_list[["SAVER"]], dataset_list[["FISH"]])
+#saver_style_filt_norm_list[["SAVER"]] = binom_result_mean(dataset_list[["SAVER"]], dataset_list[["FISH"]])
 saver_style_filt_norm_list[["FISH"]] = dataset_list[["FISH"]]
 norm_for_density = saver_style_filt_norm_list
 for(ii in names(norm_for_density)){
@@ -150,7 +154,7 @@ for(ii in names(norm_for_density)){
 saveRDS(norm_for_density, paste0(outdir, "/norm_for_density.rds"))
 ```
 #### Gini
-```{r fig.height=7.5, fig.width=13}
+```{r fig.height=7.5, fig.width=16.5}
 gini_result_list = list()
 for(ii in names(saver_style_filt_norm_list)){
   if(ii != "SAVER"){
@@ -162,13 +166,13 @@ for(ii in names(saver_style_filt_norm_list)){
 color_point = c("#31a354", "#a63603")
 names(color_point) = example_gene
 outfile = paste0(outdir, "/Gini.pdf")
-mfrow = c(2, 4)
+mfrow = make_mfrow(2, length(method_names))
 #pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
 gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
 #dev.off()
 saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
 ```
-```{r fig.height=6, fig.width=4.2}
+```{r fig.height=6, fig.width=4.5}
 par(mfrow = c(1, 1))
 barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = bar_color, text_color = text_color, use_data_order = T)
 ```
@@ -202,7 +206,7 @@ for(ii in plot_genes){
     }
     ks_matrix[ii, method_index] = ks.test(delete_lt0.5(this_method_expression), delete_lt0.5(this_fish))$statistic
   }
-  plot(fish_density, lwd = 4, col = "gray80",
+  plot(fish_density, lwd = 2, col = "black", lty = 1,
        xlim = c(min(fish_density$x, 0), xlim_max + 5),
        ylim = c(0, ylim_max), yaxt = "s", bty="n",
        main = paste0(firstup(ii), " (", zero_proportion, "%)"),
@@ -212,13 +216,13 @@ for(ii in plot_genes){
     lines(use_density[[this_density_name]], lwd = 3, col=method_color[this_density_name])
   }
   if(ii %in% plot_genes[mfrow[2] + (mfrow[1] * mfrow[2] * seq(0, floor(length(plot_genes) / mfrow[1] * mfrow[2])))]){
-    legend("topright", c("RNA FISH", names(use_density)), lty = rep(1, 1 + length(names(use_density))),
-           lwd = rep(3, 1 + length(names(use_density))), col = c("gray80", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
+    legend("topright", c("FISH", names(use_density)), lty = rep(1, 1 + length(names(use_density))),
+           lwd = rep(3, 1 + length(names(use_density))), col = c("black", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
   }
 }
 #dev.off()
 ```
-```{r fig.height=6, fig.width=4.2}
+```{r fig.height=6, fig.width=4.5}
 outfile = paste0(outdir, "/density_summary.pdf")
 #pdf(outfile, height = 6, width = ncol(ks_matrix) * 0.6)
 ks_mean = Matrix::colMeans(ks_matrix)
@@ -232,7 +236,7 @@ barplot_usage(ks_mean, main = "K-S Statistic", bar_color = bar_color, text_color
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
 dir.create(dist_outdir, showWarnings = F)
-mfrow = c(2, 4)
+mfrow = make_mfrow(2, length(c("FISH", method_names)))
 pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
 library(parallel)
 no_cores <- detectCores() - 1
@@ -271,7 +275,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   nbin = 128
   x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
   y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in c("Raw", "FISH", "DISC", "SAVER", "MAGIC", "scVI", "DCA", "scScope")){
+  for(jj in c("FISH", method_names)){
     if(jj == "DISC"){
       col.main = "red"
     }else{
@@ -314,19 +318,19 @@ saveRDS(ks_stat_mat, paste(outdir, "/ks_stat_mat.rds", sep = ""))
 mean_ks_stat = Matrix::colMeans(ks_stat_mat)
 standard_error_ks_stat = apply(ks_stat_mat, 2, function(x) sqrt(var(x)/length(x)))
 ```
-```{r fig.height=6, fig.width=4.2}
+```{r fig.height=5, fig.width=9.5}
 outfile = paste(outdir, "/score_compare.pdf", sep = "")
-#pdf(outfile, height = 5, width = 9)
-#par(mfrow = c(1, 2))
+#pdf(outfile, height = 5, width = 11)
+par(mfrow = c(1, 2))
 barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5,bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks_stat)
 corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
 barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T)
 #dev.off()
 ```
 ### Summary
-```{r}
+```{r fig.height=3, fig.width=9.5}
 outfile = paste(outdir, "/Bar_plot.pdf", sep = "")
-#pdf(outfile, height = 3, width = 8)
+#pdf(outfile, height = 3, width = 9.5)
 plot_height = 4
 plot_width = 3.5
 plot_region = matrix(seq(3), nrow = 1)
@@ -339,9 +343,9 @@ layout_mat = rbind(layout_mat, xlab_region)
 this_height = c(this_height, 0.5)
 layout(mat = layout_mat, heights = this_height, widths = this_width)
 par(mar = c(1, 4.1, 4.1, 2.1))
-barplot_usage_new(cmd_vector, main = "CMD", method_color = method_color, use_data_order = T)
-barplot_usage_new(gini_rmse, main = "Gini RMSE", method_color = method_color, use_data_order = T)
-barplot_usage_new(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5, method_color = method_color, use_data_order = T, standard_error = standard_error_ks_stat)
+barplot_usage(cmd_vector, main = "CMD", bar_color = method_color, use_data_order = T, use_border = F)
+barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = method_color, use_data_order = T, use_border = F)
+barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5, bar_color = method_color, use_data_order = T, standard_error = standard_error_ks_stat, use_border = F)
 par(mar = rep(0, 4))
 plot(1, type = "n", axes = FALSE, xlab="", ylab="")
 legend(x = "top",inset = 0, legend = names(method_color), fill = method_color, horiz = TRUE, border = NA, bty = "n")

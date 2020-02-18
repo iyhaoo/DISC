@@ -80,6 +80,8 @@ cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
 dev.off()
 names(cmd_vector) = names(cor_all)
 cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
+outfile = paste0(outdir, "/CMD.pdf")
+pdf(outfile, height = 6, width = 4.5)
 barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
 dev.off()
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))

@@ -679,43 +679,6 @@ barplot_usage = function(data_vector, main, bar_color, text_color=NULL, use_data
   }
 }
 
-
-barplot_usage_new = function(data_vector, main, bar_color, use_log1p=F, use_data_order=F, decreasing=F, standard_error=NULL, cex.main=2, ylim=NULL, ...){
-  data_order = c(1, order(data_vector[-1], decreasing = decreasing) + 1)
-  if(use_data_order){
-    data_vector = data_vector[data_order]
-    bar_color = bar_color[data_order]
-    if(!is.null(standard_error)){
-      standard_error = standard_error[data_order]
-    }
-  }
-  if(is.null(ylim)){
-    if(is.null(standard_error)){
-      ylim = c(0, max(data_vector) * 1.01)
-    }else{
-      ylim = c(0, max(data_vector + standard_error) * 1.01)
-    }
-  }
-  if(use_log1p){
-    plot_data = log1p(data_vector)
-    ylim = log1p(ylim)
-    if(!is.null(standard_error)){
-      plot_data_up = log1p(data_vector + standard_error)
-      plot_data_down = log1p(data_vector - standard_error)
-    }
-  }else{
-    plot_data = data_vector
-    if(!is.null(standard_error)){
-      plot_data_up = data_vector + standard_error
-      plot_data_down = data_vector - standard_error
-    }
-  }
-  bp = barplot(plot_data, main = main, las=1, names.arg="", col = bar_color, cex.axis = 1.2, cex.main = cex.main, border = NA, ylim = ylim, ...)
-  if(!is.null(standard_error)){
-    arrows(bp, plot_data_down, bp, plot_data_up, length=0.05, angle=90, code=3)
-  }
-}
-
 boxplot_usage = function(data_matrix, main, bar_color, text_color=NULL, use_data_order=F, decreasing=F, cex.main=2, axis_by=0.25, ...){
   data_means = colMeans(data_matrix, na.rm = T)
   data_order = c(1, order(data_means[-1], decreasing = decreasing) + 1)
@@ -733,7 +696,7 @@ boxplot_usage = function(data_matrix, main, bar_color, text_color=NULL, use_data
   for(ii in seq(ncol(data_matrix))){
     mtext(colnames(data_matrix)[ii], side = 1, line = -0.25, at = ii, las = 2, font = 1, col = text_color[ii], cex=1)
   }
-  axis(side = 2, seq(0, ceiling(max(bp$stats) / axis_by) * axis_by, by = axis_by))
+  axis(side = 2, seq(floor(min(bp$stats) / axis_by) * axis_by, ceiling(max(bp$stats) / axis_by) * axis_by, by = axis_by))
 }
 
 calc_cor_mat = function(input_mat){
