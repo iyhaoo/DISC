@@ -3,7 +3,7 @@ source(utilities_path)
 min_expressed_cell = 10
 min_expressed_cell_average_expression = 1
 ds_mode = 0.5
-method_names = c("DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_names = c("DISC", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
 ### Load raw data and downsampling
 raw_data = readh5_loom("/home/yuanhao/github_repositories/DISC/reproducibility/data/PBMC/raw.loom")
 compare_gene = rownames(raw_data)
@@ -66,22 +66,38 @@ names(bar_color) = method_names
 bar_color["Observed"] = "gray80"
 bar_color["DISC"] = "red"
 ### MAE
-mae_eq0 = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
-scale_factor = 1 / ds_mode
+MAE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
+ls_raw = colSums(data_list[["Raw"]])
 for(ii in method_names){
   for(jj in repeats){
-    eq0 = sum(data_list[["Raw"]] > 0 & data_list[["Observed"]][[jj]] == 0)
-    sae_eq0 = sum(sapply(compare_gene, function(x){
-      expressed_mask = data_list[["Raw"]][x, ] > 0 & data_list[["Observed"]][[jj]][x, ] == 0
-      return(sum(abs(data_list[["Raw"]][x, expressed_mask] - (data_list[[ii]][[jj]][x, expressed_mask] * scale_factor))))
-    }))
-    mae_eq0[ii, jj] = sae_eq0 / eq0
+    ls_this = colSums(data_list[[ii]][[jj]])
+    scale_factor = ls_raw / ls_this
+    ERROR_MAE = sapply(seq(cell_number), function(x){
+      expressed_mask = data_list[["Raw"]][, x] > 0
+      expressed_number = sum(expressed_mask)
+      error = data_list[["Raw"]][expressed_mask, x] - (data_list[[ii]][[jj]][expressed_mask, x] * scale_factor[x])
+      return(sum(abs(error)) / expressed_number)
+    })
+    if(jj == repeats[1]){
+      MAE_cell = ERROR_MAE
+    }else{
+      MAE_cell = cbind(MAE_cell, ERROR_MAE)
+    }
   }
+  MAE_mat[, ii] = rowMeans(MAE_cell)
   print(ii)
 }
-pdf(paste0(output_dir, "/MAE.pdf"), height = 6, width = 5)
-barplot_usage(rowMeans(mae_eq0), standard_error = apply(mae_eq0, 1, ste), main = "Zero entries", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "Log (MAE + 1)", use_log1p = T, cex.lab = 1.5, font.main = 1)
-dev.off()
+MAE_mat = MAE_mat[rowSums(is.na(MAE_mat)) < 1, ]
+MAE_df = melt(t(MAE_mat))
+MAE_levels = colnames(MAE_mat)[c(1, order(colMeans(MAE_mat)[-1], decreasing = F) + 1)]
+
+p = ggplot(MAE_df, aes(x = factor(Var1, levels = MAE_levels), y = value, fill = factor(Var1, levels = MAE_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(MAE_mat, 2, quantile, 0.1)), max(apply(MAE_mat, 2, quantile, 0.9))) + theme_classic() +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        legend.position = "none")
+ggsave(paste0(output_dir, "/MAE.pdf"), p, height = 6, width = 5)
 ### CMD
 CMD_output_dir = paste0(output_dir, "/CMD")
 dir.create(CMD_output_dir, showWarnings = F, recursive = T)
