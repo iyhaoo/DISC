@@ -77,9 +77,11 @@ Here, we load the imputation results, which can be found at <a href="https://git
 ```{r}
 data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
 print(dim(data_list[["DISC"]]))
-data_list[["SAVER"]] = readh5_imputation(paste0(ds_dir, "/SAVER.hdf5"))
+data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
+data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
 data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
 data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
+data_list[["deepImpute"]] = readh5_imputation(paste0(ds_dir, "/deepImpute.hdf5"))
 data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
 data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
 cell_number = ncol(data_list[["Raw"]])

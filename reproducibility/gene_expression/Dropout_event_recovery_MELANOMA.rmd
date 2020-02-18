@@ -46,9 +46,11 @@ Here, we load their results.
 ```{r}
 data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
 print(dim(data_list[["DISC"]]))
-data_list[["SAVER"]] = readh5_imputation(paste0(ds_dir, "/SAVER.hdf5"))
+data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
+data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
 data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
 data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
+data_list[["deepImpute"]] = readh5_imputation(paste0(ds_dir, "/deepImpute.hdf5"))
 data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
 data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
 cell_number = ncol(data_list[["Raw"]])
@@ -72,22 +74,15 @@ bar_color["DISC"] = "red"
 MAE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
 ls_raw = colSums(data_list[["Raw"]])
 for(ii in method_names){
-  for(jj in repeats){
-    ls_this = colSums(data_list[[ii]][[jj]])
+  ls_this = colSums(data_list[[ii]])
     scale_factor = ls_raw / ls_this
-    ERROR_MAE = sapply(seq(cell_number), function(x){
+    MAE_cell = sapply(seq(cell_number), function(x){
       expressed_mask = data_list[["Raw"]][, x] > 0
       expressed_number = sum(expressed_mask)
-      error = data_list[["Raw"]][expressed_mask, x] - (data_list[[ii]][[jj]][expressed_mask, x] * scale_factor[x])
+      error = data_list[["Raw"]][expressed_mask, x] - (data_list[[ii]][expressed_mask, x] * scale_factor[x])
       return(sum(abs(error)) / expressed_number)
     })
-    if(jj == repeats[1]){
-      MAE_cell = ERROR_MAE
-    }else{
-      MAE_cell = cbind(MAE_cell, ERROR_MAE)
-    }
-  }
-  MAE_mat[, ii] = rowMeans(MAE_cell)
+  MAE_mat[, ii] = MAE_cell
   print(ii)
 }
 MAE_mat = MAE_mat[rowSums(is.na(MAE_mat)) < 1, ]
@@ -96,12 +91,14 @@ MAE_levels = colnames(MAE_mat)[c(1, order(colMeans(MAE_mat)[-1], decreasing = F)
 
 ```
 
-```{r fig.height=5, fig.width=4.5}
+```{r fig.height=6, fig.width=5}
 ggplot(MAE_df, aes(x = factor(Var1, levels = MAE_levels), y = value, fill = factor(Var1, levels = MAE_levels))) +
   geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
   ylim(min(apply(MAE_mat, 2, quantile, 0.1)), max(apply(MAE_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
   theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
         axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
         legend.position = "none")
 ```
 
@@ -124,24 +121,19 @@ for(ii in names(data_list)){
   if(ii == "Raw"){
     cor_all[[ii]] = calc_cor_mat(data_list[[ii]][used_feature_genes, ])
   }else{
-    cor_all[[ii]] = list()
-    for(jj in repeats){
-      cor_all[[ii]][[jj]] = calc_cor_mat(delete_lt0.5(data_list[[ii]][[jj]])[used_feature_genes, ])
-    }
+    cor_all[[ii]] = calc_cor_mat(delete_lt0.5(data_list[[ii]])[used_feature_genes, ])
   }
   print(ii)
 }
 saveRDS(cor_all, paste0(CMD_output_dir, "/cor_all.rds"))
-cmd_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
+cmd_value = c()
 for(ii in method_names){
-  for(jj in repeats){
-    cmd_mat[ii, jj] = calc_cmd(cor_all[["Raw"]], cor_all[[ii]][[jj]])
-  }
+  cmd_value = c(cmd_value, calc_cmd(cor_all[["Raw"]], cor_all[[ii]]))
 }
-
+names(cmd_value) = method_names
 ```
 ```{r fig.height=6, fig.width=5}
-barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+barplot_usage(cmd_value, main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F)
 ```
 
 
@@ -149,41 +141,43 @@ barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main =
 ```{r}
 gene_corr_mat = matrix(nrow = gene_number, ncol = length(method_names), dimnames = list(c(), method_names))
 for(ii in method_names){
-  for(jj in repeats){
-    if(jj == repeats[1]){
-      cor_mat = calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene")
-    }else{
-      cor_mat = cbind(cor_mat, calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene"))
-    }
-  }
-  gene_corr_mat[, ii] = rowMeans(cor_mat)
+  gene_corr_mat[, ii] = calc_corr(data_list[["Raw"]], data_list[[ii]], "gene")
   print(ii)
 }
 gene_corr_mat = gene_corr_mat[rowSums(is.na(gene_corr_mat)) < 1, ]
-
+gene_corr_df = melt(t(gene_corr_mat))
+gene_corr_levels = colnames(gene_corr_mat)[c(1, order(colMeans(gene_corr_mat)[-1], decreasing = T) + 1)]
 ```
 ```{r fig.height=6, fig.width=5}
-boxplot_usage(gene_corr_mat, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Gene correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+ggplot(gene_corr_df, aes(x = factor(Var1, levels = gene_corr_levels), y = value, fill = factor(Var1, levels = gene_corr_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(gene_corr_mat, 2, quantile, 0.1)), max(apply(gene_corr_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="Gene correlation with reference") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
 ```
 ### Cell correlation
 ```{r}
 cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
 for(ii in method_names){
-  for(jj in repeats){
-    if(jj == repeats[1]){
-      cor_mat = calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell")
-    }else{
-      cor_mat = cbind(cor_mat, calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell"))
-    }
-  }
-  cell_corr_mat[, ii] = rowMeans(cor_mat)
+  cell_corr_mat[, ii] = calc_corr(data_list[["Raw"]], data_list[[ii]], "cell")
   print(ii)
 }
 cell_corr_mat = cell_corr_mat[rowSums(is.na(cell_corr_mat)) < 1, ]
-
+cell_corr_df = melt(t(cell_corr_mat))
+cell_corr_levels = colnames(cell_corr_mat)[c(1, order(colMeans(cell_corr_mat)[-1], decreasing = T) + 1)]
 ```
 ```{r fig.height=5, fig.width=4.5}
-boxplot_usage(cell_corr_mat, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, decreasing = T, ylab = "Cell correlation with reference", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1))
+ggplot(cell_corr_df, aes(x = factor(Var1, levels = cell_corr_levels), y = value, fill = factor(Var1, levels = cell_corr_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(cell_corr_mat, 2, quantile, 0.1)), max(apply(cell_corr_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="Cell correlation with reference") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
 ```
 
 
