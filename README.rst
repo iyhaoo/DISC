@@ -6,7 +6,7 @@ DISC
 .. |PyPI| image:: https://img.shields.io/pypi/v/DISC.svg
     :target: https://pypi.org/project/disc
 
-An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell transcriptome.
+A highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning.
 
 * Free software: Apache License 2.0
 
@@ -174,7 +174,7 @@ Tutorials
 References
 ----------
 Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
-**"Reliable and efficient imputation and cell type identification for single-cell transcriptomes using a semi-supervised deep learning approach"**
+**"DISC: a highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning"**
 
 History
 -------
