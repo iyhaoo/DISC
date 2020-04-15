@@ -8,15 +8,12 @@ For Some datasets which have duplicated gene names, we can run a python script i
 
 The renamed loom-formatted file will be generated in the same directory of `matrix.loom`.
 #### SAVER
-Here, 16 means using 16 cores and 10 means removing genes that expressed in less than 10 cells.
-
     R --slave < reproducibility/source/other_methods/SAVER.r \
     --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom 16 10
 #### MAGIC
     python3 reproducibility/source/other_methods/MAGIC.py \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --min-expressed-cell=10
-
 #### DCA
     python3 reproducibility/source/other_methods/DCA.py \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
@@ -29,6 +26,17 @@ Here, 16 means using 16 cores and 10 means removing genes that expressed in less
     python3 reproducibility/source/other_methods/scVI.py \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --min-expressed-cell=10
+#### deepImpute
+    python3 reproducibility/source/other_methods/deepImpute.py \
+    --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
+    --min-expressed-cell=10
+#### scImpute
+    R --slave < reproducibility/source/other_methods/scImpute.r \
+    --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom 16 10
+#### VIPER
+    R --slave < reproducibility/source/other_methods/VIPER.r \
+    --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom gene 10
+    
 Here, all results will be saved in `/home/yuanhao/data/fn/melanoma/imputation` with genes filtered.
 We can easily run
 
