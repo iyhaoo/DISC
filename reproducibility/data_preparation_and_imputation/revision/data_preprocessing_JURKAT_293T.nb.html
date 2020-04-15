@@ -1791,20 +1791,96 @@ source(utilities_path)</code></pre>
   gene_names_JURKAT = rownames(raw_data_JURKAT)
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoi6K+V5byAVVJM4oCZaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9zYW1wbGVzL2NlbGwtZXhwLzEuMS4wL2p1cmthdC9qdXJrYXRfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3onXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3gtdGFyJyBsZW5ndGggMzI5NjIyNjUgYnl0ZXMgKDMxLjQgTUIpXG5kb3dubG9hZGVkIDg1MiBLQlxuXG5kb3dubG9hZGVkIGxlbmd0aCA4NzI0NDggIT0gcmVwb3J0ZWQgbGVuZ3RoIDMyOTYyMjY1XG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoi6K+V5byAVVJM4oCZaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9zYW1wbGVzL2NlbGwtZXhwLzEuMS4wL2p1cmthdC9qdXJrYXRfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3onXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3gtdGFyJyBsZW5ndGggMzI5NjIyNjUgYnl0ZXMgKDMxLjQgTUIpXG5kb3dubG9hZGVkIDMxLjQgTUJcblxuRmVhdHVyZSBuYW1lcyBjYW5ub3QgaGF2ZSB1bmRlcnNjb3JlcyAoJ18nKSwgcmVwbGFjaW5nIHdpdGggZGFzaGVzICgnLScpXG4ifQ== -->
 <pre><code>试开URL’http://cf.10xgenomics.com/samples/cell-exp/1.1.0/jurkat/jurkat_filtered_gene_bc_matrices.tar.gz&#39;
 Content type &#39;application/x-tar&#39; length 32962265 bytes (31.4 MB)
-downloaded 852 KB
+downloaded 31.4 MB
 
-downloaded length 872448 != reported length 32962265</code></pre>
+Feature names cannot have underscores (&#39;_&#39;), replacing with dashes (&#39;-&#39;)</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiZmlsdGVyZWRfbWF0cmljZXNfbWV4L2hnMTkvbWF0cml4Lm10eDogdHJ1bmNhdGVkIGd6aXAgaW5wdXRcbnRhci5leGU6IEVycm9yIGV4aXQgZGVsYXllZCBmcm9tIHByZXZpb3VzIGVycm9ycy5cbiJ9 -->
-<pre><code>filtered_matrices_mex/hg19/matrix.mtx: truncated gzip input
-tar.exe: Error exit delayed from previous errors.</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
+<pre><code>[1] TRUE</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoioa50YXIuZXhlIC14ZiBcIkM6XFxVc2Vyc1xceWhcXEFwcERhdGFcXExvY2FsXFxUZW1wXFxSdG1wYWV0Q01wXFxmaWxlOGRlNDZmOWYxNzUzXCIgLUMgXCIuL2RhdGEvSlVSS0FUXCKhryByZXR1cm5lZCBlcnJvciBjb2RlIDG2wcihtcTP7sS/yv2x2NDoysfB0Mr9tcSxtsr9ZW1iZWRkZWQgbnVsKHMpIGZvdW5kIGluIGlucHV0RXJyb3IgaW4gaWYgKGFueShlbHMkaiA8IDEgfCBlbHMkaiA+IG5jKSkgc3RvcChcInJlYWRNTSgpOiBjb2x1bW4gdmFsdWVzICdqJyBhcmUgbm90IGluIDE6bmNcIiwgIDogXG4gIOmcgOimgVRSVUUvRkFMU0XlgLznmoTlnLDmlrnkuI3lj6/ku6XnlKjnvLrlsJHlgLxcbiJ9 -->
-<pre><code>愼㸱愼㹥tar.exe -xf &quot;C:\Users\yh\AppData\Local\Temp\RtmpaetCMp\file8de46f9f1753&quot; -C &quot;./data/JURKAT&quot;愼㸱愼㹦 returned error code 1戼㸶挼㸱ȡ戼㸵挼㸴挼㹦攼㹥Ŀ挼㹡昼㹤戼㸱搼㸸搼㸰攼㸸挼㹡挼㸷挼㸱搼㸰挼㹡昼㹤戼㸵ı戼㸶挼㹡昼㹤embedded nul(s) found in inputError in if (any(els$j &lt; 1 | els$j &gt; nc)) stop(&quot;readMM(): column values &#39;j&#39; are not in 1:nc&quot;,  : 
-  需要TRUE/FALSE值的地方不可以用缺少值</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZGltKHJhd19kYXRhX0pVUktBVCkpXG5gYGAifQ== -->
+<pre class="r"><code>print(dim(raw_data_JURKAT))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDMyNzM4ICAzMjU4XG4ifQ== -->
+<pre><code>[1] 32738  3258</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJKVVJLQVQuLi5PSyFcIilcbmBgYCJ9 -->
+<pre class="r"><code>print(&quot;JURKAT...OK!&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiSlVSS0FULi4uT0shXCJcbiJ9 -->
+<pre><code>[1] &quot;JURKAT...OK!&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYoIWZpbGUuZXhpc3RzKFwiLi9kYXRhLzI5M1QvcmF3Lmxvb21cIikpe1xuICB0ZW1wIDwtIHRlbXBmaWxlKClcbiAgZG93bmxvYWQuZmlsZShcImh0dHA6Ly9jZi4xMHhnZW5vbWljcy5jb20vc2FtcGxlcy9jZWxsLWV4cC8xLjEuMC8yOTN0LzI5M3RfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3pcIiwgdGVtcClcbiAgZXhkaXIgPSBcIi4vZGF0YS8yOTNUXCJcbiAgdW50YXIodGVtcCwgZXhkaXIgPSBleGRpcilcbiAgdW5saW5rKHRlbXApXG4gIG9yaWdpbmFsX2RhdGEgPC0gUmVhZDEwWChkYXRhLmRpciA9IHBhc3RlMChleGRpciwgXCIvZmlsdGVyZWRfbWF0cmljZXNfbWV4L2hnMTkvXCIpKVxuICBzYXZlX2g1KFwiLi9kYXRhLzI5M1Qvb3JpZ2luYWwubG9vbVwiLCBhcy5tYXRyaXgodChvcmlnaW5hbF9kYXRhKSkpXG4gIHNldXJhdF9vYmogPC0gQ3JlYXRlU2V1cmF0T2JqZWN0KGNvdW50cyA9IGFzLmRhdGEuZnJhbWUob3JpZ2luYWxfZGF0YSksIG1pbi5mZWF0dXJlcyA9IDUwMClcbiAgY2VsbF9uYW1lc18yOTNUID0gY29sbmFtZXMoc2V1cmF0X29ialtbXCJSTkFcIl1dQGNvdW50cylcbiAgZ2VuZV9uYW1lc18yOTNUID0gcm93bmFtZXMoc2V1cmF0X29ialtbXCJSTkFcIl1dQGNvdW50cylcbiAgcmF3X2RhdGFfMjkzVCA9IGFzLm1hdHJpeChvcmlnaW5hbF9kYXRhWywgY2VsbF9uYW1lc18yOTNUXSlcbiAgc2F2ZV9oNShcIi4vZGF0YS8yOTNUL3Jhdy5sb29tXCIsIHQocmF3X2RhdGFfMjkzVCkpXG59ZWxzZXtcbiAgcmF3X2RhdGFfMjkzVCA9IHJlYWRoNV9sb29tKFwiLi9kYXRhLzI5M1QvcmF3Lmxvb21cIilcbiAgY2VsbF9uYW1lc18yOTNUID0gY29sbmFtZXMocmF3X2RhdGFfMjkzVClcbiAgZ2VuZV9uYW1lc18yOTNUID0gcm93bmFtZXMocmF3X2RhdGFfMjkzVClcbn1cbmBgYCJ9 -->
+<pre class="r"><code>if(!file.exists(&quot;./data/293T/raw.loom&quot;)){
+  temp &lt;- tempfile()
+  download.file(&quot;http://cf.10xgenomics.com/samples/cell-exp/1.1.0/293t/293t_filtered_gene_bc_matrices.tar.gz&quot;, temp)
+  exdir = &quot;./data/293T&quot;
+  untar(temp, exdir = exdir)
+  unlink(temp)
+  original_data &lt;- Read10X(data.dir = paste0(exdir, &quot;/filtered_matrices_mex/hg19/&quot;))
+  save_h5(&quot;./data/293T/original.loom&quot;, as.matrix(t(original_data)))
+  seurat_obj &lt;- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
+  cell_names_293T = colnames(seurat_obj[[&quot;RNA&quot;]]@counts)
+  gene_names_293T = rownames(seurat_obj[[&quot;RNA&quot;]]@counts)
+  raw_data_293T = as.matrix(original_data[, cell_names_293T])
+  save_h5(&quot;./data/293T/raw.loom&quot;, t(raw_data_293T))
+}else{
+  raw_data_293T = readh5_loom(&quot;./data/293T/raw.loom&quot;)
+  cell_names_293T = colnames(raw_data_293T)
+  gene_names_293T = rownames(raw_data_293T)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoi6K+V5byAVVJM4oCZaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9zYW1wbGVzL2NlbGwtZXhwLzEuMS4wLzI5M3QvMjkzdF9maWx0ZXJlZF9nZW5lX2JjX21hdHJpY2VzLnRhci5neidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC10YXInIGxlbmd0aCAzMDc1Njk5OSBieXRlcyAoMjkuMyBNQilcbmRvd25sb2FkZWQgMjkuMyBNQlxuXG5GZWF0dXJlIG5hbWVzIGNhbm5vdCBoYXZlIHVuZGVyc2NvcmVzICgnXycpLCByZXBsYWNpbmcgd2l0aCBkYXNoZXMgKCctJylcbiJ9 -->
+<pre><code>试开URL’http://cf.10xgenomics.com/samples/cell-exp/1.1.0/293t/293t_filtered_gene_bc_matrices.tar.gz&#39;
+Content type &#39;application/x-tar&#39; length 30756999 bytes (29.3 MB)
+downloaded 29.3 MB
+
+Feature names cannot have underscores (&#39;_&#39;), replacing with dashes (&#39;-&#39;)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
+<pre><code>[1] TRUE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZGltKHJhd19kYXRhXzI5M1QpKVxuYGBgIn0= -->
+<pre class="r"><code>print(dim(raw_data_293T))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDMyNzM4ICAyODg1XG4ifQ== -->
+<pre><code>[1] 32738  2885</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCIyOTNULi4uT0shXCIpXG5gYGAifQ== -->
+<pre class="r"><code>print(&quot;293T...OK!&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiMjkzVC4uLk9LIVwiXG4ifQ== -->
+<pre><code>[1] &quot;293T...OK!&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYoIWZpbGUuZXhpc3RzKFwiLi9kYXRhL0pVUktBVF8yOTNUL3Jhdy5sb29tXCIpKXtcbiAgZGlyLmNyZWF0ZShcIi4vZGF0YS9KVVJLQVRfMjkzVFwiLCBzaG93V2FybmluZ3MgPSBGKVxuICBnZW5lX25hbWVzX0pVUktBVF8yOTNUID0gdW5pcXVlKGMoZ2VuZV9uYW1lc19KVVJLQVQsIGdlbmVfbmFtZXNfMjkzVCkpXG4gIHJhd19kYXRhX0pVUktBVF8yOTNUID0gbWF0cml4KDAsIG5yb3cgPSBsZW5ndGgoZ2VuZV9uYW1lc19KVVJLQVRfMjkzVCksIG5jb2wgPSBuY29sKHJhd19kYXRhX0pVUktBVCkgKyBuY29sKHJhd19kYXRhXzI5M1QpLCBkaW1uYW1lcyA9IGxpc3QoZ2VuZV9uYW1lc19KVVJLQVRfMjkzVCwgYyhjZWxsX25hbWVzX0pVUktBVCwgY2VsbF9uYW1lc18yOTNUKSkpXG4gIHJhd19kYXRhX0pVUktBVF8yOTNUW2dlbmVfbmFtZXNfSlVSS0FULCBjZWxsX25hbWVzX0pVUktBVF0gPSByYXdfZGF0YV9KVVJLQVRcbiAgcmF3X2RhdGFfSlVSS0FUXzI5M1RbZ2VuZV9uYW1lc18yOTNULCBjZWxsX25hbWVzXzI5M1RdID0gcmF3X2RhdGFfMjkzVFxuICBzYXZlX2g1KFwiLi9kYXRhL0pVUktBVF8yOTNUL3Jhdy5sb29tXCIsIHQocmF3X2RhdGFfSlVSS0FUXzI5M1QpKVxufWVsc2V7XG4gIHJhd19kYXRhX0pVUktBVF8yOTNUID0gcmVhZGg1X2xvb20oXCIuL2RhdGEvSlVSS0FUXzI5M1QvcmF3Lmxvb21cIilcbn1cbmBgYCJ9 -->
+<pre class="r"><code>if(!file.exists(&quot;./data/JURKAT_293T/raw.loom&quot;)){
+  dir.create(&quot;./data/JURKAT_293T&quot;, showWarnings = F)
+  gene_names_JURKAT_293T = unique(c(gene_names_JURKAT, gene_names_293T))
+  raw_data_JURKAT_293T = matrix(0, nrow = length(gene_names_JURKAT_293T), ncol = ncol(raw_data_JURKAT) + ncol(raw_data_293T), dimnames = list(gene_names_JURKAT_293T, c(cell_names_JURKAT, cell_names_293T)))
+  raw_data_JURKAT_293T[gene_names_JURKAT, cell_names_JURKAT] = raw_data_JURKAT
+  raw_data_JURKAT_293T[gene_names_293T, cell_names_293T] = raw_data_293T
+  save_h5(&quot;./data/JURKAT_293T/raw.loom&quot;, t(raw_data_JURKAT_293T))
+}else{
+  raw_data_JURKAT_293T = readh5_loom(&quot;./data/JURKAT_293T/raw.loom&quot;)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
+<pre><code>[1] TRUE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZGltKHJhd19kYXRhX0pVUktBVF8yOTNUKSlcbmBgYCJ9 -->
+<pre class="r"><code>print(dim(raw_data_JURKAT_293T))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDMyNzM4ICA2MTQzXG4ifQ== -->
+<pre><code>[1] 32738  6143</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJKVVJLQVRfMjkzVC4uLk9LIVwiKVxuYGBgIn0= -->
+<pre class="r"><code>print(&quot;JURKAT_293T...OK!&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiSlVSS0FUXzI5M1QuLi5PSyFcIlxuIn0= -->
+<pre><code>[1] &quot;JURKAT_293T...OK!&quot;</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
