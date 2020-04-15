@@ -22,46 +22,47 @@ if(!file.exists("./data/JURKAT/raw.loom")){
   exdir = "./data/JURKAT"
   untar(temp, exdir = exdir)
   unlink(temp)
-  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_gene_bc_matrices/hg19/"))
+  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
   save_h5("./data/JURKAT/original.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names_JURKAT = colnames(seurat_obj[["RNA"]]@counts)
   gene_names_JURKAT = rownames(seurat_obj[["RNA"]]@counts)
   raw_data_JURKAT = as.matrix(original_data[, cell_names_JURKAT])
-  save_h5("./data/JURKAT/raw.loom", t(raw_data))
+  save_h5("./data/JURKAT/raw.loom", t(raw_data_JURKAT))
 }else{
   raw_data_JURKAT = readh5_loom("./data/JURKAT/raw.loom")
-  cell_names_JURKAT = colnames(raw_data)
-  gene_names_JURKAT = rownames(raw_data)
+  cell_names_JURKAT = colnames(raw_data_JURKAT)
+  gene_names_JURKAT = rownames(raw_data_JURKAT)
 }
 print(dim(raw_data_JURKAT))
 print("JURKAT...OK!")
-if(!file.exists("./data/JURKAT/raw.loom")){
+if(!file.exists("./data/293T/raw.loom")){
   temp <- tempfile()
   download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/293t/293t_filtered_gene_bc_matrices.tar.gz", temp)
   exdir = "./data/293T"
   untar(temp, exdir = exdir)
   unlink(temp)
-  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_gene_bc_matrices/hg19/"))
+  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
   save_h5("./data/293T/original.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names_293T = colnames(seurat_obj[["RNA"]]@counts)
   gene_names_293T = rownames(seurat_obj[["RNA"]]@counts)
   raw_data_293T = as.matrix(original_data[, cell_names_293T])
-  save_h5("./data/293T/raw.loom", t(raw_data))
+  save_h5("./data/293T/raw.loom", t(raw_data_293T))
 }else{
   raw_data_293T = readh5_loom("./data/293T/raw.loom")
-  cell_names_293T = colnames(raw_data)
-  gene_names_293T = rownames(raw_data)
+  cell_names_293T = colnames(raw_data_293T)
+  gene_names_293T = rownames(raw_data_293T)
 }
 print(dim(raw_data_293T))
 print("293T...OK!")
 if(!file.exists("./data/JURKAT_293T/raw.loom")){
+  dir.create("./data/JURKAT_293T", showWarnings = F)
   gene_names_JURKAT_293T = unique(c(gene_names_JURKAT, gene_names_293T))
   raw_data_JURKAT_293T = matrix(0, nrow = length(gene_names_JURKAT_293T), ncol = ncol(raw_data_JURKAT) + ncol(raw_data_293T), dimnames = list(gene_names_JURKAT_293T, c(cell_names_JURKAT, cell_names_293T)))
   raw_data_JURKAT_293T[gene_names_JURKAT, cell_names_JURKAT] = raw_data_JURKAT
   raw_data_JURKAT_293T[gene_names_293T, cell_names_293T] = raw_data_293T
-  save_h5("./data/JURKAT_293T/raw.loom", t(raw_data))
+  save_h5("./data/JURKAT_293T/raw.loom", t(raw_data_JURKAT_293T))
 }else{
   raw_data_JURKAT_293T = readh5_loom("./data/JURKAT_293T/raw.loom")
 }
