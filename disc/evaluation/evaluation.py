@@ -148,7 +148,7 @@ class Evaluation:
                 ax0r_y_max = np.median([x.get_ydata() for x in ax0r_lineur]) * np.exp(1)
                 ax0r_lineur += ax0r.plot([min_feature_smooth_mean_index] * 2, [0, ax0r_y_max], color="blue", label="Min Feature Loss")
                 if optimal_mask.sum():
-                    optimal_point = run_cells_array[optimal_mask].min()
+                    optimal_point = run_cells_array[optimal_mask][np.argmin(feature_convergence_estimate[optimal_mask])]
                     self.optimal_point.value = optimal_point.copy()
                     ax0r_lineur += ax0r.plot([optimal_point] * 2, [0, ax0r_y_max], color="red", label="Min Feature Convergence")
                 ax0r.tick_params(axis="y", labelcolor="red")

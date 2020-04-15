@@ -80,6 +80,7 @@ def main():
     parser.add_argument("--warm-up-cells", required=False, type=int, default=5000000, help="warm-up-cells")
     parser.add_argument("--round-number", required=False, type=int, default=5, help="round number to stop training")
     parser.add_argument("-trs", "--training-round-size", required=False, type=int, default=50000, help="training round size")
+    parser.add_argument("--debug", required=False, type=int, default=0, help="Use debug mode.")
     FLAGS = vars(parser.parse_args())
     manager = Manager()
     FLAGS["return_elements_str"] = ""
@@ -127,7 +128,7 @@ def main():
                  z_score_library_size_factor=dataset.z_score_library_size_factor,
                  log_fn=makeLog)
     makeLog("Use {} as depth".format(FLAGS["depth"]))
-    makeLog("Repeats {}\n".format(FLAGS["repeats"]))
+    makeLog("Repeats {}".format(FLAGS["repeats"]))
     feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
                  model.zscore_cutoff: dataset.zscore_cutoff,
@@ -137,6 +138,8 @@ def main():
         config.gpu_options.per_process_gpu_memory_fraction = FLAGS["memory_usage_rate"]
     with tf.Session(config=config) as sess:
         if FLAGS["training"]:
+            makeLog("Learning Rate: {}".format(FLAGS["learning_rate"]))
+            makeLog("\n")
             #  train information
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager, debug=False)
@@ -151,7 +154,7 @@ def main():
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
             if FLAGS["pretrained_model"] is not None:
-                sess.run(read_model(FLAGS["pretrained_model"], target_gene=dataset.target_gene, log_fn=makeLog))
+                sess.run(read_model(FLAGS["pretrained_model"], model, target_gene=dataset.target_gene, log_fn=makeLog))
             #  initiate
             runnable = True
             next_cell_cutoff = FLAGS["training_round_size"]
@@ -162,9 +165,21 @@ def main():
                 while run_cells < next_cell_cutoff:
                     _, feed_dict[model.input_raw], feed_dict[model.batch_library_size] = next(train_generator)
                     _, f_loss, run_cells = sess.run([model.train_op1, model.latent_representation_loss, model.run_cells], feed_dict=feed_dict)
-                    _, current_batch_size = sess.run([model.train_op2, model.current_batch_size], feed_dict=feed_dict)
-                    #  backend evaluation
-                    evaluator.evaluation_list.append({"batch_size": current_batch_size, "feature_loss": f_loss})
+                    if FLAGS["debug"]:
+                        _, current_batch_size, mil, cl, c1, c2, c3 = sess.run([model.train_op2, model.current_batch_size,
+                                                                               model.merge_impute_loss, model.compression_loss, model.constraint, model.constraint_2, model.constraint_3], feed_dict=feed_dict)
+                        #  backend evaluation
+                        evaluator.evaluation_list.append({"batch_size": current_batch_size,
+                                                          "feature_loss": f_loss,
+                                                          "merge_impute_loss": mil,
+                                                          "compression_loss": cl,
+                                                          "f_l2_1": c1,
+                                                          "f_l2_2": c2,
+                                                          "f_l2_3": c3})
+                    else:
+                        _, current_batch_size = sess.run([model.train_op2, model.current_batch_size], feed_dict=feed_dict)
+                        #  backend evaluation
+                        evaluator.evaluation_list.append({"batch_size": current_batch_size, "feature_loss": f_loss})
                 #  save model
                 model_save_path = "{}/model_{}_cells.pb".format(model_dir, run_cells)
                 save_model(sess, model_save_path, [model.gene_name] + model.output_element + model.loss_element)
@@ -181,9 +196,10 @@ def main():
             del evaluator
             use_pretrained_model = "{}/model_{}_cells.pb".format(model_dir, optimal_point)
         else:
+            makeLog("\n")
             sess.run(tf.global_variables_initializer())
             use_pretrained_model = FLAGS["pretrained_model"]
-        sess.run(read_model(use_pretrained_model, log_fn=makeLog))
+        sess.run(read_model(use_pretrained_model, model, log_fn=makeLog))
         makeLog("Use {} for inference".format(use_pretrained_model))
         inference(dataset, model, sess, result_dir, FLAGS["batch_size"], FLAGS["generator_workers"], manager, makeLog)
     makeLog("View results at:\n{}".format(result_dir))

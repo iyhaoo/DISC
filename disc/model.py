@@ -97,12 +97,14 @@ class DISC:
             self.merge_gene_features = tf.add_n([feature_ * tf.expand_dims(tf.transpose(a_t), 2) for feature_, a_t in zip(self.gene_features, self.attention_coefficients_list)])
         with tf.compat.v1.variable_scope("reconstructor", reuse=False):
             self._reconstructor()
-            self.feature = tf.concat(tf.split(self.hidden_feature[0], self.repeats, 0), 1)
         with tf.compat.v1.variable_scope("compression", reuse=False):
             self._compression()
-        self.output = tf.where(tf.cast(self.input_outlier_mask, tf.bool), self.merge_impute_denorm[0], self.input_raw, name="output")
-        self.output_feature = self.compressed_feature[0]
+        self.output = tf.where(tf.cast(self.input_outlier_mask, tf.bool), self.merge_impute_denorm_0, self.input_raw, name="output")
         self.output_element = [self.output, self.output_feature]
+        self.constraint_2 = tf.reduce_sum(self._denormalization(self.reconst_prediction[0]) * tf.cast(tf.logical_and(tf.logical_not(self.known_expressed), tf.greater(self.reconst_prediction[0], 0)), tf.float32))
+        self.constraint_3 = tf.reduce_sum(self.merge_impute_denorm_0 * tf.cast(tf.logical_and(tf.logical_not(self.known_expressed), tf.greater(self.merge_impute[0], 0)), tf.float32))
+        self.merge_impute_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.merge_impute_denorm_0 - self.input_raw) * tf.cast(self.known_expressed, tf.float32), 0))
+        self.trainable_variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES)
 
     def _deoutlier(self, tensor, cutoff, std, only_mask=False, use_right_tail=False, exclude_mask=None):
         this_score = (tf.math.log1p(tf.stop_gradient(tensor) * self._z_score_library_size_factor / self.batch_library_size_expand_dims) - tf.expand_dims(self.z_norm_mean, 0)) / tf.expand_dims(std, 0)
@@ -176,7 +178,7 @@ class DISC:
     def _imputer(self):
         weighted_latents = [[self.output_activation_function(l_) * a_ for l_ in latent_] for latent_, a_ in zip(self.impute_latents, self.attention_coefficients_list)]
         self.merge_impute = [tf.add_n([latent_[i] for latent_ in weighted_latents]) for i in range(len(weighted_latents[0]))]
-        self.merge_impute_denorm = [self._denormalization(impute_) for impute_ in self.merge_impute]
+        self.merge_impute_denorm_0 = self._denormalization(self.merge_impute[0])
 
     def _reconstructor(self):
         predictions = [tf.stop_gradient(prediction_) for prediction_ in [self.input_norm] + [predict_[0] for predict_ in self.predictions]]
@@ -191,28 +193,25 @@ class DISC:
         self.hidden_feature_compression = [tf.concat(tf.split(tf.stop_gradient(feature_), self.repeats + 1, 0), 1) for feature_ in self.hidden_feature]
         self.weight_compressor = tf.compat.v1.get_variable("weights_compressor", [self.dimension_number * (self.repeats + 1), self.compress_dimensions], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.025, 0.025))
         bias_compressor = tf.compat.v1.get_variable("bias_compressor", [self.compress_dimensions], dtype=tf.float32, initializer=tf.zeros_initializer())
-        self.compressed_feature = [self.en_de_act_fn(tf.matmul(feature_, self.weight_compressor) + bias_compressor) for feature_ in self.hidden_feature_compression]
+        compressed_feature = [self.en_de_act_fn(tf.matmul(feature_, self.weight_compressor) + bias_compressor) for feature_ in self.hidden_feature_compression]
+        self.output_feature = compressed_feature[0]
         bias_compressor_reverse = tf.compat.v1.get_variable("bias_compressor_reverse", [self.dimension_number * (self.repeats + 1)], dtype=tf.float32, initializer=tf.zeros_initializer())
-        self.reconst_feature_compression = [self.en_de_act_fn(tf.matmul(feature_, tf.transpose(self.weight_compressor)) + bias_compressor_reverse) for feature_ in self.compressed_feature]
+        self.reconst_feature_compression = [self.en_de_act_fn(tf.matmul(feature_, tf.transpose(self.weight_compressor)) + bias_compressor_reverse) for feature_ in compressed_feature]
         self.compressed_prediction = [tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(feature_, self.repeats + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficients_merged), self.repeats, 0)) for feature_ in self.reconst_feature_compression]
 
-    def training(self, learning_rate, var_list=None):
+    def training(self, learning_rate):
         """
             Training function for DISC model.
 
             Parameters
             __________
 
-
             learning_rate : float
                 Learning rate for DISC training.
-
-            var_list : list, optional, default: None
-                List for variables to train.
         """
-        self.global_step = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="global_step", trainable=False)
+        self.global_step = tf.Variable(0, dtype=tf.int32, name="global_step", trainable=False)
         tf.compat.v1.add_to_collection(tf.compat.v1.GraphKeys.GLOBAL_STEP, self.global_step)
-        self.run_cells = tf.Variable(initial_value=0, expected_shape=(), dtype=tf.int32, name="run_cells", trainable=False)
+        self.run_cells = tf.Variable(0, dtype=tf.int32, name="run_cells", trainable=False)
         expression_mask_1 = [tf.where(self.known_expressed, tf.zeros_like(self.input_norm), 3. * tf.ones_like(self.input_norm)) for _ in self.predictions]
         prediction_mask = tf.where(self.known_expressed, 1.5 * tf.ones_like(self.input_norm), 0.35 * tf.ones_like(self.input_norm))
         prediction_target = [tf.where(self.known_expressed, self.input_norm, tf.stop_gradient(predict_)) for predict_ in self.split_reconst_prediction[0]]
@@ -239,12 +238,18 @@ class DISC:
                      0.000001 * regularizer1 + 0.000001 * regularizer2 + 0.00001 * regularizer3 + 0.000001 * regularizer4 + 0.0001 * regularizer5
         self.loss2 = compression_loss + 0.0001 * regularizer6
         self.loss_element = [self.loss1, self.loss2]
-        gradients, v = zip(*optimizer.compute_gradients(self.loss1, var_list=var_list))
+        self.training_mask = [tf.Variable(tf.ones_like(x), trainable=False) for x in self.trainable_variables]
+        self.use_training_mask = tf.Variable(False, dtype=tf.bool, trainable=False)
+        gradients, v = zip(*optimizer.compute_gradients(self.loss1, var_list=self.trainable_variables))
         gradients, _ = tf.clip_by_global_norm(gradients, 5)
+        gradients = [None if x is None else tf.cond(self.use_training_mask, lambda: x * y, lambda: x) for x, y in zip(gradients, self.training_mask)]
         train_op1 = optimizer.apply_gradients(zip(gradients, v), global_step=self.global_step)
         with tf.control_dependencies([tf.group(train_op1, tf.compat.v1.assign_add(self.run_cells, self.current_batch_size))]):
             self.train_op1 = tf.no_op()
-        self.train_op2 = optimizer.minimize(self.loss2)
+        gradients, v = zip(*optimizer.compute_gradients(self.loss2))
+        gradients = [None if x is None else tf.cond(self.use_training_mask, lambda: x * y, lambda: x) for x, y in zip(gradients, self.training_mask)]
+        self.train_op2 = optimizer.apply_gradients(zip(gradients, v))
+
 
 
 if __name__ == '__main__':
