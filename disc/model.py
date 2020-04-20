@@ -223,7 +223,7 @@ class DISC:
         feature_targets = [tf.zeros_like(self.hidden_layer[0])] + self.hidden_layer[:-1]
         self.latent_representation_loss = tf.add_n([tf.reduce_mean(tf.reduce_sum(tf.square(feature_ - tf.stop_gradient(target_)), 1)) for feature_, target_ in zip(self.hidden_layer, feature_targets)]) / self.repeats
         imputation_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.merge_impute[-1] - self.input_norm_noise_target) * tf.cast(self.known_expressed, tf.float32), 0))
-        compression_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.compressed_prediction[0] - tf.stop_gradient(self.merge_impute[0])), 0)) + tf.reduce_sum(tf.reduce_mean(tf.square(self.reconst_feature_compression[0] - self.hidden_feature_compression[0]), 0))
+        self.compression_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.compressed_prediction[0] - tf.stop_gradient(self.merge_impute[0])), 0)) + tf.reduce_sum(tf.reduce_mean(tf.square(self.reconst_feature_compression[0] - self.hidden_feature_compression[0]), 0))
         self.constraint = tf.add_n([tf.reduce_sum(tf.square(self._denormalization(impute_[0])) * expression_mask_) for impute_, expression_mask_ in zip(self.predictions, expression_mask_1)])
         #  regularizer
         regularizer1 = tf.add_n([tf.nn.l2_loss(tf.reduce_sum(tf.square(w), 0)) for w in [self.weights_encoder]])
@@ -236,7 +236,7 @@ class DISC:
         self.loss1 = prediction_loss + reconstruction_loss + imputation_loss + \
                      0.000021 * self.constraint + 0.165 * self.gene_number / 10000 * self.latent_representation_loss + \
                      0.000001 * regularizer1 + 0.000001 * regularizer2 + 0.00001 * regularizer3 + 0.000001 * regularizer4 + 0.0001 * regularizer5
-        self.loss2 = compression_loss + 0.0001 * regularizer6
+        self.loss2 = self.compression_loss + 0.0001 * regularizer6
         self.loss_element = [self.loss1, self.loss2]
         self.training_mask = [tf.Variable(tf.ones_like(x), trainable=False) for x in self.trainable_variables]
         self.use_training_mask = tf.Variable(False, dtype=tf.bool, trainable=False)
