@@ -12,9 +12,13 @@ utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
 ### Filtering cells as Seurat tutorial
-The original JURKAT data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat.</br>
-The original 293T data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/293t.</br>
+The original BONE_MARROW data can be found at https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79.</br>
 We filter cells following this paper https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1.
+```{r}
+#BiocManager::install("HCAData")
+library(HCAData)
+
+```
 ```{r}
 if(!file.exists("./data/JURKAT/raw.loom")){
   temp <- tempfile()
