@@ -26,7 +26,7 @@ if(!file.exists("./data/JURKAT/raw.loom")){
   save_h5("./data/JURKAT/original.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names_JURKAT = colnames(seurat_obj[["RNA"]]@counts)
-  gene_names_JURKAT = rownames(seurat_obj[["RNA"]]@counts)
+  gene_names_JURKAT = rownames(original_data)
   raw_data_JURKAT = as.matrix(original_data[, cell_names_JURKAT])
   save_h5("./data/JURKAT/raw.loom", t(raw_data_JURKAT))
 }else{
@@ -46,7 +46,7 @@ if(!file.exists("./data/293T/raw.loom")){
   save_h5("./data/293T/original.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names_293T = colnames(seurat_obj[["RNA"]]@counts)
-  gene_names_293T = rownames(seurat_obj[["RNA"]]@counts)
+  gene_names_293T = rownames(original_data)
   raw_data_293T = as.matrix(original_data[, cell_names_293T])
   save_h5("./data/293T/raw.loom", t(raw_data_293T))
 }else{
