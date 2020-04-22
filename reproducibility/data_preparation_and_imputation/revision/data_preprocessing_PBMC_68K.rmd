@@ -11,7 +11,7 @@ knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
-### Filtering cells as Seurat tutorial
+### Generate data file
 The original JURKAT data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat.</br>
 The original 293T data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/293t.</br>
 We filter cells following this paper https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1.

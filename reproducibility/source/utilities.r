@@ -217,6 +217,25 @@ save_h5 = function(output_path, bc_gene_mat){
   h5createGroup(output_path, "col_graphs")
   h5createGroup(output_path, "row_graphs")
 }
+
+get_geneid_genename_mapping = function(input) {
+  if (is.character(input)) {
+    if(!file.exists(input)){
+      stop("Bad input file.")
+    } 
+    message("Treat input as file")
+    input = data.table::fread(input, header = FALSE)
+  } else {
+    data.table::setDT(input)
+  }
+  input = input[input[[3]] == "gene", ]
+  pattern_id = ".*gene_id \"(ENSG[0-9]+)\";.*"
+  pattern_name = ".*gene_name \"([^;]+)\";.*"
+  gene_id = sub(pattern_id, "\\1", input[[9]])
+  gene_name = sub(pattern_name, "\\1", input[[9]])
+  return(data.frame(gene_id = gene_id, gene_name = gene_name, stringsAsFactors = FALSE))
+}
+
 # downsampling
 log.pi.res <- function(z){
   exp(z)/(1+exp(z))

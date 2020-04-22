@@ -1,0 +1,39 @@
+---
+title: "Data preparation for JURKAT_293T"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Generate data file
+The original 10X_5CL data can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE126906</br>
+We filter cells following this paper https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1.
+```{r}
+if(!file.exists("./data/10X_5CL/raw.loom")){
+  gene_bc_mat = as.matrix(data.table::fread("./data/10X_5CL/original_data/GSM3618014_gene_count.csv.gz", header = T))
+  rownames()
+  download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/jurkat/jurkat_filtered_gene_bc_matrices.tar.gz", temp)
+  exdir = "./data/JURKAT"
+  untar(temp, exdir = exdir)
+  unlink(temp)
+  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
+  save_h5("./data/JURKAT/original.loom", as.matrix(t(original_data)))
+  seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
+  cell_names_JURKAT = colnames(seurat_obj[["RNA"]]@counts)
+  gene_names_JURKAT = rownames(seurat_obj[["RNA"]]@counts)
+  raw_data_JURKAT = as.matrix(original_data[, cell_names_JURKAT])
+  save_h5("./data/JURKAT/raw.loom", t(raw_data_JURKAT))
+}else{
+  raw_data_JURKAT = readh5_loom("./data/JURKAT/raw.loom")
+  cell_names_JURKAT = colnames(raw_data_JURKAT)
+  gene_names_JURKAT = rownames(raw_data_JURKAT)
+}
+print(dim(raw_data_JURKAT))
+print("JURKAT...OK!")
+```

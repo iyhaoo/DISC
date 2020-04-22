@@ -1,0 +1,28 @@
+---
+title: "Data preparation for JURKAT_293T"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Generate mapping file
+The hg19 can be found at ftp://ftp.ensembl.org/pub/grch37/current/gtf</br>
+```{r}
+if(!file.exists("./data/hg19/geneid_genename.rds")){
+  gz_path = "./data/hg19/Homo_sapiens.GRCh37.87.gtf.gz"
+  mapping = get_geneid_genename_mapping(gz_path)
+  mapping_vector = mapping[, 2]
+  names(mapping_vector) = mapping[, 1]
+  saveRDS(mapping_vector, "./data/hg19/geneid_genename.rds")
+}else{
+  print("Mapping...exists!")
+}
+print("Mapping...OK!")
+
+```
