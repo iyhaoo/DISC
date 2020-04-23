@@ -5,7 +5,7 @@ output: html_notebook
 ### Setup knitr and load utility functions
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
 ```{r}
 utilities_path = "./source/utilities.r"
@@ -14,34 +14,34 @@ source(utilities_path)
 ### Generate data file
 The original 10X_5CL data can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE126906.</br>
 The filtered 10X_5CL data can be found at https://github.com/LuyiTian/sc_mixology/blob/master/data/csv/sc_10x_5cl.count.csv.gz.</br>
-We use 3918 filtered cells and all genes to make raw.loom (genes will be filtered in the following step gene selection as  described in our DISC paper).
+We use 3918 filtered cells and all genes to make raw.loom (genes will be filtered in the following step gene selection as our DISC paper).
 ```{r}
 if(!file.exists("./data/10X_5CL/raw.loom")){
   original_data = as.matrix(read.csv("./data/10X_5CL/original_data/GSM3618014_gene_count.csv.gz", header = T, sep = ",", row.names = 1))# 32895  5001
   geneid_genename = readRDS("./data/hg19/geneid_genename.rds")
-  gene_names_candidate = geneid_genename[rownames(original_data)]
-  gene_names = rownames(original_data)
-  gene_names[!is.na(gene_names_candidate)] = gene_names_candidate[!is.na(gene_names_candidate)]
-  for(ii in gene_names[duplicated(gene_names)]){
+  gene_name_candidate = geneid_genename[rownames(original_data)]
+  gene_name = rownames(original_data)
+  gene_name[!is.na(gene_name_candidate)] = gene_name_candidate[!is.na(gene_name_candidate)]
+  for(ii in gene_name[duplicated(gene_name)]){
     index = 0
-    for(jj in which(gene_names == ii)){
-      gene_names[jj] = paste0(gene_names[jj], "_duplicate_", index)
+    for(jj in which(gene_name == ii)){
+      gene_name[jj] = paste0(gene_name[jj], "_duplicate_", index)
       index = index + 1
     }
   }
-  rownames(original_data) = gene_names
+  rownames(original_data) = gene_name
   print(dim(original_data))
   save_h5("./data/10X_5CL/original.loom", t(original_data))
   filtered_data = read.csv("./data/10X_5CL/original_data/sc_10x_5cl.count.csv.gz", header = T, row.names = 1)
-  cell_names = colnames(filtered_data)
-  raw_data = as.matrix(original_data[, cell_names])
+  cell_id = colnames(filtered_data)
+  raw_data = as.matrix(original_data[, cell_id])
   print(dim(raw_data))
   save_h5("./data/10X_5CL/raw.loom", t(raw_data))
 }else{
   raw_data = readh5_loom("./data/10X_5CL/raw.loom")
-  cell_names = colnames(raw_data)
-  gene_names = rownames(raw_data)
+  cell_id = colnames(raw_data)
+  gene_name = rownames(raw_data)
+  print(dim(raw_data))
 }
-print(dim(raw_data))
 print("10X_5CL...OK!")
 ```
