@@ -45,7 +45,7 @@ print(input_gene_bc_mat.shape)
 input_pd = pd.DataFrame(input_gene_bc_mat).T
 imputed = deepImpute(input_pd, NN_lim='auto', ncores=FLAGS["ncores"], cell_subset=1)
 input_loom_name = FLAGS["loom"].rsplit("/", 1)[1]
-output_h5 = input_loom_name.replace(".loom", "_deepImpute_mc_{}_mce_{}.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))
+output_h5 = input_loom_name.replace(".loom", "_DeepImpute_mc_{}_mce_{}.hdf5".format(min_expressed_cell, min_expressed_cell_average_expression))
 with h5py.File("{}/{}".format(output_dir, output_h5), "w") as f:
     f["cell_id"] = cell_id.astype(h5py.special_dtype(vlen=str))
     f["gene_name"] = gene_name[gene_filter].astype(h5py.special_dtype(vlen=str))

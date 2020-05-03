@@ -51,14 +51,14 @@ dataset_list[["scImpute"]] = readh5_imputation("./data/MELANOMA/scImpute.hdf5", 
 dataset_list[["VIPER"]] = readh5_imputation("./data/MELANOMA/VIPER.hdf5", use_genes, used_cells)
 dataset_list[["MAGIC"]] = readh5_imputation("./data/MELANOMA/MAGIC.hdf5", use_genes, used_cells)
 dataset_list[["DCA"]] = readh5_imputation("./data/MELANOMA/DCA.hdf5", use_genes, used_cells)
-dataset_list[["deepImpute"]] = readh5_imputation("./data/MELANOMA/deepImpute.hdf5", use_genes)
+dataset_list[["DeepImpute"]] = readh5_imputation("./data/MELANOMA/DeepImpute.hdf5", use_genes)
 dataset_list[["scScope"]] = readh5_imputation("./data/MELANOMA/scScope.hdf5", use_genes, used_cells)
 dataset_list[["scVI"]] = readh5_imputation("./data/MELANOMA/scVI.hdf5", use_genes, used_cells)
 ```
 ### Output settings
 The output color for each method and the output directory will be setup here.
 ```{r}
-method_names = c("Raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_names = c("Raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
 method_color = c("gray80", "#FF0000", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
 names(method_color) = method_names
 bar_color = rep("gray50", length(method_names))

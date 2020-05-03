@@ -50,7 +50,7 @@ data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
 data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
 data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
 data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
-data_list[["deepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
+data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
 data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
 data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
 cell_number = ncol(data_list[["Raw"]])
@@ -58,16 +58,11 @@ gene_number = length(used_genes)
 ```
 ### Settings
 ```{r}
-method_names = setdiff(names(data_list), "Raw")
-method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
+#  Use the same color as Figure 4
+method_names = c("Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
 names(method_color) = method_names
 text_color = rep("black", length(method_names))
-names(text_color) = method_names
-text_color["DISC"] = "red"
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
-bar_color["Observed"] = "gray80"
-bar_color["DISC"] = "red"
 ```
 ### MAE
 #```{r}
