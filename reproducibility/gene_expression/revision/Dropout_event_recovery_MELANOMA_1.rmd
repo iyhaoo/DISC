@@ -65,37 +65,73 @@ names(method_color) = method_names
 text_color = rep("black", length(method_names))
 ```
 ### MAE
-#```{r}
-MAE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
+```{r}
+#  Here, we only evaluate the expressed genes in RAW (before down-sampling) dataset.
+MAE_O_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Overall
+MAE_DID_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Dropouts Introduced by Down-sampling
+MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Retained Gene Expressions
 ls_raw = colSums(data_list[["Raw"]])
 for(ii in method_names){
   ls_this = colSums(data_list[[ii]])
-    scale_factor = ls_raw / ls_this
+    scale_factor = rep(1 / 0.5, length(ls_raw))
     MAE_cell = sapply(seq(cell_number), function(x){
-      expressed_mask = data_list[["Raw"]][, x] > 0
-      expressed_number = sum(expressed_mask)
-      error = data_list[["Raw"]][expressed_mask, x] - (data_list[[ii]][expressed_mask, x] * scale_factor[x])
-      return(sum(abs(error)) / expressed_number)
+      expressed_index = which(data_list[["Raw"]][, x] > 0)
+      DID_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] == 0)
+      RGE_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] > 0)
+      error_O = data_list[["Raw"]][expressed_index, x] - (data_list[[ii]][expressed_index, x] * scale_factor[x])
+      MAE_O = sum(abs(error_O)) / length(expressed_index)
+      MAE_DID = sum(abs(error_O[DID_mask_in_expressed_index])) / sum(DID_mask_in_expressed_index)
+      MAE_RGE = sum(abs(error_O[RGE_mask_in_expressed_index])) / sum(RGE_mask_in_expressed_index)
+      return(c(MAE_O, MAE_DID, MAE_RGE))
     })
-  MAE_mat[, ii] = MAE_cell
+  MAE_O_mat[, ii] = MAE_cell[1, ]
+  MAE_DID_mat[, ii] = MAE_cell[2, ]
+  MAE_RGE_mat[, ii] = MAE_cell[3, ]
   print(ii)
 }
-MAE_mat = MAE_mat[rowSums(is.na(MAE_mat)) < 1, ]
-MAE_df = melt(t(MAE_mat))
-MAE_levels = colnames(MAE_mat)[c(1, order(colMeans(MAE_mat)[-1], decreasing = F) + 1)]
-
-#```
-
-#```{r fig.height=6, fig.width=5}
-ggplot(MAE_df, aes(x = factor(Var1, levels = MAE_levels), y = value, fill = factor(Var1, levels = MAE_levels))) +
+MAE_O_mat = MAE_O_mat[rowSums(is.na(MAE_O_mat)) < 1, ]
+MAE_DID_mat = MAE_DID_mat[rowSums(is.na(MAE_DID_mat)) < 1, ]
+MAE_RGE_mat = MAE_RGE_mat[rowSums(is.na(MAE_RGE_mat)) < 1, ]
+MAE_O_df = melt(t(MAE_O_mat))
+MAE_DID_df = melt(t(MAE_DID_mat))
+MAE_RGE_df = melt(t(MAE_RGE_mat))
+MAE_O_levels = colnames(MAE_O_mat)[c(1, order(colMeans(MAE_O_mat)[-1], decreasing = F) + 1)]
+MAE_DID_levels = colnames(MAE_DID_mat)[c(1, order(colMeans(MAE_DID_mat)[-1], decreasing = F) + 1)]
+MAE_RGE_levels = colnames(MAE_RGE_mat)[c(1, order(colMeans(MAE_RGE_mat)[-1], decreasing = F) + 1)]
+```
+### MAE - Overall
+```{r fig.height=6, fig.width=5}
+ggplot(MAE_O_df, aes(x = factor(Var1, levels = MAE_O_levels), y = value, fill = factor(Var1, levels = MAE_O_levels))) +
   geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
-  ylim(min(apply(MAE_mat, 2, quantile, 0.1)), max(apply(MAE_mat, 2, quantile, 0.9))) + theme_classic() +
+  ylim(min(apply(MAE_O_mat, 2, quantile, 0.1)), max(apply(MAE_O_mat, 2, quantile, 0.9))) + theme_classic() +
   labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
   theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
         axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
         axis.title.y = element_text(size = 15, face = "bold"),
         legend.position = "none")
-#```
+```
+### MAE - Dropouts Introduced by Down-sampling
+```{r fig.height=6, fig.width=5}
+ggplot(MAE_DID_df, aes(x = factor(Var1, levels = MAE_DID_levels), y = value, fill = factor(Var1, levels = MAE_DID_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(MAE_DID_mat, 2, quantile, 0.1)), max(apply(MAE_DID_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
+### MAE - Retained Gene Expressions
+```{r fig.height=6, fig.width=5}
+ggplot(MAE_RGE_df, aes(x = factor(Var1, levels = MAE_RGE_levels), y = value, fill = factor(Var1, levels = MAE_RGE_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(MAE_RGE_mat, 2, quantile, 0.1)), max(apply(MAE_RGE_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
 ### load vst file
 ```{r}
 vst_file = paste0(output_dir, "/vst_gene.tsv")

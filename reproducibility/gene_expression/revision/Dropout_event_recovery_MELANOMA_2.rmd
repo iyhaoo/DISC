@@ -1,0 +1,266 @@
+---
+title: "Dropout event recovery"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Load raw data and downsampling
+Here, we use MELANOMA dataset as an example.</br>
+The fraction of sampling is set to 50% of the original library size across cells.</br>
+Only 1 replicate will be generated here as asn example.</br>
+Only imputed genes will be kept for comparison.
+```{r}
+raw_data = readh5_loom("./data/MELANOMA/raw.loom")
+ds_dir = "./data/MELANOMA/ds_0.5"
+dir.create(ds_dir, showWarnings = F, recursive = T)
+output_dir = "./results/MELANOMA/ds_0.5"
+dir.create(output_dir, showWarnings = F, recursive = T)
+observed_path = paste0(ds_dir, "/observed.loom")
+if(!file.exists(observed_path)){
+  observed_data = downsampling_cell(0.5, raw_data)
+  save_h5(observed_path, t(observed_data))
+}else{
+  observed_data = readh5_loom(observed_path)
+}
+expressed_cell = rowSums(observed_data > 0)
+gene_expression = rowSums(observed_data)
+gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
+raw_data = raw_data[gene_filter, ]
+observed_data = observed_data[gene_filter, ]
+used_genes = rownames(observed_data)
+print(dim(raw_data))
+print(dim(observed_data))
+data_list = list(Raw = raw_data, Observed = observed_data)
+rm(raw_data, observed_data)
+```
+### Load downsampling data and imputation results
+We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">run imputation</a>  using downsampling data.</br>
+Here, we load their results.
+```{r}
+data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
+print(dim(data_list[["DISC"]]))
+data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
+data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
+data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
+data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
+data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
+data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
+data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
+cell_number = ncol(data_list[["Raw"]])
+gene_number = length(used_genes)
+```
+### Settings
+```{r}
+#  Use the same color as Figure 4
+method_names = c("Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
+names(method_color) = method_names
+text_color = rep("black", length(method_names))
+```
+### MAE
+```{r}
+#  Here, we only evaluate the expressed genes in RAW (before down-sampling) dataset.
+MAE_O_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Overall
+MAE_DID_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Dropouts Introduced by Down-sampling
+MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Retained Gene Expressions
+ls_raw = colSums(data_list[["Raw"]])
+for(ii in method_names){
+  ls_this = colSums(data_list[[ii]])
+    scale_factor = ls_raw / ls_this
+    MAE_cell = sapply(seq(cell_number), function(x){
+      expressed_index = which(data_list[["Raw"]][, x] > 0)
+      DID_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] == 0)
+      RGE_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] > 0)
+      error_O = data_list[["Raw"]][expressed_index, x] - (data_list[[ii]][expressed_index, x] * scale_factor[x])
+      MAE_O = sum(abs(error_O)) / length(expressed_index)
+      MAE_DID = sum(abs(error_O[DID_mask_in_expressed_index])) / sum(DID_mask_in_expressed_index)
+      MAE_RGE = sum(abs(error_O[RGE_mask_in_expressed_index])) / sum(RGE_mask_in_expressed_index)
+      return(c(MAE_O, MAE_DID, MAE_RGE))
+    })
+  MAE_O_mat[, ii] = MAE_cell[1, ]
+  MAE_DID_mat[, ii] = MAE_cell[2, ]
+  MAE_RGE_mat[, ii] = MAE_cell[3, ]
+  print(ii)
+}
+MAE_O_mat = MAE_O_mat[rowSums(is.na(MAE_O_mat)) < 1, ]
+MAE_DID_mat = MAE_DID_mat[rowSums(is.na(MAE_DID_mat)) < 1, ]
+MAE_RGE_mat = MAE_RGE_mat[rowSums(is.na(MAE_RGE_mat)) < 1, ]
+MAE_O_df = melt(t(MAE_O_mat))
+MAE_DID_df = melt(t(MAE_DID_mat))
+MAE_RGE_df = melt(t(MAE_RGE_mat))
+MAE_O_levels = colnames(MAE_O_mat)[c(1, order(colMeans(MAE_O_mat)[-1], decreasing = F) + 1)]
+MAE_DID_levels = colnames(MAE_DID_mat)[c(1, order(colMeans(MAE_DID_mat)[-1], decreasing = F) + 1)]
+MAE_RGE_levels = colnames(MAE_RGE_mat)[c(1, order(colMeans(MAE_RGE_mat)[-1], decreasing = F) + 1)]
+```
+### MAE - Overall
+```{r fig.height=6, fig.width=5}
+ggplot(MAE_O_df, aes(x = factor(Var1, levels = MAE_O_levels), y = value, fill = factor(Var1, levels = MAE_O_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(MAE_O_mat, 2, quantile, 0.1)), max(apply(MAE_O_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
+### MAE - Dropouts Introduced by Down-sampling
+```{r fig.height=6, fig.width=5}
+ggplot(MAE_DID_df, aes(x = factor(Var1, levels = MAE_DID_levels), y = value, fill = factor(Var1, levels = MAE_DID_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(MAE_DID_mat, 2, quantile, 0.1)), max(apply(MAE_DID_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
+### MAE - Retained Gene Expressions
+```{r fig.height=6, fig.width=5}
+ggplot(MAE_RGE_df, aes(x = factor(Var1, levels = MAE_RGE_levels), y = value, fill = factor(Var1, levels = MAE_RGE_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(MAE_RGE_mat, 2, quantile, 0.1)), max(apply(MAE_RGE_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="MAE") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
+### load vst file
+```{r}
+vst_file = paste0(output_dir, "/vst_gene.tsv")
+if(file.exists(vst_file)){
+  hvg_info = read.table(vst_file)
+  print("load vst_file")
+}else{
+  hvg_info = FindVariableFeatures_vst_by_genes(data_list[["Raw"]])
+  hvg_info = hvg_info[order(hvg_info$variance.standardized, decreasing = T), ]
+  write.table(hvg_info, paste0(output_dir, "/vst_gene.tsv"), sep = "\t", quote = F, row.names = T, col.names = T)
+}
+```
+### CMD
+#```{r}
+CMD_output_dir = paste0(output_dir, "/CMD")
+dir.create(CMD_output_dir, showWarnings = F, recursive = T)
+used_genes = rownames(hvg_info)[1:300]
+cor_all = list()
+for(ii in names(data_list)){
+  if(ii == "Raw"){
+    cor_all[[ii]] = calc_cor_mat(data_list[[ii]][used_genes, ])
+  }else{
+    cor_all[[ii]] = calc_cor_mat(delete_lt0.5(data_list[[ii]])[used_genes, ])
+  }
+  print(ii)
+}
+saveRDS(cor_all, paste0(CMD_output_dir, "/cor_all.rds"))
+cmd_value = c()
+for(ii in method_names){
+  cmd_value = c(cmd_value, calc_cmd(cor_all[["Raw"]], cor_all[[ii]]))
+}
+names(cmd_value) = method_names
+#```
+#```{r fig.height=6, fig.width=5}
+barplot_usage(cmd_value, main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F)
+#```
+
+### Gene correlation top 1000 genes
+```{r}
+used_genes = rownames(hvg_info)[1:1000]
+gene_corr_mat = matrix(nrow = length(used_genes), ncol = length(method_names), dimnames = list(c(), method_names))
+for(ii in method_names){
+  gene_corr_mat[, ii] = calc_corr(data_list[["Raw"]][used_genes, ], data_list[[ii]][used_genes, ], "gene")
+  print(ii)
+}
+gene_corr_mat = gene_corr_mat[rowSums(is.na(gene_corr_mat)) < 1, ]
+gene_corr_df = melt(t(gene_corr_mat))
+gene_corr_levels = colnames(gene_corr_mat)[c(1, order(colMeans(gene_corr_mat)[-1], decreasing = T) + 1)] # make Observed in the first order.
+```
+```{r fig.height=6, fig.width=5}
+ggplot(gene_corr_df, aes(x = factor(Var1, levels = gene_corr_levels), y = value, fill = factor(Var1, levels = gene_corr_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(gene_corr_mat, 2, quantile, 0.1)), max(apply(gene_corr_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="Gene correlation with reference") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
+
+### Gene correlation
+#```{r}
+gene_corr_mat = matrix(nrow = gene_number, ncol = length(method_names), dimnames = list(c(), method_names))
+for(ii in method_names){
+  gene_corr_mat[, ii] = calc_corr(data_list[["Raw"]], data_list[[ii]], "gene")
+  print(ii)
+}
+gene_corr_mat = gene_corr_mat[rowSums(is.na(gene_corr_mat)) < 1, ]
+gene_corr_df = melt(t(gene_corr_mat))
+gene_corr_levels = colnames(gene_corr_mat)[c(1, order(colMeans(gene_corr_mat)[-1], decreasing = T) + 1)]
+#```
+#```{r fig.height=6, fig.width=5}
+ggplot(gene_corr_df, aes(x = factor(Var1, levels = gene_corr_levels), y = value, fill = factor(Var1, levels = gene_corr_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(gene_corr_mat, 2, quantile, 0.1)), max(apply(gene_corr_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="Gene correlation with reference") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+#```
+
+### Cell correlation top 1000 genes
+```{r}
+used_genes = rownames(hvg_info)[1:1000]
+cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
+for(ii in method_names){
+  cell_corr_mat[, ii] = calc_corr(data_list[["Raw"]][used_genes, ], data_list[[ii]][used_genes, ], "cell")
+  print(ii)
+}
+cell_corr_mat = cell_corr_mat[rowSums(is.na(cell_corr_mat)) < 1, ]
+cell_corr_df = melt(t(cell_corr_mat))
+cell_corr_levels = colnames(cell_corr_mat)[c(1, order(colMeans(cell_corr_mat)[-1], decreasing = T) + 1)] # make Observed in the first order.
+```
+```{r fig.height=5, fig.width=4.5}
+ggplot(cell_corr_df, aes(x = factor(Var1, levels = cell_corr_levels), y = value, fill = factor(Var1, levels = cell_corr_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(cell_corr_mat, 2, quantile, 0.1)), max(apply(cell_corr_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="Cell correlation with reference") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+```
+### Cell correlation
+#```{r}
+cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
+for(ii in method_names){
+  cell_corr_mat[, ii] = calc_corr(data_list[["Raw"]], data_list[[ii]], "cell")
+  print(ii)
+}
+cell_corr_mat = cell_corr_mat[rowSums(is.na(cell_corr_mat)) < 1, ]
+cell_corr_df = melt(t(cell_corr_mat))
+cell_corr_levels = colnames(cell_corr_mat)[c(1, order(colMeans(cell_corr_mat)[-1], decreasing = T) + 1)]
+#```
+#```{r fig.height=5, fig.width=4.5}
+ggplot(cell_corr_df, aes(x = factor(Var1, levels = cell_corr_levels), y = value, fill = factor(Var1, levels = cell_corr_levels))) +
+  geom_boxplot(outlier.shape = NA) + stat_boxplot(geom = "errorbar", width = 0.3) +
+  ylim(min(apply(cell_corr_mat, 2, quantile, 0.1)), max(apply(cell_corr_mat, 2, quantile, 0.9))) + theme_classic() +
+  labs(x="", y="Cell correlation with reference") + scale_fill_manual(values=method_color) +
+  theme(axis.text.x = element_text(size = 12,angle = 45, hjust = 1, vjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 1, face = "bold"),
+        axis.title.y = element_text(size = 15, face = "bold"),
+        legend.position = "none")
+#```
+
+
+
+
+
+
+
