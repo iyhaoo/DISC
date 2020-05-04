@@ -218,6 +218,19 @@ save_h5 = function(output_path, bc_gene_mat){
   h5createGroup(output_path, "row_graphs")
 }
 
+gene_selection = function(X, min_expressed_cell){
+  expressed_cell = rowSums(X > 0)
+  gene_expression = rowSums(X)
+  return(expressed_cell >= min_expressed_cell & gene_expression > expressed_cell * 1)
+}
+
+update_mat = function(raw_gene_bc_mat, imputed_filtered_gene_bc_mat){
+  imputed_genes = rownames(imputed_filtered_gene_bc_mat)
+  updated_gene_bc_mat = raw_gene_bc_mat
+  updated_gene_bc_mat[imputed_genes, ] = imputed_filtered_gene_bc_mat
+  return(updated_gene_bc_mat)
+}
+
 get_geneid_genename_mapping = function(input) {
   if (is.character(input)) {
     if(!file.exists(input)){
@@ -1469,4 +1482,7 @@ cell_type_heatmap = function(method_type_mat, title){
           legend.title = element_blank(), 
           plot.title = element_text(size=14, face="bold"))
 }
+
+
+
 

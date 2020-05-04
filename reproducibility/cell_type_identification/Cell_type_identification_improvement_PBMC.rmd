@@ -41,14 +41,13 @@ if(!file.exists("./data/PBMC/raw.loom")){
 ### Classify cell types as Seurat tutorial
 Following the <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we classify cells.
 ```{r fig.height=8, fig.width=11}
-gene_mask = gsub(pattern = "_", replacement = "-", rownames(raw_data)) %in% keep_gene_names
-cell_type_identification = seurat_classification(gene_bc_mat = raw_data[gene_mask, ], pca_dim = 10, res = 0.5, min_pct = 0.25, show_plots = T, cell_type_identification_fun = cell_type_identification_pbmc)
+cell_type_identification = seurat_classification(gene_bc_mat = raw_data[gsub(pattern = "_", replacement = "-", rownames(raw_data)) %in% keep_gene_names, ], pca_dim = 10, res = 0.5, min_pct = 0.25, show_plots = T, cell_type_identification_fun = cell_type_identification_pbmc)
 cell_type= cell_type_identification$assignment
 saveRDS(cell_type, "./results/PBMC/cell_type.rds")
 ```
 ### Load raw data and downsampling
 The fraction of sampling is set to 30% of the original library size across cells.</br>
-Only 1 replicate will be generated here as asn example.</br>
+Only 1 replicate will be generated here as an example.</br>
 Only imputed genes will be kept for comparison.
 ```{r}
 ds_dir = "./data/PBMC/ds_0.3"
@@ -61,31 +60,25 @@ if(!file.exists(observed_path)){
   observed_data = readh5_loom(observed_path)
 }
 expressed_cell = rowSums(observed_data > 0)
-gene_expression = rowSums(observed_data)
-gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
-raw_data = raw_data[gene_filter, ]
-observed_data = observed_data[gene_filter, ]
-used_genes = rownames(observed_data)
-print(dim(raw_data))
-print(dim(observed_data))
-data_list = list(Raw = raw_data, Observed = observed_data)
+gene_filter = expressed_cell > 0
+data_list = list(Raw = raw_data[gene_filter, ], Observed = observed_data[gene_filter, ])
 rm(raw_data, observed_data)
 ```
 ### Load downsampling data and imputation results
 We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">run imputation</a> using downsampling data.</br>
-Here, we load the imputation results, which can be found at <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC">here</a>.
+Here, we load the imputation results, which can be found <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC">here</a>.
 ```{r}
-data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
-print(dim(data_list[["DISC"]]))
-data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
-data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
-data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
-data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
-data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
-data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
-data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
-cell_number = ncol(data_list[["Raw"]])
-gene_number = length(used_genes)
+data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[gene_filter, ]
+data_list[["scImpute"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/scImpute.hdf5")))
+data_list[["VIPER"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/VIPER.hdf5")))
+data_list[["MAGIC"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5")))
+data_list[["DCA"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/DCA.hdf5")))
+data_list[["DeepImpute"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5")))
+data_list[["scScope"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/scScope.hdf5")))
+data_list[["scVI"]] = update_mat(data_list[["Observed"]], readh5_imputation(paste0(ds_dir, "/scVI.hdf5")))
+for(ii in data_list){
+  print(dim(ii))
+}
 ```
 ### Cell identification
 ```{r}

@@ -14,7 +14,7 @@ source(utilities_path)
 ### Load raw data and downsampling
 Here, we use MELANOMA dataset as an example.</br>
 The fraction of sampling is set to 50% of the original library size across cells.</br>
-Only 1 replicate will be generated here as asn example.</br>
+Only 1 replicate will be generated here as an example.</br>
 Only imputed genes will be kept for comparison.
 ```{r}
 raw_data = readh5_loom("./data/MELANOMA/raw.loom")
@@ -42,7 +42,7 @@ rm(raw_data, observed_data)
 ```
 ### Load downsampling data and imputation results
 We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">run imputation</a>  using downsampling data.</br>
-Here, we load their results.
+Here, we load all imputation results.
 ```{r}
 data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
 print(dim(data_list[["DISC"]]))

@@ -19,10 +19,8 @@ ds_dir = "./data/PBMC/ds_0.3"
 observed_path = paste0(ds_dir, "/observed.loom")
 observed_data = readh5_loom(observed_path)
 expressed_cell = rowSums(observed_data > 0)
-gene_expression = rowSums(observed_data)
-gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
-used_genes = rownames(observed_data)[gene_filter]
-DISC_values = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"))[gene_filter, ]
+gene_filter = expressed_cell > 0
+DISC_values = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[gene_filter, ]
 DISC_features = readh5_feature(paste0(ds_dir, "/DISC_feature.hdf5"))
 cell_type = readRDS("./results/PBMC/cell_type.rds")
 cell_type_identification = seurat_classification(gene_bc_mat = DISC_values, feature_bc_mat = DISC_features, cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
