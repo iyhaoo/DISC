@@ -219,3 +219,47 @@ python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_meth
 --min-expressed-cell=60
 
 
+
+
+
+CUDA_VISIBLE_DEVICES=5 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/BONE_MARROW \
+--min-expressed-cell=10 \
+--library-size-factor=median
+
+
+R --slave < /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/VIPER.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom gene 10
+
+
+R --slave < /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/scImpute.r \
+--args /home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom 16 10
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/MAGIC.py \
+--loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom \
+--min-expressed-cell=10
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/deepImpute.py \
+--loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom \
+--min-expressed-cell=10
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/DCA.py \
+--loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom \
+--min-expressed-cell=10
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/scVI.py \
+--loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom \
+--min-expressed-cell=10
+
+
+python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_methods/scScope.py \
+--loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/BONE_MARROW/raw.loom \
+--min-expressed-cell=10
+
+
+
