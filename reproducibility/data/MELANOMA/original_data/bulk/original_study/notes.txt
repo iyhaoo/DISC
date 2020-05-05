@@ -1,0 +1,7 @@
+The script is from https://www.dropbox.com/sh/scmiu1tbrsxupto/AAB7FEiCsEaRhkSO_Gl2Dq8ua/codeRepo/20170321bulkComp/20170321bulkComp?dl=0&preview=preprocessBulk.R&subfolder_nav_tracking=1
+
+The bulk RNA-seq is from https://www.dropbox.com/sh/scmiu1tbrsxupto/AACHeCY5itO_x3DRwfnWmZWCa/codeRepo/20160422combineData/20160422combineData/bulkRNASeq?dl=0&preview=wm9LdB_star_HTSeqCounts_full-2.tsv&subfolder_nav_tracking=1 and is same as https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE97681&format=file&file=GSE97681%5Fwm9LdB%5Fstar%5FHTSeqCounts%5Ffull%2Etsv%2Egz from GSE97681.
+
+The mapping for geneID to geneName is from https://www.dropbox.com/sh/scmiu1tbrsxupto/AABzigUVj7Y1yzHUwE8upRjga/codeRepo/20160419sampleSelection/20160419sampleSelection/references?dl=0&preview=mart_export.txt&subfolder_nav_tracking=1
+
+The RPM output is in https://www.dropbox.com/sh/scmiu1tbrsxupto/AAC__aKiBnj-3wgmqyu5kDnda/codeRepo/20170321bulkComp/20170321bulkComp/data?dl=0&preview=BulkRPM.txt&subfolder_nav_tracking=1

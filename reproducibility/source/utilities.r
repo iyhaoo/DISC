@@ -8,6 +8,24 @@ library(future)
 library(stringi)
 library(reshape2)
 #  read data
+get_map = function(input) {
+  if (is.character(input)) {
+    if(!file.exists(input)){
+      stop("Bad input file.")
+    } 
+    message("Treat input as file")
+    input = data.table::fread(input, header = FALSE)
+  } else {
+    data.table::setDT(input)
+  }
+  input = input[input[[3]] == "gene", ]
+  pattern_id = ".*gene_id \"(ENSG[0-9]+)\";.*"
+  pattern_name = ".*gene_name \"([^;]+)\";.*"
+  gene_id = sub(pattern_id, "\\1", input[[9]])
+  gene_name = sub(pattern_name, "\\1", input[[9]])
+  return(data.frame(gene_id = gene_id, gene_name = gene_name, stringsAsFactors = FALSE))
+}
+
 cal_RMSD = function(pd_array, window_size){
   apply(sapply(1:(length(pd_array) - window_size) + window_size - 1, function(x){
     pd_array[(x - window_size + 1):x]

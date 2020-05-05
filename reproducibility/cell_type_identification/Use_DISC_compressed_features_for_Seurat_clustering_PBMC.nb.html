@@ -240,12 +240,28 @@ knitr::opts_knit$set(root.dir=&quot;E:/DISC/reproducibility&quot;)</code></pre>
 <pre class="r"><code>utilities_path = &quot;./source/utilities.r&quot;
 source(utilities_path)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2h0bWx3aWRnZXRzJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tICAgICAgICAgXG4gIHByaW50Lmh0bWx3aWRnZXQgdG9vbHM6cnN0dWRpb1xuUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5yZWxkaXN0OiBSZWxhdGl2ZSBEaXN0cmlidXRpb24gTWV0aG9kc1xuVmVyc2lvbiAxLjYtNiBjcmVhdGVkIG9uIDIwMTYtMTAtMDcuXG5jb3B5cmlnaHQgKGMpIDIwMDMsIE1hcmsgUy4gSGFuZGNvY2ssIFVuaXZlcnNpdHkgb2YgQ2FsaWZvcm5pYS1Mb3MgQW5nZWxlc1xuIEZvciBjaXRhdGlvbiBpbmZvcm1hdGlvbiwgdHlwZSBjaXRhdGlvbihcInJlbGRpc3RcIikuXG4gVHlwZSBoZWxwKHBhY2thZ2U9XCJyZWxkaXN0XCIpIHRvIGdldCBzdGFydGVkLlxuIn0= -->
+<pre><code>Registered S3 method overwritten by 'dplyr':
+  method           from
+  print.rowwise_df     
+Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+reldist: Relative Distribution Methods
+Version 1.6-6 created on 2016-10-07.
+copyright (c) 2003, Mark S. Handcock, University of California-Los Angeles
+ For citation information, type citation(&quot;reldist&quot;).
+ Type help(package=&quot;reldist&quot;) to get started.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="filtering-cells-as-seurat-tutorial" class="section level3">
 <h3>Filtering cells as Seurat tutorial</h3>
-<p>DISC outputs both values and compressed features after imputation.</br> Here, we demostrate how to DISC compressed features for Seurat clustering using PBMC data.</p>
+<p>DISC outputs both values and compressed features after imputation.</br> Here, we demostrate how to DISC compressed features for Seurat clustering using PBMC data. Genes filtered by our gene selection are used for cell type identification evaluation.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHNfZGlyID0gXCIuL2RhdGEvUEJNQy9kc18wLjNcIlxub2JzZXJ2ZWRfcGF0aCA9IHBhc3RlMChkc19kaXIsIFwiL29ic2VydmVkLmxvb21cIilcbm9ic2VydmVkX2RhdGEgPSByZWFkaDVfbG9vbShvYnNlcnZlZF9wYXRoKVxuYGBgIn0= -->
@@ -257,9 +273,10 @@ observed_data = readh5_loom(observed_path)</code></pre>
 <pre><code>[1] &quot;./data/PBMC/ds_0.3/observed.loom&quot;
 [1] 32738  2638</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXhwcmVzc2VkX2NlbGwgPSByb3dTdW1zKG9ic2VydmVkX2RhdGEgPiAwKVxuZ2VuZV9maWx0ZXIgPSBleHByZXNzZWRfY2VsbCA+IDBcbkRJU0NfdmFsdWVzID0gcmVhZGg1X2ltcHV0YXRpb24ocGFzdGUwKGRzX2RpciwgXCIvRElTQy5oZGY1XCIpLCB3aXRoX291dGxpZXJzID0gVClbZ2VuZV9maWx0ZXIsIF1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXhwcmVzc2VkX2NlbGwgPSByb3dTdW1zKG9ic2VydmVkX2RhdGEgPiAwKVxuZ2VuZV9leHByZXNzaW9uID0gcm93U3VtcyhvYnNlcnZlZF9kYXRhKVxuZ2VuZV9maWx0ZXIgPSBleHByZXNzZWRfY2VsbCA+PSAxMCAmIGdlbmVfZXhwcmVzc2lvbiA+IGV4cHJlc3NlZF9jZWxsICogMVxuRElTQ192YWx1ZXMgPSByZWFkaDVfaW1wdXRhdGlvbihwYXN0ZTAoZHNfZGlyLCBcIi9ESVNDLmhkZjVcIiksIHdpdGhfb3V0bGllcnMgPSBUKVtnZW5lX2ZpbHRlciwgXVxuYGBgIn0= -->
 <pre class="r"><code>expressed_cell = rowSums(observed_data &gt; 0)
-gene_filter = expressed_cell &gt; 0
+gene_expression = rowSums(observed_data)
+gene_filter = expressed_cell &gt;= 10 &amp; gene_expression &gt; expressed_cell * 1
 DISC_values = readh5_imputation(paste0(ds_dir, &quot;/DISC.hdf5&quot;), with_outliers = T)[gene_filter, ]</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiLi9kYXRhL1BCTUMvZHNfMC4zL0RJU0MuaGRmNVwiXG5bMV0gMzI3MzggIDI2MzhcbiJ9 -->
@@ -277,28 +294,30 @@ DISC_values = readh5_imputation(paste0(ds_dir, &quot;/DISC.hdf5&quot;), with_out
 <pre class="r"><code>cell_type = readRDS(&quot;./results/PBMC/cell_type.rds&quot;)
 cell_type_identification = seurat_classification(gene_bc_mat = DISC_values, feature_bc_mat = DISC_features, cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRmVhdHVyZSBuYW1lcyBjYW5ub3QgaGF2ZSB1bmRlcnNjb3JlcyAoJ18nKSwgcmVwbGFjaW5nIHdpdGggZGFzaGVzICgnLScpUGVyZm9ybWluZyBsb2ctbm9ybWFsaXphdGlvblxuMCUgICAxMCAgIDIwICAgMzAgICA0MCAgIDUwICAgNjAgICA3MCAgIDgwICAgOTAgICAxMDAlXG5bLS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXxcbioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqfFxuMDI6NDU6MTQgVU1BUCBlbWJlZGRpbmcgcGFyYW1ldGVycyBhID0gMC45OTIyIGIgPSAxLjExMlxuMDI6NDU6MTQgUmVhZCAyNjM4IHJvd3MgYW5kIGZvdW5kIDUwIG51bWVyaWMgY29sdW1uc1xuMDI6NDU6MTQgVXNpbmcgQW5ub3kgZm9yIG5laWdoYm9yIHNlYXJjaCwgbl9uZWlnaGJvcnMgPSAzMFxuMDI6NDU6MTQgQnVpbGRpbmcgQW5ub3kgaW5kZXggd2l0aCBtZXRyaWMgPSBjb3NpbmUsIG5fdHJlZXMgPSA1MFxuMCUgICAxMCAgIDIwICAgMzAgICA0MCAgIDUwICAgNjAgICA3MCAgIDgwICAgOTAgICAxMDAlXG5bLS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXxcbioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqfFxuMDI6NDU6MTUgV3JpdGluZyBOTiBpbmRleCBmaWxlIHRvIHRlbXAgZmlsZSBDOlxcVXNlcnNcXHloXFxBcHBEYXRhXFxMb2NhbFxcVGVtcFxcUnRtcHlXV2dzdFxcZmlsZTY1MmM4NjRhMDcxYjlcbjAyOjQ1OjE1IFNlYXJjaGluZyBBbm5veSBpbmRleCB1c2luZyAxIHRocmVhZCwgc2VhcmNoX2sgPSAzMDAwXG4wMjo0NToxNiBBbm5veSByZWNhbGwgPSAxMDAlXG4wMjo0NToxNiBDb21tZW5jaW5nIHNtb290aCBrTk4gZGlzdGFuY2UgY2FsaWJyYXRpb24gdXNpbmcgMSB0aHJlYWRcbjAyOjQ1OjE3IEluaXRpYWxpemluZyBmcm9tIG5vcm1hbGl6ZWQgTGFwbGFjaWFuICsgbm9pc2VcbjAyOjQ1OjE3IENvbW1lbmNpbmcgb3B0aW1pemF0aW9uIGZvciA1MDAgZXBvY2hzLCB3aXRoIDk1NzAwIHBvc2l0aXZlIGVkZ2VzXG4wJSAgIDEwICAgMjAgICAzMCAgIDQwICAgNTAgICA2MCAgIDcwICAgODAgICA5MCAgIDEwMCVcblstLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfFxuKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKip8XG4wMjo0NToyNSBPcHRpbWl6YXRpb24gZmluaXNoZWRcbiJ9 -->
-<pre><code>Feature names cannot have underscores ('_'), replacing with dashes ('-')Performing log-normalization
+<!-- rnb-output-begin eyJkYXRhIjoiUGVyZm9ybWluZyBsb2ctbm9ybWFsaXphdGlvblxuMCUgICAxMCAgIDIwICAgMzAgICA0MCAgIDUwICAgNjAgICA3MCAgIDgwICAgOTAgICAxMDAlXG5bLS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXxcbioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqfFxuVGhlIGRlZmF1bHQgbWV0aG9kIGZvciBSdW5VTUFQIGhhcyBjaGFuZ2VkIGZyb20gY2FsbGluZyBQeXRob24gVU1BUCB2aWEgcmV0aWN1bGF0ZSB0byB0aGUgUi1uYXRpdmUgVVdPVCB1c2luZyB0aGUgY29zaW5lIG1ldHJpY1xuVG8gdXNlIFB5dGhvbiBVTUFQIHZpYSByZXRpY3VsYXRlLCBzZXQgdW1hcC5tZXRob2QgdG8gJ3VtYXAtbGVhcm4nIGFuZCBtZXRyaWMgdG8gJ2NvcnJlbGF0aW9uJ1xuVGhpcyBtZXNzYWdlIHdpbGwgYmUgc2hvd24gb25jZSBwZXIgc2Vzc2lvbjExOjA1OjEzIFVNQVAgZW1iZWRkaW5nIHBhcmFtZXRlcnMgYSA9IDAuOTkyMiBiID0gMS4xMTJcbjExOjA1OjEzIFJlYWQgMjYzOCByb3dzIGFuZCBmb3VuZCA1MCBudW1lcmljIGNvbHVtbnNcbjExOjA1OjEzIFVzaW5nIEFubm95IGZvciBuZWlnaGJvciBzZWFyY2gsIG5fbmVpZ2hib3JzID0gMzBcbjExOjA1OjEzIEJ1aWxkaW5nIEFubm95IGluZGV4IHdpdGggbWV0cmljID0gY29zaW5lLCBuX3RyZWVzID0gNTBcbjAlICAgMTAgICAyMCAgIDMwICAgNDAgICA1MCAgIDYwICAgNzAgICA4MCAgIDkwICAgMTAwJVxuWy0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18XG4qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKnxcbjExOjA1OjE0IFdyaXRpbmcgTk4gaW5kZXggZmlsZSB0byB0ZW1wIGZpbGUgQzpcXFVzZXJzXFx5aFxcQXBwRGF0YVxcTG9jYWxcXFRlbXBcXFJ0bXBvNUZqVFJcXGZpbGVkN2MwNzE0MDRiNDVcbjExOjA1OjE0IFNlYXJjaGluZyBBbm5veSBpbmRleCB1c2luZyAxIHRocmVhZCwgc2VhcmNoX2sgPSAzMDAwXG4xMTowNToxNSBBbm5veSByZWNhbGwgPSAxMDAlXG4xMTowNToxNiBDb21tZW5jaW5nIHNtb290aCBrTk4gZGlzdGFuY2UgY2FsaWJyYXRpb24gdXNpbmcgMSB0aHJlYWRcbjExOjA1OjE2IEluaXRpYWxpemluZyBmcm9tIG5vcm1hbGl6ZWQgTGFwbGFjaWFuICsgbm9pc2VcbjExOjA1OjE2IENvbW1lbmNpbmcgb3B0aW1pemF0aW9uIGZvciA1MDAgZXBvY2hzLCB3aXRoIDk1NzAwIHBvc2l0aXZlIGVkZ2VzXG4wJSAgIDEwICAgMjAgICAzMCAgIDQwICAgNTAgICA2MCAgIDcwICAgODAgICA5MCAgIDEwMCVcblstLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfC0tLS18LS0tLXwtLS0tfFxuKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKip8XG4xMTowNToyNiBPcHRpbWl6YXRpb24gZmluaXNoZWRcbiJ9 -->
+<pre><code>Performing log-normalization
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-02:45:14 UMAP embedding parameters a = 0.9922 b = 1.112
-02:45:14 Read 2638 rows and found 50 numeric columns
-02:45:14 Using Annoy for neighbor search, n_neighbors = 30
-02:45:14 Building Annoy index with metric = cosine, n_trees = 50
+The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
+This message will be shown once per session11:05:13 UMAP embedding parameters a = 0.9922 b = 1.112
+11:05:13 Read 2638 rows and found 50 numeric columns
+11:05:13 Using Annoy for neighbor search, n_neighbors = 30
+11:05:13 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-02:45:15 Writing NN index file to temp file C:\Users\yh\AppData\Local\Temp\RtmpyWWgst\file652c864a071b9
-02:45:15 Searching Annoy index using 1 thread, search_k = 3000
-02:45:16 Annoy recall = 100%
-02:45:16 Commencing smooth kNN distance calibration using 1 thread
-02:45:17 Initializing from normalized Laplacian + noise
-02:45:17 Commencing optimization for 500 epochs, with 95700 positive edges
+11:05:14 Writing NN index file to temp file C:\Users\yh\AppData\Local\Temp\Rtmpo5FjTR\filed7c071404b45
+11:05:14 Searching Annoy index using 1 thread, search_k = 3000
+11:05:15 Annoy recall = 100%
+11:05:16 Commencing smooth kNN distance calibration using 1 thread
+11:05:16 Initializing from normalized Laplacian + noise
+11:05:16 Commencing optimization for 500 epochs, with 95700 positive edges
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-02:45:25 Optimization finished</code></pre>
+11:05:26 Optimization finished</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiTW9kdWxhcml0eSBPcHRpbWl6ZXIgdmVyc2lvbiAxLjMuMCBieSBMdWRvIFdhbHRtYW4gYW5kIE5lZXMgSmFuIHZhbiBFY2tcblxuTnVtYmVyIG9mIG5vZGVzOiAyNjM4XG5OdW1iZXIgb2YgZWRnZXM6IDQ5MTQxXG5cblJ1bm5pbmcgTG91dmFpbiBhbGdvcml0aG0uLi5cbiJ9 -->
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -370,7 +389,7 @@ Elapsed time: 0 seconds</code></pre>
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlVzZSBESVNDIGNvbXByZXNzZWQgZmVhdHVyZXMgZm9yIFNldXJhdCBjbHVzdGVyaW5nIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCiMjIyBTZXR1cCBrbml0ciBhbmQgbG9hZCB1dGlsaXR5IGZ1bmN0aW9ucw0KYGBge3Igc2V0dXB9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQprbml0cjo6b3B0c19rbml0JHNldChyb290LmRpcj0iRTovRElTQy9yZXByb2R1Y2liaWxpdHkiKQ0KYGBgDQpgYGB7cn0NCnV0aWxpdGllc19wYXRoID0gIi4vc291cmNlL3V0aWxpdGllcy5yIg0Kc291cmNlKHV0aWxpdGllc19wYXRoKQ0KYGBgDQojIyMgRmlsdGVyaW5nIGNlbGxzIGFzIFNldXJhdCB0dXRvcmlhbA0KRElTQyBvdXRwdXRzIGJvdGggdmFsdWVzIGFuZCBjb21wcmVzc2VkIGZlYXR1cmVzIGFmdGVyIGltcHV0YXRpb24uPC9icj4NCkhlcmUsIHdlIGRlbW9zdHJhdGUgaG93IHRvIERJU0MgY29tcHJlc3NlZCBmZWF0dXJlcyBmb3IgU2V1cmF0IGNsdXN0ZXJpbmcgdXNpbmcgUEJNQyBkYXRhLg0KYGBge3J9DQpkc19kaXIgPSAiLi9kYXRhL1BCTUMvZHNfMC4zIg0Kb2JzZXJ2ZWRfcGF0aCA9IHBhc3RlMChkc19kaXIsICIvb2JzZXJ2ZWQubG9vbSIpDQpvYnNlcnZlZF9kYXRhID0gcmVhZGg1X2xvb20ob2JzZXJ2ZWRfcGF0aCkNCmV4cHJlc3NlZF9jZWxsID0gcm93U3VtcyhvYnNlcnZlZF9kYXRhID4gMCkNCmdlbmVfZmlsdGVyID0gZXhwcmVzc2VkX2NlbGwgPiAwDQpESVNDX3ZhbHVlcyA9IHJlYWRoNV9pbXB1dGF0aW9uKHBhc3RlMChkc19kaXIsICIvRElTQy5oZGY1IiksIHdpdGhfb3V0bGllcnMgPSBUKVtnZW5lX2ZpbHRlciwgXQ0KRElTQ19mZWF0dXJlcyA9IHJlYWRoNV9mZWF0dXJlKHBhc3RlMChkc19kaXIsICIvRElTQ19mZWF0dXJlLmhkZjUiKSkNCmNlbGxfdHlwZSA9IHJlYWRSRFMoIi4vcmVzdWx0cy9QQk1DL2NlbGxfdHlwZS5yZHMiKQ0KY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uID0gc2V1cmF0X2NsYXNzaWZpY2F0aW9uKGdlbmVfYmNfbWF0ID0gRElTQ192YWx1ZXMsIGZlYXR1cmVfYmNfbWF0ID0gRElTQ19mZWF0dXJlcywgY2VsbF90eXBlID0gY2VsbF90eXBlLCBwY2FfZGltID0gMTAsIHJlcyA9IDAuNSwgbWluX3BjdCA9IDAuMjUsIHNob3cgPSBULCBjZWxsX3R5cGVfaWRlbnRpZmljYXRpb25fZnVuID0gY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uX3BibWMpDQpgYGANCmBgYHtyfQ0KcHJpbnQoY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uW1sic3VtbWFyeSJdXVsiQUNDIl0pDQpwcmludChjZWxsX3R5cGVfaWRlbnRpZmljYXRpb25bWyJzdW1tYXJ5Il1dWyJBUkkiXSkNCnByaW50KGNlbGxfdHlwZV9pZGVudGlmaWNhdGlvbltbImNlbGxfdHlwZV9yZXN1bHQiXV1bLCAiSmFjY2FyZCJdKQ0KcHJpbnQoY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uW1siY2VsbF90eXBlX3Jlc3VsdCJdXVssICJGMS1zY29yZSJdKQ0KcHJpbnQoY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uW1siY2VsbF90eXBlX3Jlc3VsdCJdXVssICJBQ0MiXSkNCmBgYA==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlVzZSBESVNDIGNvbXByZXNzZWQgZmVhdHVyZXMgZm9yIFNldXJhdCBjbHVzdGVyaW5nIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCiMjIyBTZXR1cCBrbml0ciBhbmQgbG9hZCB1dGlsaXR5IGZ1bmN0aW9ucw0KYGBge3Igc2V0dXB9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQprbml0cjo6b3B0c19rbml0JHNldChyb290LmRpcj0iRTovRElTQy9yZXByb2R1Y2liaWxpdHkiKQ0KYGBgDQpgYGB7cn0NCnV0aWxpdGllc19wYXRoID0gIi4vc291cmNlL3V0aWxpdGllcy5yIg0Kc291cmNlKHV0aWxpdGllc19wYXRoKQ0KYGBgDQojIyMgRmlsdGVyaW5nIGNlbGxzIGFzIFNldXJhdCB0dXRvcmlhbA0KRElTQyBvdXRwdXRzIGJvdGggdmFsdWVzIGFuZCBjb21wcmVzc2VkIGZlYXR1cmVzIGFmdGVyIGltcHV0YXRpb24uPC9icj4NCkhlcmUsIHdlIGRlbW9zdHJhdGUgaG93IHRvIERJU0MgY29tcHJlc3NlZCBmZWF0dXJlcyBmb3IgU2V1cmF0IGNsdXN0ZXJpbmcgdXNpbmcgUEJNQyBkYXRhLg0KR2VuZXMgZmlsdGVyZWQgYnkgb3VyIGdlbmUgc2VsZWN0aW9uIGFyZSB1c2VkIGZvciBjZWxsIHR5cGUgaWRlbnRpZmljYXRpb24gZXZhbHVhdGlvbi4NCmBgYHtyfQ0KZHNfZGlyID0gIi4vZGF0YS9QQk1DL2RzXzAuMyINCm9ic2VydmVkX3BhdGggPSBwYXN0ZTAoZHNfZGlyLCAiL29ic2VydmVkLmxvb20iKQ0Kb2JzZXJ2ZWRfZGF0YSA9IHJlYWRoNV9sb29tKG9ic2VydmVkX3BhdGgpDQpleHByZXNzZWRfY2VsbCA9IHJvd1N1bXMob2JzZXJ2ZWRfZGF0YSA+IDApDQpnZW5lX2V4cHJlc3Npb24gPSByb3dTdW1zKG9ic2VydmVkX2RhdGEpDQpnZW5lX2ZpbHRlciA9IGV4cHJlc3NlZF9jZWxsID49IDEwICYgZ2VuZV9leHByZXNzaW9uID4gZXhwcmVzc2VkX2NlbGwgKiAxDQpESVNDX3ZhbHVlcyA9IHJlYWRoNV9pbXB1dGF0aW9uKHBhc3RlMChkc19kaXIsICIvRElTQy5oZGY1IiksIHdpdGhfb3V0bGllcnMgPSBUKVtnZW5lX2ZpbHRlciwgXQ0KRElTQ19mZWF0dXJlcyA9IHJlYWRoNV9mZWF0dXJlKHBhc3RlMChkc19kaXIsICIvRElTQ19mZWF0dXJlLmhkZjUiKSkNCmNlbGxfdHlwZSA9IHJlYWRSRFMoIi4vcmVzdWx0cy9QQk1DL2NlbGxfdHlwZS5yZHMiKQ0KY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uID0gc2V1cmF0X2NsYXNzaWZpY2F0aW9uKGdlbmVfYmNfbWF0ID0gRElTQ192YWx1ZXMsIGZlYXR1cmVfYmNfbWF0ID0gRElTQ19mZWF0dXJlcywgY2VsbF90eXBlID0gY2VsbF90eXBlLCBwY2FfZGltID0gMTAsIHJlcyA9IDAuNSwgbWluX3BjdCA9IDAuMjUsIHNob3cgPSBULCBjZWxsX3R5cGVfaWRlbnRpZmljYXRpb25fZnVuID0gY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uX3BibWMpDQpgYGANCmBgYHtyfQ0KcHJpbnQoY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uW1sic3VtbWFyeSJdXVsiQUNDIl0pDQpwcmludChjZWxsX3R5cGVfaWRlbnRpZmljYXRpb25bWyJzdW1tYXJ5Il1dWyJBUkkiXSkNCnByaW50KGNlbGxfdHlwZV9pZGVudGlmaWNhdGlvbltbImNlbGxfdHlwZV9yZXN1bHQiXV1bLCAiSmFjY2FyZCJdKQ0KcHJpbnQoY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uW1siY2VsbF90eXBlX3Jlc3VsdCJdXVssICJGMS1zY29yZSJdKQ0KcHJpbnQoY2VsbF90eXBlX2lkZW50aWZpY2F0aW9uW1siY2VsbF90eXBlX3Jlc3VsdCJdXVssICJBQ0MiXSkNCmBgYA==</div>
 
 
 
