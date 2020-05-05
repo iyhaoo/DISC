@@ -65,14 +65,14 @@ for(ii in method_names){
     density_induced_zero = density(data_list[[jj]][[ii]][data_list[[jj]][["induced_zero_mask"]]])
     y_max = max(c(density_true_zero$y, density_induced_zero$y))
     x_max = quantile(data_list[[jj]][[ii]][data_list[[jj]][["Observed_0"]]], 0.999)
-    plot(0, type = "n", xlim = c(-1, x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
+    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_true_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
     axis(1)
     mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
     cat("Finish: ", ii, " - ", jj, "\n")
   }
-  mtext("All genes", outer = TRUE, cex = 1.4, font = 2, line = 3)
+  mtext(paste0(ii, " - All genes"), outer = TRUE, cex = 1.4, font = 2, line = 3)
   legend("topright", c("True zero", "Sampled zero"), lty = 1, col = c("black", "red"), lwd = 2)
   cat("Finish: ", ii, "\n")
 }
@@ -88,51 +88,14 @@ for(ii in method_names){
     density_induced_zero = density(data_list[[jj]][[ii]][data_list[[jj]][["top_1000_genes"]], ][data_list[[jj]][["induced_zero_mask"]][data_list[[jj]][["top_1000_genes"]], ]])
     y_max = max(c(density_true_zero$y, density_induced_zero$y))
     x_max = quantile(data_list[[jj]][[ii]][data_list[[jj]][["top_1000_genes"]], ][data_list[[jj]][["Observed_0"]][data_list[[jj]][["top_1000_genes"]], ]], 0.999)
-    plot(0, type = "n", xlim = c(-1, x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
+    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_true_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
     axis(1)
     mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
     cat("Finish: ", ii, " - ", jj, "\n")
   }
-  mtext("All genes", outer = TRUE, cex = 1.4, font = 2, line = 3)
-  legend("topright", c("True zero", "Sampled zero"), lty = 1, col = c("black", "red"), lwd = 2)
-  cat("Finish: ", ii, "\n")
-}
-```
-```{r fig.height=5, fig.width=10}
-par(mfrow = c(1, 2), mar = c(5, 0, 0.5, 0), oma = c(0, 5, 6, 2), mgp = c(3.5, 1, 0), cex.axis = 1.1, cex.lab = 1.5, font.lab = 2, cex.main = 1.5)
-mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(length(used_datasets)) * 2 - 1]
-names(mtext_position) = used_datasets
-for(ii in method_names){
-  for(jj in used_datasets){
-    raw_data = readh5_loom(paste0("./data/", jj, "/raw.loom"))
-
-    ds_dir = paste0("./data/", jj, "/ds_0.5")
-    observed_data = readh5_loom(paste0(ds_dir, "/observed.loom"))
-    compared_genes = rownames(observed_data)[gene_selection(observed_data, 10)]
-    top_1000_genes = rownames(hvg_info)[rownames(hvg_info) %in% compared_genes][1:1000]
-    raw_data = raw_data[top_1000_genes, ]
-    observed_data = observed_data[top_1000_genes, ]
-    #  Following this paper (SAVER: gene expression recovery for single-cell RNA sequencing,
-    #  https://www.nature.com/articles/s41592-018-0033-z), we evaluate the performance of
-    #  different imputation methods to indentify true zeros.
-    observed_zero = observed_data == 0
-    true_zero_mask = raw_data == 0 & observed_zero
-    induced_zero_mask = raw_data != 0 & observed_zero
-    this_imputation = readh5_imputation(paste0(ds_dir, "/", ii, ".hdf5"), with_outliers = T)[top_1000_genes, ]
-    density_true_zero = density(this_imputation[true_zero_mask])
-    density_induced_zero = density(this_imputation[induced_zero_mask])
-    y_max = max(c(density_true_zero$y, density_induced_zero$y))
-    x_max = quantile(this_imputation[observed_zero], 0.95)
-    plot(0, type = "n", xlim = c(-1, x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
-    lines(density_true_zero, col = "black", lwd = 2)
-    lines(density_induced_zero, col = "red", lwd = 2)
-    axis(1)
-    mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
-    cat("Finish: ", ii, " - ", jj, "\n")
-  }
-  mtext("Top 1000 genes", outer = TRUE, cex = 1.4, font = 2, line = 3)
+  mtext(paste0(ii, " - Top 1000 genes"), outer = TRUE, cex = 1.4, font = 2, line = 3)
   legend("topright", c("True zero", "Sampled zero"), lty = 1, col = c("black", "red"), lwd = 2)
   cat("Finish: ", ii, "\n")
 }
