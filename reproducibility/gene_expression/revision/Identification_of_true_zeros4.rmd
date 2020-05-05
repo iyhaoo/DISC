@@ -25,7 +25,6 @@ data_list = list()
 for(ii in used_datasets){
   data_list[[ii]] = list()
   raw_data = readh5_loom(paste0("./data/", ii, "/raw.loom"))
-  ls_raw = colSums(raw_data)
   vst_file = paste0(output_dir, "/", ii, "_vst_gene.tsv")
   if(file.exists(vst_file)){
     hvg_info = read.table(vst_file)
@@ -42,17 +41,17 @@ for(ii in used_datasets){
     compared_genes = rownames(observed_data)[gene_selection(observed_data, 10)]
     observed_data = observed_data[compared_genes, ]
     DISC_imputation = readh5_loom(paste0(ds_dir, "/DISC.loom"))[compared_genes, ]
-    DISC_rescale = sweep(DISC_imputation, 2, ls_raw / colSums(DISC_imputation), "*")
+    DISC_cp10k = sweep(DISC_imputation, 2, 10000 / colSums(DISC_imputation), "*")
     raw_zero = raw_data[compared_genes, ] == 0 & observed_data == 0
     induced_zero = raw_data[compared_genes, ] != 0 & observed_data == 0
     kept_values = raw_data[compared_genes, ] != 0 & observed_data != 0
     used_top_genes = intersect(top_1000_genes, compared_genes)
-    data_list[[ii]][[jj]] = list(raw_zero_imputation = DISC_rescale[raw_zero],
-                                 induced_zero_imputation = DISC_rescale[induced_zero],
-                                 kept_values_imputation = DISC_rescale[kept_values],
-                                 top_raw_zero_imputation = DISC_rescale[used_top_genes, ][raw_zero[used_top_genes, ]],
-                                 top_induced_zero_imputation = DISC_rescale[used_top_genes, ][induced_zero[used_top_genes, ]],
-                                 top_kept_values_imputation = DISC_rescale[used_top_genes, ][kept_values[used_top_genes, ]])
+    data_list[[ii]][[jj]] = list(raw_zero_imputation = DISC_cp10k[raw_zero],
+                                 induced_zero_imputation = DISC_cp10k[induced_zero],
+                                 kept_values_imputation = DISC_cp10k[kept_values],
+                                 top_raw_zero_imputation = DISC_cp10k[used_top_genes, ][raw_zero[used_top_genes, ]],
+                                 top_induced_zero_imputation = DISC_cp10k[used_top_genes, ][induced_zero[used_top_genes, ]],
+                                 top_kept_values_imputation = DISC_cp10k[used_top_genes, ][kept_values[used_top_genes, ]])
   }
 }
 ```
