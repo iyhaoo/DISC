@@ -1,77 +1,34 @@
 ---
-title: "Data preparation for JURKAT_293T"
+title: "Data preparation for BONE_MARROW"
 output: html_notebook
 ---
 ### Setup knitr and load utility functions
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
 ```{r}
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
 ### Generate data file
-The original BONE_MARROW data can be found at https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79.</br>
-We filter cells following this paper https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1.
+The original BONE_MARROW data was downloaded from HCA website (https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79).</br>
+The authors of this paper (https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1) aligned the original sequence data (in .fastq format) to hg19 reference genome using CellRanger instead of using the count matrix provided by HCA.</br>
+Their cell-filtered count matrix can be found at https://doc-04-6g-docs.googleusercontent.com/docs/securesc/rm132bl2k8nvnlftqa8a8d5p239lbngf/6o5dsruhjpmecgnkd0nn4b1ak3ss8ufd/1588554075000/07888005335114604629/01857410241295225190/1euh8YB8ThSLHJNQMTCuuKp_nRiME1KzN?e=download&authuser=0&nonce=7apqnnaq9bch8&user=01857410241295225190&hash=a60rd66gq56e0af1vc5ua60146t3gq7m or https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/HCA_tissue/original_data/MantonBM6_count.rds.</br>
 ```{r}
-#BiocManager::install("HCAData")
-library(HCAData)
-sce.bone <- HCAData('ica_bone_marrow')
-#sce.bone$Donor <- sub("_.*", "", sce.bone$Barcode)
-
-```
-```{r}
-if(!file.exists("./data/JURKAT/raw.loom")){
-  temp <- tempfile()
-  download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/jurkat/jurkat_filtered_gene_bc_matrices.tar.gz", temp)
-  exdir = "./data/JURKAT"
-  untar(temp, exdir = exdir)
-  unlink(temp)
-  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
-  save_h5("./data/JURKAT/original.loom", as.matrix(t(original_data)))
+if(!file.exists("./data/BONE_MARROW/raw.loom")){
+  original_data <- readRDS("./data/BONE_MARROW/original_data/MantonBM6_count.rds")
+  save_h5("./data/BONE_MARROW/original.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
-  cell_names_JURKAT = colnames(seurat_obj[["RNA"]]@counts)
-  gene_names_JURKAT = rownames(seurat_obj[["RNA"]]@counts)
-  raw_data_JURKAT = as.matrix(original_data[, cell_names_JURKAT])
-  save_h5("./data/JURKAT/raw.loom", t(raw_data_JURKAT))
+  cell_names = colnames(seurat_obj[["RNA"]]@counts)
+  gene_names = rownames(original_data)
+  raw_data = as.matrix(original_data[, cell_names])
+  save_h5("./data/BONE_MARROW/raw.loom", t(raw_data))
 }else{
-  raw_data_JURKAT = readh5_loom("./data/JURKAT/raw.loom")
-  cell_names_JURKAT = colnames(raw_data_JURKAT)
-  gene_names_JURKAT = rownames(raw_data_JURKAT)
+  raw_data = readh5_loom("./data/BONE_MARROW/raw.loom")
+  cell_names = colnames(raw_data)
+  gene_names = rownames(raw_data)
 }
-print(dim(raw_data_JURKAT))
-print("JURKAT...OK!")
-if(!file.exists("./data/293T/raw.loom")){
-  temp <- tempfile()
-  download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/293t/293t_filtered_gene_bc_matrices.tar.gz", temp)
-  exdir = "./data/293T"
-  untar(temp, exdir = exdir)
-  unlink(temp)
-  original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
-  save_h5("./data/293T/original.loom", as.matrix(t(original_data)))
-  seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
-  cell_names_293T = colnames(seurat_obj[["RNA"]]@counts)
-  gene_names_293T = rownames(seurat_obj[["RNA"]]@counts)
-  raw_data_293T = as.matrix(original_data[, cell_names_293T])
-  save_h5("./data/293T/raw.loom", t(raw_data_293T))
-}else{
-  raw_data_293T = readh5_loom("./data/293T/raw.loom")
-  cell_names_293T = colnames(raw_data_293T)
-  gene_names_293T = rownames(raw_data_293T)
-}
-print(dim(raw_data_293T))
-print("293T...OK!")
-if(!file.exists("./data/JURKAT_293T/raw.loom")){
-  dir.create("./data/JURKAT_293T", showWarnings = F)
-  gene_names_JURKAT_293T = unique(c(gene_names_JURKAT, gene_names_293T))
-  raw_data_JURKAT_293T = matrix(0, nrow = length(gene_names_JURKAT_293T), ncol = ncol(raw_data_JURKAT) + ncol(raw_data_293T), dimnames = list(gene_names_JURKAT_293T, c(cell_names_JURKAT, cell_names_293T)))
-  raw_data_JURKAT_293T[gene_names_JURKAT, cell_names_JURKAT] = raw_data_JURKAT
-  raw_data_JURKAT_293T[gene_names_293T, cell_names_293T] = raw_data_293T
-  save_h5("./data/JURKAT_293T/raw.loom", t(raw_data_JURKAT_293T))
-}else{
-  raw_data_JURKAT_293T = readh5_loom("./data/JURKAT_293T/raw.loom")
-}
-print(dim(raw_data_JURKAT_293T))
-print("JURKAT_293T...OK!")
+print(dim(raw_data))
+print("BONE_MARROW...OK!")
 ```
