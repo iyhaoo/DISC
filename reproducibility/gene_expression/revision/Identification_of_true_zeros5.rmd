@@ -1,0 +1,111 @@
+---
+title: "Identification of true zeros"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Load raw data and downsampling
+Here, we use PBMC dataset as an example.</br>
+The fraction of sampling is set to 50% of the original library size across cells.</br>
+Only 1 replicate will be generated here as an example.</br>
+Only imputed genes will be kept for comparison.
+```{r}
+used_datasets = c("MELANOMA", "PBMC")
+method_names = c("DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+output_dir = "./results/Identification_of_true_zeros"
+dir.create(output_dir, showWarnings = F, recursive = T)
+data_list = list()
+for(ii in used_datasets){
+  data_list[[ii]] = list()
+  raw_data = readh5_loom(paste0("./data/", ii, "/raw.loom"))
+  vst_file = paste0(output_dir, "/", ii, "_vst_gene.tsv")
+  if(file.exists(vst_file)){
+    hvg_info = read.table(vst_file)
+    print("load vst_file")
+  }else{
+    hvg_info = FindVariableFeatures_vst_by_genes(raw_data)
+    hvg_info = hvg_info[order(hvg_info$variance.standardized, decreasing = T), ]
+    write.table(hvg_info, vst_file, sep = "\t", quote = F, row.names = T, col.names = T)
+  }
+  ds_dir = paste0("./data/", ii, "/ds_0.5")
+  observed_data = readh5_loom(paste0(ds_dir, "/observed.loom"))
+  compared_genes = rownames(observed_data)[gene_selection(observed_data, 10)]
+  top_1000_genes = rownames(hvg_info)[rownames(hvg_info) %in% compared_genes][1:1000]
+  observed_data = observed_data[compared_genes, ]
+  raw_data = raw_data[compared_genes, ]
+  for(jj in method_names){
+    if(jj == "DISC"){
+      imputation = readh5_loom(paste0(ds_dir, "/", jj, ".loom"))[compared_genes, ]
+    }else{
+      imputation = readh5_imputation(paste0(ds_dir, "/", jj, ".hdf5"))[compared_genes, ]
+    }
+    imputation_cp10k = sweep(imputation, 2, 10000 / colSums(imputation), "*")
+    raw_zero = raw_data == 0 & observed_data == 0
+    induced_zero = raw_data != 0 & observed_data == 0
+    kept_values = raw_data != 0 & observed_data != 0
+    data_list[[ii]][[jj]] = list(raw_zero_imputation = imputation_cp10k[raw_zero],
+                                 induced_zero_imputation = imputation_cp10k[induced_zero],
+                                 kept_values_imputation = imputation_cp10k[kept_values],
+                                 top_raw_zero_imputation = imputation_cp10k[top_1000_genes, ][raw_zero[top_1000_genes, ]],
+                                 top_induced_zero_imputation = imputation_cp10k[top_1000_genes, ][induced_zero[top_1000_genes, ]],
+                                 top_kept_values_imputation = imputation_cp10k[top_1000_genes, ][kept_values[top_1000_genes, ]])
+  }
+}
+```
+Following this paper (SAVER: gene expression recovery for single-cell RNA sequencing, https://www.nature.com/articles/s41592-018-0033-z), we evaluate the performance of different imputation methods to indentify true zeros.
+### All genes
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1, 2), mar = c(5, 0, 0.5, 0), oma = c(0, 5, 6, 2), mgp = c(3.5, 1, 0), cex.axis = 1.1, cex.lab = 1.5, font.lab = 2, cex.main = 1.5)
+mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(length(used_datasets)) * 2]
+names(mtext_position) = used_datasets
+for(ii in method_names){
+  for(jj in used_datasets){
+    density_raw_zero = density(data_list[[jj]][[ii]][["raw_zero_imputation"]][data_list[[jj]][[ii]][["raw_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["raw_zero_imputation"]], 0.99)])
+    density_induced_zero = density(data_list[[jj]][[ii]][["induced_zero_imputation"]][data_list[[jj]][[ii]][["induced_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["induced_zero_imputation"]], 0.99)])
+    density_kept_values = density(data_list[[jj]][[ii]][["kept_values_imputation"]][data_list[[jj]][[ii]][["kept_values_imputation"]] <= quantile(data_list[[jj]][[ii]][["kept_values_imputation"]], 0.99)])
+    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_kept_values$y), 0.99) * 1.02
+    x_max = quantile(c(data_list[[jj]][[ii]][["raw_zero_imputation"]], data_list[[jj]][[ii]][["induced_zero_imputation"]], data_list[[jj]][[ii]][["kept_values_imputation"]]), 0.99) * 1.02
+    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.1)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
+    lines(density_raw_zero, col = "black", lwd = 2)
+    lines(density_induced_zero, col = "red", lwd = 2)
+    lines(density_kept_values, col = "blue", lwd = 2)
+    axis(1)
+    mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
+    cat("Finish: ", ii, " - ", jj, "\n")
+  }
+  mtext(paste0(ii, " - All genes"), outer = TRUE, cex = 1.4, font = 2, line = 3)
+  legend("topright", c("Raw zero", "Sampled zero", "Kept values"), lty = 1, col = c("black", "red", "blue"), lwd = 2)
+  cat("Finish: ", ii, "\n")
+}
+```
+### Top 1000 genes
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1, 2), mar = c(5, 0, 0.5, 0), oma = c(0, 5, 6, 2), mgp = c(3.5, 1, 0), cex.axis = 1.1, cex.lab = 1.5, font.lab = 2, cex.main = 1.5)
+mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(length(used_datasets)) * 2]
+names(mtext_position) = used_datasets
+for(ii in method_names){
+  for(jj in used_datasets){
+    density_raw_zero = density(data_list[[jj]][[ii]][["top_raw_zero_imputation"]][data_list[[jj]][[ii]][["top_raw_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["top_raw_zero_imputation"]], 0.99)])
+    density_induced_zero = density(data_list[[jj]][[ii]][["top_induced_zero_imputation"]][data_list[[jj]][[ii]][["top_induced_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["top_induced_zero_imputation"]], 0.99)])
+    density_kept_values = density(data_list[[jj]][[ii]][["top_kept_values_imputation"]][data_list[[jj]][[ii]][["top_kept_values_imputation"]] <= quantile(data_list[[jj]][[ii]][["top_kept_values_imputation"]], 0.99)])
+    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_kept_values$y), 0.99) * 1.02
+    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.1)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
+    lines(density_raw_zero, col = "black", lwd = 2)
+    lines(density_induced_zero, col = "red", lwd = 2)
+    lines(density_kept_values, col = "blue", lwd = 2)
+    axis(1)
+    mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
+    cat("Finish: ", ii, " - ", jj, "\n")
+  }
+  mtext(paste0(ii, " - Top 1000 genes"), outer = TRUE, cex = 1.4, font = 2, line = 3)
+  legend("topright", c("Raw zero", "Sampled zero", "Kept values"), lty = 1, col = c("black", "red", "blue"), lwd = 2)
+  cat("Finish: ", ii, "\n")
+}
+```

@@ -69,7 +69,7 @@ for(ii in used_datasets){
     y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_kept_values$y), 0.99) * 1.02
     x_max = quantile(c(data_list[[ii]][[jj]][["raw_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_imputation"]], data_list[[ii]][[jj]][["kept_values_imputation"]]), 0.99) * 1.02
     plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.1)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
-    lines(density_true_zero, col = "black", lwd = 2)
+    lines(density_raw_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
     lines(density_kept_values, col = "blue", lwd = 2)
     axis(1)
@@ -93,7 +93,7 @@ for(ii in used_datasets){
     density_kept_values = density(data_list[[ii]][[jj]][["top_kept_values_imputation"]][data_list[[ii]][[jj]][["top_kept_values_imputation"]] <= quantile(data_list[[ii]][[jj]][["top_kept_values_imputation"]], 0.99)])
     y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_kept_values$y), 0.99) * 1.02
     plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.1)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
-    lines(density_true_zero, col = "black", lwd = 2)
+    lines(density_raw_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
     lines(density_kept_values, col = "blue", lwd = 2)
     axis(1)
