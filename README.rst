@@ -134,7 +134,7 @@ Quick Start
 Tutorials
  1. Data preparation and imputation
 
-    * Data pre-processing (, , , )
+    * Data pre-processing
 
       * `MELANOMA`__
       * `MELANOMA_bulk`__
