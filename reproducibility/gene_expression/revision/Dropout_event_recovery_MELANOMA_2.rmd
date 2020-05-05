@@ -73,17 +73,17 @@ MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames =
 ls_raw = colSums(data_list[["Raw"]])
 for(ii in method_names){
   ls_this = colSums(data_list[[ii]])
-    scale_factor = ls_raw / ls_this
-    MAE_cell = sapply(seq(cell_number), function(x){
-      expressed_index = which(data_list[["Raw"]][, x] > 0)
-      DID_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] == 0)
-      RGE_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] > 0)
-      error_O = data_list[["Raw"]][expressed_index, x] - (data_list[[ii]][expressed_index, x] * scale_factor[x])
-      MAE_O = sum(abs(error_O)) / length(expressed_index)
-      MAE_DID = sum(abs(error_O[DID_mask_in_expressed_index])) / sum(DID_mask_in_expressed_index)
-      MAE_RGE = sum(abs(error_O[RGE_mask_in_expressed_index])) / sum(RGE_mask_in_expressed_index)
-      return(c(MAE_O, MAE_DID, MAE_RGE))
-    })
+  scale_factor = ls_raw / ls_this
+  MAE_cell = sapply(seq(cell_number), function(x){
+    expressed_index = which(data_list[["Raw"]][, x] > 0)
+    DID_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] == 0)
+    RGE_mask_in_expressed_index = expressed_index %in% which(data_list[["Observed"]][, x] > 0)
+    error_O = data_list[["Raw"]][expressed_index, x] - (data_list[[ii]][expressed_index, x] * scale_factor[x])
+    MAE_O = sum(abs(error_O)) / length(expressed_index)
+    MAE_DID = sum(abs(error_O[DID_mask_in_expressed_index])) / sum(DID_mask_in_expressed_index)
+    MAE_RGE = sum(abs(error_O[RGE_mask_in_expressed_index])) / sum(RGE_mask_in_expressed_index)
+    return(c(MAE_O, MAE_DID, MAE_RGE))
+  })
   MAE_O_mat[, ii] = MAE_cell[1, ]
   MAE_DID_mat[, ii] = MAE_cell[2, ]
   MAE_RGE_mat[, ii] = MAE_cell[3, ]
