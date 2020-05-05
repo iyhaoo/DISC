@@ -49,9 +49,11 @@ for(ii in used_datasets){
     used_top_genes = intersect(top_1000_genes, compared_genes)
     data_list[[ii]][[jj]] = list(raw_zero_imputation = DISC_rescale[raw_zero],
                                  induced_zero_imputation = DISC_rescale[induced_zero],
+                                 induced_zero_value = raw_data[compared_genes, ][induced_zero],
                                  kept_values_imputation = DISC_rescale[kept_values],
                                  top_raw_zero_imputation = DISC_rescale[used_top_genes, ][raw_zero[used_top_genes, ]],
                                  top_induced_zero_imputation = DISC_rescale[used_top_genes, ][induced_zero[used_top_genes, ]],
+                                 top_induced_zero_value = raw_data[used_top_genes, ][induced_zero[used_top_genes, ]],
                                  top_kept_values_imputation = DISC_rescale[used_top_genes, ][kept_values[used_top_genes, ]])
   }
 }
@@ -66,10 +68,10 @@ for(ii in used_datasets){
   for(jj in repeats){
     density_raw_zero = density(data_list[[ii]][[jj]][["raw_zero_imputation"]][data_list[[ii]][[jj]][["raw_zero_imputation"]] <= quantile(data_list[[ii]][[jj]][["raw_zero_imputation"]], 0.99)])
     density_induced_zero = density(data_list[[ii]][[jj]][["induced_zero_imputation"]][data_list[[ii]][[jj]][["induced_zero_imputation"]] <= quantile(data_list[[ii]][[jj]][["induced_zero_imputation"]], 0.99)])
+    density_induced_zero_values = density(data_list[[ii]][[jj]][["induced_zero_value"]][data_list[[ii]][[jj]][["induced_zero_value"]] <= quantile(data_list[[ii]][[jj]][["induced_zero_value"]], 0.99)])
     density_kept_values = density(data_list[[ii]][[jj]][["kept_values_imputation"]][data_list[[ii]][[jj]][["kept_values_imputation"]] <= quantile(data_list[[ii]][[jj]][["kept_values_imputation"]], 0.99)])
-    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_kept_values$y), 0.99) * 1.02
-    #x_max = quantile(c(data_list[[ii]][[jj]][["raw_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_imputation"]], data_list[[ii]][[jj]][["kept_values_imputation"]]), 0.99) * 1.02
-    x_max = 3
+    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_induced_zero_values$y, density_kept_values$y), 0.99) * 1.02
+    x_max = quantile(c(data_list[[ii]][[jj]][["raw_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_value"]], data_list[[ii]][[jj]][["kept_values_imputation"]]), 0.99) * 1.02
     plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.1)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_true_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
@@ -92,10 +94,9 @@ for(ii in used_datasets){
   for(jj in repeats){
     density_raw_zero = density(data_list[[ii]][[jj]][["top_raw_zero_imputation"]][data_list[[ii]][[jj]][["top_raw_zero_imputation"]] <= quantile(data_list[[ii]][[jj]][["top_raw_zero_imputation"]], 0.99)])
     density_induced_zero = density(data_list[[ii]][[jj]][["top_induced_zero_imputation"]][data_list[[ii]][[jj]][["top_induced_zero_imputation"]] <= quantile(data_list[[ii]][[jj]][["top_induced_zero_imputation"]], 0.99)])
+    density_induced_zero_values = density(data_list[[ii]][[jj]][["top_induced_zero_value"]][data_list[[ii]][[jj]][["top_induced_zero_value"]] <= quantile(data_list[[ii]][[jj]][["top_induced_zero_value"]], 0.99)])
     density_kept_values = density(data_list[[ii]][[jj]][["top_kept_values_imputation"]][data_list[[ii]][[jj]][["top_kept_values_imputation"]] <= quantile(data_list[[ii]][[jj]][["top_kept_values_imputation"]], 0.99)])
-    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_kept_values$y), 0.99) * 1.02
-    #x_max = quantile(c(data_list[[ii]][[jj]][["top_raw_zero_imputation"]], data_list[[ii]][[jj]][["top_induced_zero_imputation"]], data_list[[ii]][[jj]][["top_kept_values_imputation"]]), 0.99) * 1.02
-    x_max = 3
+    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y, density_induced_zero_values$y, density_kept_values$y), 0.99) * 1.02
     plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.1)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_true_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
