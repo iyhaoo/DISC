@@ -63,8 +63,8 @@ for(ii in method_names){
     density_true_zero = density(data_list[[jj]][[ii]][data_list[[jj]][["true_zero_mask"]]] / 0.5)
     density_induced_zero = density(data_list[[jj]][[ii]][data_list[[jj]][["induced_zero_mask"]]] / 0.5)
     y_max = max(c(density_true_zero$y, density_induced_zero$y))
-    x_max = 8
-    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
+    x_max = quantile(data_list[[jj]][[ii]][data_list[[jj]][["Observed_0"]]], 0.999)
+    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05 * 999999999)), 8), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_true_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
     axis(1)
@@ -86,8 +86,8 @@ for(ii in method_names){
     density_true_zero = density(data_list[[jj]][[ii]][data_list[[jj]][["top_1000_genes"]], ][data_list[[jj]][["true_zero_mask"]][data_list[[jj]][["top_1000_genes"]], ]] / 0.5)
     density_induced_zero = density(data_list[[jj]][[ii]][data_list[[jj]][["top_1000_genes"]], ][data_list[[jj]][["induced_zero_mask"]][data_list[[jj]][["top_1000_genes"]], ]] / 0.5)
     y_max = max(c(density_true_zero$y, density_induced_zero$y))
-    x_max = 8
-    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
+    x_max = quantile(data_list[[jj]][[ii]][data_list[[jj]][["top_1000_genes"]], ][data_list[[jj]][["Observed_0"]][data_list[[jj]][["top_1000_genes"]], ]], 0.999)
+    plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05 * 9999999999)), 8), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_true_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
     axis(1)
