@@ -240,27 +240,6 @@ knitr::opts_knit$set(root.dir=&quot;E:/DISC/reproducibility&quot;)</code></pre>
 <pre class="r"><code>utilities_path = &quot;./source/utilities.r&quot;
 source(utilities_path)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdodG1sdG9vbHMnOlxuICBtZXRob2QgICAgICAgICAgICAgICBmcm9tICAgICAgICAgXG4gIHByaW50Lmh0bWwgICAgICAgICAgIHRvb2xzOnJzdHVkaW9cbiAgcHJpbnQuc2hpbnkudGFnICAgICAgdG9vbHM6cnN0dWRpb1xuICBwcmludC5zaGlueS50YWcubGlzdCB0b29sczpyc3R1ZGlvXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnaHRtbHdpZGdldHMnOlxuICBtZXRob2QgICAgICAgICAgIGZyb20gICAgICAgICBcbiAgcHJpbnQuaHRtbHdpZGdldCB0b29sczpyc3R1ZGlvXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnZGF0YS50YWJsZSc6XG4gIG1ldGhvZCAgICAgICAgICAgZnJvbVxuICBwcmludC5kYXRhLnRhYmxlICAgICBcbnJlbGRpc3Q6IFJlbGF0aXZlIERpc3RyaWJ1dGlvbiBNZXRob2RzXG5WZXJzaW9uIDEuNi02IGNyZWF0ZWQgb24gMjAxNi0xMC0wNy5cbmNvcHlyaWdodCAoYykgMjAwMywgTWFyayBTLiBIYW5kY29jaywgVW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLUxvcyBBbmdlbGVzXG4gRm9yIGNpdGF0aW9uIGluZm9ybWF0aW9uLCB0eXBlIGNpdGF0aW9uKFwicmVsZGlzdFwiKS5cbiBUeXBlIGhlbHAocGFja2FnZT1cInJlbGRpc3RcIikgdG8gZ2V0IHN0YXJ0ZWQuXG4ifQ== -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-Registered S3 methods overwritten by 'htmltools':
-  method               from         
-  print.html           tools:rstudio
-  print.shiny.tag      tools:rstudio
-  print.shiny.tag.list tools:rstudio
-Registered S3 method overwritten by 'htmlwidgets':
-  method           from         
-  print.htmlwidget tools:rstudio
-Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     
-reldist: Relative Distribution Methods
-Version 1.6-6 created on 2016-10-07.
-copyright (c) 2003, Mark S. Handcock, University of California-Los Angeles
- For citation information, type citation(&quot;reldist&quot;).
- Type help(package=&quot;reldist&quot;) to get started.</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -333,28 +312,9 @@ copyright (c) 2003, Mark S. Handcock, University of California-Los Angeles
   gene_name = rownames(raw_data)
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiYl9jZWxsc19maWx0ZXJlZF9nZW5lX2JjX21hdHJpY2VzLnRhci5nelwiXG5bMV0gXCJjZDE0X21vbm9jeXRlc19maWx0ZXJlZF9nZW5lX2JjX21hdHJpY2VzLnRhci5nelwiXG5bMV0gXCJjZDM0X2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcImNkNF90X2hlbHBlcl9maWx0ZXJlZF9nZW5lX2JjX21hdHJpY2VzLnRhci5nelwiXG5bMV0gXCJjZDU2X25rX2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcImN5dG90b3hpY190X2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcIm1lbW9yeV90X2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcIm5haXZlX2N5dG90b3hpY19maWx0ZXJlZF9nZW5lX2JjX21hdHJpY2VzLnRhci5nelwiXG5bMV0gXCJuYWl2ZV90X2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcInJlZ3VsYXRvcnlfdF9maWx0ZXJlZF9nZW5lX2JjX21hdHJpY2VzLnRhci5nelwiXG5bMV0gXCJiX2NlbGxzX2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcImNkMTRfbW9ub2N5dGVzX2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcImNkMzRfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3pcIlxuWzFdIFwiY2Q0X3RfaGVscGVyX2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcImNkNTZfbmtfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3pcIlxuWzFdIFwiY3l0b3RveGljX3RfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3pcIlxuWzFdIFwibWVtb3J5X3RfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3pcIlxuWzFdIFwibmFpdmVfY3l0b3RveGljX2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSBcIm5haXZlX3RfZmlsdGVyZWRfZ2VuZV9iY19tYXRyaWNlcy50YXIuZ3pcIlxuWzFdIFwicmVndWxhdG9yeV90X2ZpbHRlcmVkX2dlbmVfYmNfbWF0cmljZXMudGFyLmd6XCJcblsxXSAyMTk1MiA5NDY1NVxuWzFdIDIxOTUyIDU5NjIwXG4ifQ== -->
-<pre><code>[1] &quot;b_cells_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd14_monocytes_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd34_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd4_t_helper_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd56_nk_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cytotoxic_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;memory_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;naive_cytotoxic_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;naive_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;regulatory_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;b_cells_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd14_monocytes_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd34_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd4_t_helper_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cd56_nk_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;cytotoxic_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;memory_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;naive_cytotoxic_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;naive_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] &quot;regulatory_t_filtered_gene_bc_matrices.tar.gz&quot;
-[1] 21952 94655
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiLi9kYXRhL1BCTUNfVElTU1VFL3Jhdy5sb29tXCJcblsxXSAyMTk1MiA1OTYyMFxuWzFdIDIxOTUyIDU5NjIwXG4ifQ== -->
+<pre><code>[1] &quot;./data/PBMC_TISSUE/raw.loom&quot;
+[1] 21952 59620
 [1] 21952 59620</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJQQk1DX1RJU1NVRS4uLk9LIVwiKVxuYGBgIn0= -->

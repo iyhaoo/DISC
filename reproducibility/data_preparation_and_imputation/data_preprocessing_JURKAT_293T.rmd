@@ -5,7 +5,7 @@ output: html_notebook
 ### Setup knitr and load utility functions
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```
 ```{r}
 utilities_path = "./source/utilities.r"

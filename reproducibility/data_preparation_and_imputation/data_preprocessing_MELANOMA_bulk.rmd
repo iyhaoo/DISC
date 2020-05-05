@@ -58,9 +58,9 @@ bulk_a6_rpm_redo_subset = bulk_a6_rpm_redo[names(bulk_a6_rpm_redo) %in% colnames
 ```
 If we used downloaded hg19 annotation to convert geneID to gene names, the result is different from BulkRPMSubset and BulkRPM
 ```{r}
-print(bulk_a6_rpm_subset)
-print(subset_a6[1, names(bulk_a6_rpm_subset)])
-print(bulk_a6_original[names(bulk_a6_rpm_subset), 1])
+print(bulk_a6_rpm_redo_subset)
+print(subset_a6[1, names(bulk_a6_rpm_redo_subset)])
+print(bulk_a6_original[names(bulk_a6_rpm_redo_subset), 1])
 ```
 ```{r}
 bulk_a6_1 = as.numeric(bulk_a6_mat[, "counts"])
@@ -72,8 +72,8 @@ bulk_a6_rpm_redo_subset_1 = bulk_a6_rpm_redo_1[names(bulk_a6_rpm_redo_1) %in% co
 If we used the mapping_vector they provided, the result is the same. There is minor differnece between the re-calculated RPM and original RPM
 ```{r}
 print(bulk_a6_rpm_redo_subset_1)
-print(subset_a6[1, names(bulk_a6_rpm_subset)])
-print(bulk_a6_original[names(bulk_a6_rpm_subset), 1])
+print(subset_a6[1, names(bulk_a6_rpm_redo_subset)])
+print(bulk_a6_original[names(bulk_a6_rpm_redo_subset), 1])
 print(sum(bulk_a6_rpm_redo_1 != bulk_a6_original[names(bulk_a6_rpm_redo_1), 1]))
 print(head(bulk_a6_rpm_redo_1[bulk_a6_rpm_redo_1 != bulk_a6_original[names(bulk_a6_rpm_redo_1), 1]]))
 print(head(bulk_a6_original[names(bulk_a6_rpm_redo_1), 1][bulk_a6_rpm_redo_1 != bulk_a6_original[names(bulk_a6_rpm_redo_1), 1]]))

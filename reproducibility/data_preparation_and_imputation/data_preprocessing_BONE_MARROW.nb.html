@@ -240,6 +240,22 @@ knitr::opts_knit$set(root.dir=&quot;E:/DISC/reproducibility&quot;)</code></pre>
 <pre class="r"><code>utilities_path = &quot;./source/utilities.r&quot;
 source(utilities_path)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2h0bWx3aWRnZXRzJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tICAgICAgICAgXG4gIHByaW50Lmh0bWx3aWRnZXQgdG9vbHM6cnN0dWRpb1xuUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5yZWxkaXN0OiBSZWxhdGl2ZSBEaXN0cmlidXRpb24gTWV0aG9kc1xuVmVyc2lvbiAxLjYtNiBjcmVhdGVkIG9uIDIwMTYtMTAtMDcuXG5jb3B5cmlnaHQgKGMpIDIwMDMsIE1hcmsgUy4gSGFuZGNvY2ssIFVuaXZlcnNpdHkgb2YgQ2FsaWZvcm5pYS1Mb3MgQW5nZWxlc1xuIEZvciBjaXRhdGlvbiBpbmZvcm1hdGlvbiwgdHlwZSBjaXRhdGlvbihcInJlbGRpc3RcIikuXG4gVHlwZSBoZWxwKHBhY2thZ2U9XCJyZWxkaXN0XCIpIHRvIGdldCBzdGFydGVkLlxuIn0= -->
+<pre><code>Registered S3 method overwritten by 'dplyr':
+  method           from
+  print.rowwise_df     
+Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+reldist: Relative Distribution Methods
+Version 1.6-6 created on 2016-10-07.
+copyright (c) 2003, Mark S. Handcock, University of California-Los Angeles
+ For citation information, type citation(&quot;reldist&quot;).
+ Type help(package=&quot;reldist&quot;) to get started.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -248,13 +264,13 @@ source(utilities_path)</code></pre>
 <p>The original BONE_MARROW data was downloaded from HCA website (<a href="https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79" class="uri">https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79</a>).</br> The authors of this paper (<a href="https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1" class="uri">https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1</a>) aligned the original sequence data (in .fastq format) to hg19 reference genome using CellRanger instead of using the count matrix provided by HCA.</br> Their cell-filtered count matrix can be found at <a href="https://doc-04-6g-docs.googleusercontent.com/docs/securesc/rm132bl2k8nvnlftqa8a8d5p239lbngf/6o5dsruhjpmecgnkd0nn4b1ak3ss8ufd/1588554075000/07888005335114604629/01857410241295225190/1euh8YB8ThSLHJNQMTCuuKp_nRiME1KzN?e=download&amp;authuser=0&amp;nonce=7apqnnaq9bch8&amp;user=01857410241295225190&amp;hash=a60rd66gq56e0af1vc5ua60146t3gq7m" class="uri">https://doc-04-6g-docs.googleusercontent.com/docs/securesc/rm132bl2k8nvnlftqa8a8d5p239lbngf/6o5dsruhjpmecgnkd0nn4b1ak3ss8ufd/1588554075000/07888005335114604629/01857410241295225190/1euh8YB8ThSLHJNQMTCuuKp_nRiME1KzN?e=download&amp;authuser=0&amp;nonce=7apqnnaq9bch8&amp;user=01857410241295225190&amp;hash=a60rd66gq56e0af1vc5ua60146t3gq7m</a> or <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/HCA_tissue/original_data/MantonBM6_count.rds" class="uri">https://github.com/iyhaoo/DISC/blob/master/reproducibility/data/HCA_tissue/original_data/MantonBM6_count.rds</a>.</br></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYoIWZpbGUuZXhpc3RzKFwiLi9kYXRhL0JPTkVfTUFSUk9XL3Jhdy5sb29tXCIpKXtcbiAgb3JpZ2luYWxfZGF0YSA8LSByZWFkUkRTKFwiLi9kYXRhL0JPTkVfTUFSUk9XL29yaWdpbmFsX2RhdGEvTWFudG9uQk02X2NvdW50LnJkc1wiKVxuICBzYXZlX2g1KFwiLi9kYXRhL0JPTkVfTUFSUk9XL29yaWdpbmFsLmxvb21cIiwgYXMubWF0cml4KHQob3JpZ2luYWxfZGF0YSkpKVxuICBzZXVyYXRfb2JqIDwtIENyZWF0ZVNldXJhdE9iamVjdChjb3VudHMgPSBhcy5kYXRhLmZyYW1lKG9yaWdpbmFsX2RhdGEpLCBtaW4uZmVhdHVyZXMgPSA1MDApXG4gIGNlbGxfbmFtZXMgPSBjb2xuYW1lcyhzZXVyYXRfb2JqW1tcIlJOQVwiXV1AY291bnRzKVxuICBnZW5lX25hbWVzID0gcm93bmFtZXMoc2V1cmF0X29ialtbXCJSTkFcIl1dQGNvdW50cylcbiAgcmF3X2RhdGEgPSBhcy5tYXRyaXgob3JpZ2luYWxfZGF0YVssIGNlbGxfbmFtZXNdKVxuICBzYXZlX2g1KFwiLi9kYXRhL0JPTkVfTUFSUk9XL3Jhdy5sb29tXCIsIHQocmF3X2RhdGEpKVxufWVsc2V7XG4gIHJhd19kYXRhID0gcmVhZGg1X2xvb20oXCIuL2RhdGEvQk9ORV9NQVJST1cvcmF3Lmxvb21cIilcbiAgY2VsbF9uYW1lcyA9IGNvbG5hbWVzKHJhd19kYXRhKVxuICBnZW5lX25hbWVzID0gcm93bmFtZXMocmF3X2RhdGEpXG59XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYoIWZpbGUuZXhpc3RzKFwiLi9kYXRhL0JPTkVfTUFSUk9XL3Jhdy5sb29tXCIpKXtcbiAgb3JpZ2luYWxfZGF0YSA8LSByZWFkUkRTKFwiLi9kYXRhL0JPTkVfTUFSUk9XL29yaWdpbmFsX2RhdGEvTWFudG9uQk02X2NvdW50LnJkc1wiKVxuICBzYXZlX2g1KFwiLi9kYXRhL0JPTkVfTUFSUk9XL29yaWdpbmFsLmxvb21cIiwgYXMubWF0cml4KHQob3JpZ2luYWxfZGF0YSkpKVxuICBzZXVyYXRfb2JqIDwtIENyZWF0ZVNldXJhdE9iamVjdChjb3VudHMgPSBhcy5kYXRhLmZyYW1lKG9yaWdpbmFsX2RhdGEpLCBtaW4uZmVhdHVyZXMgPSA1MDApXG4gIGNlbGxfbmFtZXMgPSBjb2xuYW1lcyhzZXVyYXRfb2JqW1tcIlJOQVwiXV1AY291bnRzKVxuICBnZW5lX25hbWVzID0gcm93bmFtZXMob3JpZ2luYWxfZGF0YSlcbiAgcmF3X2RhdGEgPSBhcy5tYXRyaXgob3JpZ2luYWxfZGF0YVssIGNlbGxfbmFtZXNdKVxuICBzYXZlX2g1KFwiLi9kYXRhL0JPTkVfTUFSUk9XL3Jhdy5sb29tXCIsIHQocmF3X2RhdGEpKVxufWVsc2V7XG4gIHJhd19kYXRhID0gcmVhZGg1X2xvb20oXCIuL2RhdGEvQk9ORV9NQVJST1cvcmF3Lmxvb21cIilcbiAgY2VsbF9uYW1lcyA9IGNvbG5hbWVzKHJhd19kYXRhKVxuICBnZW5lX25hbWVzID0gcm93bmFtZXMocmF3X2RhdGEpXG59XG5gYGAifQ== -->
 <pre class="r"><code>if(!file.exists(&quot;./data/BONE_MARROW/raw.loom&quot;)){
   original_data &lt;- readRDS(&quot;./data/BONE_MARROW/original_data/MantonBM6_count.rds&quot;)
   save_h5(&quot;./data/BONE_MARROW/original.loom&quot;, as.matrix(t(original_data)))
   seurat_obj &lt;- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names = colnames(seurat_obj[[&quot;RNA&quot;]]@counts)
-  gene_names = rownames(seurat_obj[[&quot;RNA&quot;]]@counts)
+  gene_names = rownames(original_data)
   raw_data = as.matrix(original_data[, cell_names])
   save_h5(&quot;./data/BONE_MARROW/raw.loom&quot;, t(raw_data))
 }else{
@@ -263,11 +279,9 @@ source(utilities_path)</code></pre>
   gene_names = rownames(raw_data)
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRmVhdHVyZSBuYW1lcyBjYW5ub3QgaGF2ZSB1bmRlcnNjb3JlcyAoJ18nKSwgcmVwbGFjaW5nIHdpdGggZGFzaGVzICgnLScpXG4ifQ== -->
-<pre><code>Feature names cannot have underscores ('_'), replacing with dashes ('-')</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
-<pre><code>[1] TRUE</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiLi9kYXRhL0JPTkVfTUFSUk9XL3Jhdy5sb29tXCJcblsxXSAzMjczOCAgNjkzOVxuIn0= -->
+<pre><code>[1] &quot;./data/BONE_MARROW/raw.loom&quot;
+[1] 32738  6939</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZGltKHJhd19kYXRhKSlcbmBgYCJ9 -->
 <pre class="r"><code>print(dim(raw_data))</code></pre>
