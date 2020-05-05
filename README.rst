@@ -134,14 +134,29 @@ Quick Start
 Tutorials
  1. Data preparation and imputation
 
-    * Data pre-processing (`MELANOMA`__, `SSCORTEX`__, `CBMC`__, `RETINA`__, `BRAIN_SPLiT`__)
+    * Data pre-processing (, , , )
+
+      * `MELANOMA`__
+      * `MELANOMA_bulk`__
+      * `SSCORTEX`__
+      * `CBMC`__
+      * `RETINA`__
+      * `BRAIN_SPLiT`__
+      * `10X_5CL`__
+      * `BONE_MARROW`__
+      * `JURKAT and 293T`__
+      * `PBMC_TISSUE`__
 
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA_bulk.nb.html
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_SSCORTEX.ipynb
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
-
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_PBMC_TISSUE.nb.html
 
     * `Run imputation`_
 

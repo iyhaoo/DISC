@@ -11,6 +11,7 @@ knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
+The hg19 can be found at ftp://ftp.ensembl.org/pub/grch37/current/gtf.
 ```{r}
 mapping_rds = "./data/hg19/geneid_genename.rds"
 if(file.exists(mapping_rds)){
