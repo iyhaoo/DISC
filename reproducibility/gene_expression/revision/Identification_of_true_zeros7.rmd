@@ -67,18 +67,10 @@ mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(l
 names(mtext_position) = used_datasets
 for(ii in method_names){
   for(jj in used_datasets){
-    all_values = c(data_list[[jj]][[ii]][["raw_zero_imputation"]], data_list[[jj]][[ii]][["induced_zero_imputation"]])
-    x_max_candidate = quantile(all_values, 0.99) * 1.5
-    x_max_alternative = quantile(all_values[all_values > 0], 0.75) * 5
-    if(x_max_candidate == 0){
-      x_max = x_max_alternative
-    }else{
-      x_max = x_max_candidate
-    }
-    bw = x_max / 512
-    density_raw_zero = density(data_list[[jj]][[ii]][["raw_zero_imputation"]][data_list[[jj]][[ii]][["raw_zero_imputation"]] <= x_max * 1.1], bw = bw)
-    density_induced_zero = density(data_list[[jj]][[ii]][["induced_zero_imputation"]][data_list[[jj]][[ii]][["induced_zero_imputation"]] <= x_max * 1.1], bw = bw)
-    y_max = max(c(density_raw_zero$y, density_induced_zero$y))
+    density_raw_zero = density(data_list[[jj]][[ii]][["raw_zero_imputation"]][data_list[[jj]][[ii]][["raw_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["raw_zero_imputation"]], 0.99)])
+    density_induced_zero = density(data_list[[jj]][[ii]][["induced_zero_imputation"]][data_list[[jj]][[ii]][["induced_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["induced_zero_imputation"]], 0.99)])
+    x_max = max(c(density_raw_zero$x, density_induced_zero$x))
+    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y), 0.99) * 1.02
     plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_raw_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
@@ -98,18 +90,10 @@ mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(l
 names(mtext_position) = used_datasets
 for(ii in method_names){
   for(jj in used_datasets){
-    all_values = c(data_list[[jj]][[ii]][["raw_zero_imputation"]], data_list[[jj]][[ii]][["induced_zero_imputation"]])
-    x_max_candidate = quantile(all_values, 0.99) * 1.5
-    x_max_alternative = quantile(all_values[all_values > 0], 0.75) * 5
-    if(x_max_candidate == 0){
-      x_max = x_max_alternative
-    }else{
-      x_max = x_max_candidate
-    }
-    bw = x_max / 512
-    density_raw_zero = density(data_list[[jj]][[ii]][["top_raw_zero_imputation"]][data_list[[jj]][[ii]][["top_raw_zero_imputation"]] <= x_max * 1.1], bw = bw)
-    density_induced_zero = density(data_list[[jj]][[ii]][["top_induced_zero_imputation"]][data_list[[jj]][[ii]][["top_induced_zero_imputation"]] <= x_max * 1.1], bw = bw)
-    y_max = max(c(density_raw_zero$y, density_induced_zero$y))
+    density_raw_zero = density(data_list[[jj]][[ii]][["top_raw_zero_imputation"]][data_list[[jj]][[ii]][["top_raw_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["top_raw_zero_imputation"]], 0.99)])
+    density_induced_zero = density(data_list[[jj]][[ii]][["top_induced_zero_imputation"]][data_list[[jj]][[ii]][["top_induced_zero_imputation"]] <= quantile(data_list[[jj]][[ii]][["top_induced_zero_imputation"]], 0.99)])
+    x_max = max(c(density_raw_zero$x, density_induced_zero$x))
+    y_max = quantile(c(density_raw_zero$y, density_induced_zero$y), 0.99) * 1.02
     plot(0, type = "n", xlim = c(-min(c(1, x_max * 0.05)), x_max), ylim = c(0, y_max), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(density_raw_zero, col = "black", lwd = 2)
     lines(density_induced_zero, col = "red", lwd = 2)
