@@ -263,3 +263,19 @@ python3 /home/yuanhao/github_repositories/DISC/reproducibility/source/other_meth
 
 
 
+
+
+CUDA_VISIBLE_DEVICES=0 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.5.loom \
+--out-dir=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/ds_0.5_new \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+
+CUDA_VISIBLE_DEVICES=1 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/merged_set_unique_rename_ds_0.3.loom \
+--out-dir=/home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_3/ds_0.3_new \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+

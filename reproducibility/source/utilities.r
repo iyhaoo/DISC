@@ -221,12 +221,6 @@ readh5_sample_id = function(h5_path){
 
 save_h5 = function(output_path, bc_gene_mat){
   h5createFile(output_path)
-  h5createDataset(file = output_path,
-                  dataset = "matrix",
-                  dims = dim(bc_gene_mat),
-                  storage.mode = "double",
-                  chunk=c(1, ncol(bc_gene_mat)))
-  h5write(bc_gene_mat, file=output_path, name="matrix")
   h5createGroup(output_path, "col_attrs")
   h5write(rownames(bc_gene_mat), output_path,"col_attrs/CellID")
   h5createGroup(output_path, "row_attrs")
@@ -234,6 +228,12 @@ save_h5 = function(output_path, bc_gene_mat){
   h5createGroup(output_path, "layers")
   h5createGroup(output_path, "col_graphs")
   h5createGroup(output_path, "row_graphs")
+  h5createDataset(file = output_path,
+                  dataset = "matrix",
+                  dims = dim(bc_gene_mat),
+                  storage.mode = "double",
+                  chunk=c(1, ncol(bc_gene_mat)))
+  h5write(bc_gene_mat, file=output_path, name="matrix")
 }
 
 gene_selection = function(X, min_expressed_cell){
