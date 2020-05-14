@@ -7,15 +7,17 @@ library(Seurat)
 library(future)
 library(stringi)
 library(reshape2)
+library(scran)
+
 #  read data
-get_map = function(input) {
-  if (is.character(input)) {
+get_map = function(input){
+  if(is.character(input)) {
     if(!file.exists(input)){
       stop("Bad input file.")
     } 
     message("Treat input as file")
     input = data.table::fread(input, header = FALSE)
-  } else {
+  }else{
     data.table::setDT(input)
   }
   input = input[input[[3]] == "gene", ]
@@ -23,7 +25,8 @@ get_map = function(input) {
   pattern_name = ".*gene_name \"([^;]+)\";.*"
   gene_id = sub(pattern_id, "\\1", input[[9]])
   gene_name = sub(pattern_name, "\\1", input[[9]])
-  return(data.frame(gene_id = gene_id, gene_name = gene_name, stringsAsFactors = FALSE))
+  gene_length = input[[5]] - input[[4]]
+  return(data.frame(gene_id = gene_id, gene_name = gene_name, gene_length = gene_length, stringsAsFactors = FALSE))
 }
 
 cal_RMSD = function(pd_array, window_size){

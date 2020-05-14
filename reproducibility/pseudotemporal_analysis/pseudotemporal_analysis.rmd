@@ -14,352 +14,220 @@ source(utilities_path)
 ```
 ### Load Raw Data
 Here, we use BONE_MARROW dataset. The detail information of this dataset can be seen at https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html.</br>
-Firstly, we assign cell types following these 2 scripts (https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/06_make_hca_MantonBM6.R and https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/07_hca_assign_celltype.R).
-#### STEP 1
 ```{r}
 gene_bc_mat = readh5_loom("./data/BONE_MARROW/raw.loom")
-library(scran)
-sce = SingleCellExperiment(list(counts = gene_bc_mat))
+```
+Firstly, we assign cell types following these 2 scripts ( and https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/07_hca_assign_celltype.R).
+#### STEP 1
+Following this script (https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/06_make_hca_MantonBM6.R), we use scran for normalization.
+```{r}
+gn = sub(".*:", "", rownames(gene_bc_mat))
+rs <- rowSums(gene_bc_mat)
+kid <- sapply(unique(gn),function(sid) {
+  tmp <- which(gn==sid)
+  if (length(tmp)==1) {
+    tmp
+  } else {
+    tmp[which.max(rs[tmp])]
+  }
+})
+kid1 = which(!grepl('^MT-', gn) & rowSums(gene_bc_mat) > 0)
+used_gene_index = intersect(kid, kid1)
+length(used_gene_index) #  21180
+gene_bc_filt = gene_bc_mat[used_gene_index, ]
+gene_bc_filt = gene_bc_filt[rowMeans(gene_bc_filt > 0) >= 0.01 ,]
+dim(gene_bc_filt) #  12112, 6939
+dimnames_gene_bc_filt = dimnames(gene_bc_filt)
+dimnames(gene_bc_filt) = list()
+sce = SingleCellExperiment(list(counts = gene_bc_filt))
+no_cores <- max(c(detectCores() - 1, 1))
 if(ncol(gene_bc_mat) < 21){
-  sce = computeSumFactors(sce,BPPARAM = MulticoreParam(workers = 5),sizes = c(5, 10, 15, 20))
+  sce = computeSumFactors(sce, BPPARAM = MulticoreParam(workers = no_cores), sizes = c(5, 10, 15, 20))
 } else {
-  sce = computeSumFactors(sce,BPPARAM = MulticoreParam(workers = 5))  
+  sce = computeSumFactors(sce, BPPARAM = MulticoreParam(workers = no_cores))  
 }
 sf = sizeFactors(sce)
-norm_gene_bcmat = log2(sweep(gene_bc_mat,2,sf,"/") + 1)
+dimnames(gene_bc_filt) = dimnames_gene_bc_filt
+norm_gene_bc_filt = log2(sweep(gene_bc_filt, 2, sf, "/") + 1)
+sc_data = norm_gene_bc_filt
+rownames(sc_data) = sub(".*:", "", rownames(norm_gene_bc_filt))
 ```
-We use these 19 overlapped genes for analysis below.
+#### STEP 2
+Following this script (https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/07_hca_assign_celltype.R), we use the bulk-sequence data (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE74246) of 13 normal hematopoietic cell types and 3 acute myeloid leukemia cell types for cell identification, the file is downloaded from https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE74246&format=file&file=GSE74246%5FRNAseq%5FAll%5FCounts%2Etxt%2Egz.
 ```{r}
-print(length(use_genes))
-print(use_genes)
-dataset_list[["Raw"]] = raw_input_data[use_genes, ]
-print(dim(raw_input_data))
-print(dim(dataset_list[["Raw"]]))
-used_cells = colnames(dataset_list[["Raw"]])
-```
-After <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">Run imputation</a>, we get imputation results.</br>
-Now we load them.</br>
-Note that SAVER needs to generate gene expression values following gamma distribution (FF, Gini CMD) or poisson–gamma mixture (density distribution). For this reason, we load its rds-formatted file here.
-```{r}
-### DISC
-our_result = "./data/MELANOMA/DISC.hdf5"
-dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
-### Other methods
-#dataset_list[["SAVER"]] = readRDS("./data/MELANOMA/SAVER.rds")
-#set.seed(42)
-#dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
-dataset_list[["scImpute"]] = readh5_imputation("./data/MELANOMA/scImpute.hdf5", use_genes, used_cells)
-dataset_list[["VIPER"]] = readh5_imputation("./data/MELANOMA/VIPER.hdf5", use_genes, used_cells)
-dataset_list[["MAGIC"]] = readh5_imputation("./data/MELANOMA/MAGIC.hdf5", use_genes, used_cells)
-dataset_list[["DCA"]] = readh5_imputation("./data/MELANOMA/DCA.hdf5", use_genes, used_cells)
-dataset_list[["DeepImpute"]] = readh5_imputation("./data/MELANOMA/DeepImpute.hdf5", use_genes)
-dataset_list[["scScope"]] = readh5_imputation("./data/MELANOMA/scScope.hdf5", use_genes, used_cells)
-dataset_list[["scVI"]] = readh5_imputation("./data/MELANOMA/scVI.hdf5", use_genes, used_cells)
-```
-### Output settings
-The output color for each method and the output directory will be setup here.
-```{r}
-method_names = c("Raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
-method_color = c("gray80", "#FF0000", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
-names(method_color) = method_names
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
-bar_color["Raw"] = "gray80"
-bar_color["DISC"] = "red"
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
-text_color["DISC"] = "red"
-path_fragments = unlist(strsplit(our_result, "/", fixed = T))
-length_path_fragments = length(path_fragments)
-### make output dir
-outdir = "./results/MELANOMA/structure_recovery"
-dir.create(outdir, showWarnings = F, recursive = T)
-```
-### Evaluation
-#### Calculate correlation with FISH
-```{r}
-### calculate correlation of FISH
-cor_mat = matrix(ncol = 3, nrow = 0, dimnames = list(c(), c("Gene x", "Gene y", "FISH Correlation")))
-cor_all = list()
-for(ii in c("FISH", method_names)){
-  cor_all[[ii]] = matrix(nrow = length(use_genes), ncol = length(use_genes), dimnames = list(use_genes, use_genes))
-}
-for(ii in use_genes){
-  for(jj in use_genes){
-    #cat(ii, "\t", jj, "\n")
-    for(kk in c("FISH", method_names)){
-      if(kk == "SAVER"){
-        cor_all[["SAVER"]][ii, jj] = cor(dataset_list[["SAVER_gamma"]][ii, ], dataset_list[["SAVER_gamma"]][jj, ], use = "pairwise.complete.obs")
-      }else{
-        cor_all[[kk]][ii, jj] = cor(dataset_list[[kk]][ii, ], dataset_list[[kk]][jj, ], use = "pairwise.complete.obs")
-      }
-    }
-  }
-}
-```
-#### correlation map
-```{r fig.height=7.5, fig.width=16}
-fish_mask_mat = !is.na(cor_all[["FISH"]])
-for(ii in 1:length(use_genes)){
-  fish_mask_mat[ii, seq(ii)] = FALSE
-}
-fish_mask = as.vector(fish_mask_mat)
-fish_gene_mat = apply(fish_mask_mat, 1, names)
-outfile = paste0(outdir, "/correlation_map.pdf")
-mfrow = make_mfrow(2, length(method_names))
-#pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
-layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1), point_size = 2.75)
-#dev.off()
-```
-#### Correlation heatmap
-```{r fig.height=7, fig.width=16}
-#  heatmap & CMD
-outfile = paste0(outdir, "/correlation_heatmap.pdf")
-use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
-  x[is.na(x)] = 0
-  return(x)
-})[t(t(fish_gene_mat) != colnames(fish_gene_mat))], nrow = nrow(cor_all[["FISH"]]) - 1, ncol = ncol(cor_all[["FISH"]]), dimnames = list(c(), colnames(cor_all[["FISH"]])))), decreasing = T)
-#pdf(outfile, height = 7, width = 12.5)
-cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
-#dev.off()
-```
-#### CMD
-```{r fig.height=6, fig.width=4.5}
-names(cmd_vector) = names(cor_all)
-cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
-barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
-saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
-```
-#### Normalization
-```{r}
-example_gene = c("WNT5A", "SOX10")
-rescale_mean_list = list()
-for(ii in method_names){
-  if(ii != "SAVER"){
-    rescale_mean_list[[ii]] = mean_norm_fun(dataset_list[[ii]], dataset_list[["FISH"]])
-  }else{
-    rescale_mean_list[[ii]] = mean_norm_fun(dataset_list[["SAVER_gamma"]], dataset_list[["FISH"]])
-  }
-}
-max_points = ncol(dataset_list[["FISH"]])
-for(ii in rescale_mean_list){
-  max_points = max(c(max_points, ncol(ii)))
-}
-saver_style_filt_norm_list = rescale_mean_list
-#saver_style_filt_norm_list[["SAVER"]] = binom_result_mean(dataset_list[["SAVER"]], dataset_list[["FISH"]])
-saver_style_filt_norm_list[["FISH"]] = dataset_list[["FISH"]]
-norm_for_density = saver_style_filt_norm_list
-for(ii in names(norm_for_density)){
-  norm_for_density[[ii]] = norm_for_density[[ii]][example_gene,]
-}
-saveRDS(norm_for_density, paste0(outdir, "/norm_for_density.rds"))
-```
-#### Gini
-```{r fig.height=7.5, fig.width=16.5}
-gini_result_list = list()
-for(ii in names(saver_style_filt_norm_list)){
-  if(ii != "SAVER"){
-    gini_result_list[[ii]] = apply(dataset_list[[ii]], 1, function(x){gini(x[complete.cases(x)])})
-  }else{
-    gini_result_list[[ii]] = apply(dataset_list[["SAVER_gamma"]], 1, function(x){gini(x[complete.cases(x)])})
-  }
-}
-color_point = c("#31a354", "#a63603")
-names(color_point) = example_gene
-outfile = paste0(outdir, "/Gini.pdf")
-mfrow = make_mfrow(2, length(method_names))
-#pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
-gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
-#dev.off()
-saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
-```
-```{r fig.height=6, fig.width=4.5}
-par(mfrow = c(1, 1))
-barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = bar_color, text_color = text_color, use_data_order = T)
-```
-#### Density
-```{r fig.height=9, fig.width=16.5, warning=FALSE}
-plot_genes = use_genes
-ks_matrix = matrix(nrow = length(plot_genes), ncol = length(method_names), dimnames = list(plot_genes, method_names))
-mfrow = c(3, 6)
-outfile = paste0(outdir, "/density.pdf")
-#pdf(outfile, height = mfrow[1] * 3, width = mfrow[2] * 2.75)
-par(mfrow = mfrow)
-for(ii in plot_genes){
-  this_fish = saver_style_filt_norm_list[["FISH"]][ii, ]
-  this_fish = this_fish[!is.na(this_fish)]
-  fish_density = density(this_fish)
-  zero_proportion = round(100 * (1 - sum(dataset_list[["Raw"]][ii, ] > 0) / length(used_cells)), digits = 4)
-  xlim_max = as.numeric(quantile(this_fish, 0.90)) * 2
-  dens.bw = fish_density$bw
-  ylim_max = max(fish_density$y)
-  use_density = list()
-  for(method_index in 1:length(method_names)){
-    this_method_expression = saver_style_filt_norm_list[[method_names[method_index]]][ii, ]
-    if(length(unique(this_method_expression)) == 1){
-      this_method_expression[1] = this_method_expression[1] * 1.0001
-    }
-    #if(method_index <= 2){
-    if(T){
-      this_density = density(this_method_expression, bw = dens.bw)
-      use_density[[method_names[method_index]]] = this_density
-      ylim_max = max(c(ylim_max, this_density$y))
-    }
-    ks_matrix[ii, method_index] = ks.test(delete_lt0.5(this_method_expression), delete_lt0.5(this_fish))$statistic
-  }
-  plot(fish_density, lwd = 2, col = "black", lty = 1,
-       xlim = c(min(fish_density$x, 0), xlim_max + 5),
-       ylim = c(0, ylim_max), yaxt = "s", bty="n",
-       main = paste0(firstup(ii), " (", zero_proportion, "%)"),
-       sub = "", ylab = "Density", xlab = "mRNA Counts")
-  par(las = 0)
-  for(this_density_name in names(use_density)){
-    lines(use_density[[this_density_name]], lwd = 3, col=method_color[this_density_name])
-  }
-  if(ii %in% plot_genes[mfrow[2] + (mfrow[1] * mfrow[2] * seq(0, floor(length(plot_genes) / mfrow[1] * mfrow[2])))]){
-    legend("topright", c("FISH", names(use_density)), lty = rep(1, 1 + length(names(use_density))),
-           lwd = rep(3, 1 + length(names(use_density))), col = c("black", method_color[names(use_density)]), box.lty = 0, xjust = 1, yjust = 1)
-  }
-}
-#dev.off()
-```
-```{r fig.height=6, fig.width=4.5}
-outfile = paste0(outdir, "/density_summary.pdf")
-#pdf(outfile, height = 6, width = ncol(ks_matrix) * 0.6)
-ks_mean = Matrix::colMeans(ks_matrix)
-standard_error_ks = apply(ks_matrix, 2, function(x) sqrt(var(x)/length(x)))
-par(mfrow = c(1, 1))
-barplot_usage(ks_mean, main = "K-S Statistic", bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks)
-#dev.off()
-```
-#### 2D distribution
-```{r}
-# Make the plots
-dist_outdir = paste0(outdir, "/2d_distribution")
-dir.create(dist_outdir, showWarnings = F)
-mfrow = make_mfrow(2, length(c("FISH", method_names)))
-pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
-library(parallel)
-no_cores <- detectCores() - 1
-cl <- makeCluster(no_cores)
-clusterExport(cl, varlist = c("dist_outdir", "text_color", "bar_color", "max_points", "rescale_mean_list", "method_names", "used_cells", "mfrow", "fish_gene_mat", "fish_mask_mat", "dataset_list", "utilities_path"))
-return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
-  source(utilities_path)
-  gene_x = fish_gene_mat[t(fish_mask_mat)][ii]
-  gene_y = t(fish_gene_mat)[t(fish_mask_mat)][ii]
-  x_dropout_rate = round(100 * (1 - sum(dataset_list[["Raw"]][gene_x, ] > 0) / length(used_cells)), digits = 4)
-  y_dropout_rate = round(100 * (1 - sum(dataset_list[["Raw"]][gene_y, ] > 0) / length(used_cells)), digits = 4)
-  x_fish_raw = dataset_list[["FISH"]][gene_x, ]
-  y_fish_raw = dataset_list[["FISH"]][gene_y, ]
-  select_cell = !is.na(x_fish_raw) & !is.na(y_fish_raw)
-  x_fish = x_fish_raw[select_cell]
-  y_fish = y_fish_raw[select_cell]
-  fish_pair_mat = matrix(c(x_fish, y_fish), ncol = 2)
-  ks_stat = c()
-  corr_score = cor(x_fish, y_fish)
-  x_i = list(FISH = x_fish)
-  y_i = list(FISH = y_fish)
-  for(jj in 1:length(method_names)){
-    method_name = method_names[jj]
-    x_i[[method_name]] = rescale_mean_list[[method_name]][gene_x, ]
-    y_i[[method_name]] = rescale_mean_list[[method_name]][gene_y, ]
-    ks_stat = c(ks_stat, ks2d2s(round(x_fish), round(y_fish), round(x_i[[method_name]]), round(y_i[[method_name]])))
-    corr_score = c(corr_score, cor(x_i[[method_name]], y_i[[method_name]]))
-  }
-  names(corr_score) = c("FISH", method_names)
-  names(ks_stat) = method_names
-  this_name = c(paste(gene_x, gene_y, sep = "_"))
-  pdf(paste0(dist_outdir, "/", this_name, ".pdf"),
-      height = mfrow[1] * 4,
-      width = mfrow[2] * 3.75)
-  par(mfrow = mfrow)
-  nbin = 128
-  x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
-  y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in c("FISH", method_names)){
-    if(jj == "DISC"){
-      col.main = "red"
-    }else{
-      col.main = "black"
-    }
-    if(jj == "Raw"){
-      x_use = dataset_list[[jj]][gene_x, ]
-      y_use = dataset_list[[jj]][gene_y, ]
-      xlim = c(0, max(x_use))
-      ylim = c(0, max(y_use))
-      bandwidth = c(xlim[2] / nbin, ylim[2] / nbin)
-    }else{
-      x_use = x_i[[jj]]
-      y_use = y_i[[jj]]
-      xlim = c(0, x_fish_95)
-      ylim = c(0, y_fish_95)
-      bandwidth = c(max(x_fish) / nbin, max(y_fish) / nbin)
-    }
-    smoothScatter1(x = x_use, y = y_use,
-                   xlab = paste0(gene_x, " (", x_dropout_rate, "%)"),
-                   ylab = paste0(gene_y, " (", y_dropout_rate, "%)"),
-                   cex = 1.5, xlim = xlim, ylim = ylim,
-                   lwd = 2, main = paste0(jj, " - FF = ", round(ks_stat[jj], 4)),
-                   nrpoints = 0, col.main = col.main, nbin = nbin, bandwidth = bandwidth)
-  }
-  dev.off()
-  return(list("ks_stat" = matrix(ks_stat, nrow = 1, dimnames = list(paste(gene_x, gene_y, sep = " - "), c())),
-              "corr_score" = matrix(corr_score, nrow = 1, dimnames = list(paste(gene_x, gene_y, sep = " - "), c()))))
+gene_bulk_all = as.matrix(read.table("./data/BONE_MARROW/original_data/GSE74246_RNAseq_All_Counts.txt.gz", header = T, row.names = 1))
+gene_bulk_mat = gene_bulk_all[, grep("^X", colnames(gene_bulk_all))]
+#  Use annotation information
+gz_path = "./data/hg19/Homo_sapiens.GRCh37.87.gtf.gz"
+annotation_mat = get_map(gz_path)
+tgngl = tapply(annotation_mat[, "gene_length"] / 1000, annotation_mat[, "gene_name"], max)
+gngl = as.vector(tgngl)
+names(gngl) = names(tgngl)
+gene_bulk_filt = gene_bulk_mat[row.names(gene_bulk_mat) %in% names(gngl),]
+gene_bulk_norm = sweep(gene_bulk_filt / gngl[row.names(gene_bulk_filt)], 2, colSums(gene_bulk_filt) / 1e6, "/")
+gene_bulk_log = log2(gene_bulk_norm[rowSums(gene_bulk_norm) > 0,] + 1)
+bulk_cell_type = sapply(colnames(gene_bulk_log), function(x){
+  strsplit(x,"\\.")[[1]][2]
+}, USE.NAMES = F)
+bulk_data = gene_bulk_log
+used_genes = intersect(rownames(bulk_data), sub(".*:", "", rownames(sc_data)))
+bulk_filt = bulk_data[used_genes, ]
+sc_filt = sc_data[used_genes, ]
+saveRDS(bulk_filt, "./data/BONE_MARROW/GSE74246_RNAseq_normalized.rds") # should be same as  /home-4/whou10@jhu.edu/scratch/Wenpin/rna_imputation/data/bulkrna/hca/GSE74246_RNAseq_normalized.rds
+#  The expression level for each cell type in bulk sequencing
+bulk_mean = sapply(unique(bulk_cell_type),function(x) {
+  rowMeans(bulk_filt[ , bulk_cell_type == x])
 })
-stopCluster(cl)
-ks_stat_mat = matrix(nrow = 0, ncol = length(method_names), dimnames = list(c(), method_names))
-corr_mat = matrix(nrow = 0, ncol = length(method_names) + 1, dimnames = list(c(), c("FISH", method_names)))
-
-for(ii in return_list){
-  ks_stat_mat = rbind(ks_stat_mat, ii$ks_stat)
-  corr_mat = rbind(corr_mat, ii$corr_score)
+#  Find 100 top postive differentially expressed genes for each celltype pair.
+DEG_list = list()
+top_number = 100
+unique_celltype_pairs = combn(ncol(bulk_mean), 2)
+for(ii in seq(ncol(unique_celltype_pairs))){
+  celltype_1 = colnames(bulk_mean)[unique_celltype_pairs[1, ii]]
+  celltype_2 = colnames(bulk_mean)[unique_celltype_pairs[2, ii]]
+  sort_result = sort(bulk_mean[ , celltype_1] - bulk_mean[ , celltype_2], decreasing = FALSE)
+  DEG_list[[paste(celltype_2, celltype_1, sep = "-")]] = names(sort_result)[seq(top_number)]
+  DEG_list[[paste(celltype_1, celltype_2, sep = "-")]] = names(sort_result)[seq(from = length(sort_result), to = length(sort_result) - (top_number - 1))]
 }
-saveRDS(ks_stat_mat, paste(outdir, "/ks_stat_mat.rds", sep = ""))
-###all_compare
-mean_ks_stat = Matrix::colMeans(ks_stat_mat)
-standard_error_ks_stat = apply(ks_stat_mat, 2, function(x) sqrt(var(x)/length(x)))
+#  Calculate the mean expression of these top-gene combinations across cell types (bulk) or cells (single-cell).
+expression_mean_function = function(gene_bc_norm, DEG_list){
+  return(t(sapply(DEG_list, function(x){
+    colMeans(gene_bc_norm[x, ])
+  })))
+}
+bulk_DEG_expression_mean = expression_mean_function(bulk_mean, DEG_list)
+sc_DEG_expression_mean = expression_mean_function(sc_filt, DEG_list)
+#  Calculate the expression variation of these top-gene combinations across cell types (bulk) or cells (single-cell).
+expression_variation_function = function(x){
+  return((x - rowMeans(x)) / apply(x, 1, sd))
+}
+bulk_DEG_expression_variation = expression_variation_function(bulk_DEG_expression_mean)
+sc_DEG_expression_variation = expression_variation_function(sc_DEG_expression_mean)
+#  Each top-gene combination correspond a cell type.
+bulk_DEG_combination_rank <- apply(bulk_DEG_expression_variation, 2, rank)
+sc_DEG_combination_rank <- apply(sc_DEG_expression_variation, 2, rank)
+#  Cell type identification.
+maxcorcut = 0.6
+difcorcut = 0
+scalematrix = function(data) {
+  cm = rowMeans(data)
+  csd = apply(data, 1, sd)
+  (data - cm) / csd
+}
+corfunc = function(m1, m2) {
+  scalematrix(t(m1)) %*% t(scalematrix(t(m2))) / (nrow(m1) - 1)
+}
+cormat = corfunc(sc_DEG_combination_rank, bulk_DEG_combination_rank)
+maxcor = apply(cormat, 1, max)
+max2cor = apply(cormat, 1, function(x){
+  sort(x, decreasing = T)[2]
+})
+cell_type = colnames(cormat)[apply(cormat, 1, which.max)]
+cell_type[maxcor < maxcorcut] = NA
+cell_type[maxcor - max2cor < difcorcut] = NA
+names(cell_type) <- colnames(sc_filt)
+saveRDS(cell_type, "./data/BONE_MARROW/cell_type.rds")  ## cell type
 ```
-```{r fig.height=5, fig.width=9.5}
-outfile = paste(outdir, "/score_compare.pdf", sep = "")
-#pdf(outfile, height = 5, width = 11)
-par(mfrow = c(1, 2))
-barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5,bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks_stat)
-corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
-barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T)
-#dev.off()
+#### STEP 3
+Following this script (https://github.com/Winnie09/imputationBenchmark/blob/93f27e890a86fdc732257a4036bf38a52faf9f33/realDE/code/hca/02_cluster_celltype.R), we reproduce the "cell_celltype_cluster" they used for trajectory evaluation.
+```{r}
+gene_variation = apply(sc_data, 1, sd)
+sc_hvg_data = sc_data[gene_variation >= median(gene_variation), ]
+sc_pca = prcomp(t(sc_hvg_data), scale. = T)$x[, seq(10)] ## cell by PC  
+cluster_result_0 = kmeans(sc_pca, ncol(sc_data) / 100)$cluster
+cluster_result = data.frame(cell = colnames(sc_data), cluster = cluster_result_0, celltype = cell_type, stringsAsFactors = F)
 ```
-### Summary
-```{r fig.height=3, fig.width=9.5}
-outfile = paste(outdir, "/Bar_plot.pdf", sep = "")
-#pdf(outfile, height = 3, width = 9.5)
-plot_height = 4
-plot_width = 3.5
-plot_region = matrix(seq(3), nrow = 1)
-this_height = rep(plot_height, nrow(plot_region))
-this_width = rep(plot_width, ncol(plot_region))
-this_index = max(plot_region) + 1
-layout_mat = plot_region
-xlab_region = matrix(rep(this_index, ncol(plot_region)), nrow = 1)
-layout_mat = rbind(layout_mat, xlab_region)
-this_height = c(this_height, 0.5)
-layout(mat = layout_mat, heights = this_height, widths = this_width)
-par(mar = c(1, 4.1, 4.1, 2.1))
-barplot_usage(cmd_vector, main = "CMD", bar_color = method_color, use_data_order = T, use_border = F)
-barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = method_color, use_data_order = T, use_border = F)
-barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5, bar_color = method_color, use_data_order = T, standard_error = standard_error_ks_stat, use_border = F)
-par(mar = rep(0, 4))
-plot(1, type = "n", axes = FALSE, xlab="", ylab="")
-legend(x = "top",inset = 0, legend = names(method_color), fill = method_color, horiz = TRUE, border = NA, bty = "n")
-#dev.off()
-output_list = list()
-output_list[["cmd"]] = cmd_vector
-output_list[["gini_rmse"]] = gini_rmse
-output_list[["mean_ks_stat"]] = mean_ks_stat
-output_list[["standard_error_ks_stat"]] = standard_error_ks_stat
-saveRDS(output_list, paste(outdir, "/Bar_stat.rds", sep = ""))
-```
-### Notes:
-Single plots of FF are saved in <a href="https://github.com/iyhaoo/DISC/tree/master/reproducibility/results/MELANOMA/structure_recovery/2d_distribution">here</a>.</br>
-ALL data we used here can be found <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA">here</a>.
+### Trajectory evaluation using monocle
+After cell identification, we evaluate the trajectory performance using monocle following this script(https://github.com/Winnie09/imputationBenchmark/blob/93f27e890a86fdc732257a4036bf38a52faf9f33/trajectory/code/hca/monocle2/01_get_score.R).
+```{r}
+#  raw code
+library(monocle)
+ctlevel <- data.frame(cluster_result=c('HSC','MPP','LMPP','CMP','CLP','GMP','MEP',"Bcell","CD4Tcell","CD8Tcell",'NKcell','Mono','Ery'),level=c(1,2,3,3,4,4,4,5,5,5,5,5,5),immunepath=c(1,1,1,0,1,0,0,1,1,1,1,0,0),monopath=c(1,1,1,1,0,1,0,0,0,0,0,1,0),erypath=c(1,1,0,1,0,0,1,0,0,0,0,0,1),stringsAsFactors = F)
+row.names(ctlevel) <- ctlevel[,1]
+correctorder <- wrongorder <- NULL
+for(pid in c('immunepath','monopath','erypath')) {
+  evct <- ctlevel[ctlevel[,pid]==1,1]
+  pair <- expand.grid(evct,evct)
+  pair[,1] <- as.character(pair[,1])
+  pair[,2] <- as.character(pair[,2])
+  pair <- pair[pair[,1]!=pair[,2],]
+  corid <- which(ctlevel[pair[,1],'level'] < ctlevel[pair[,2],'level'])
+  wroid <- which(ctlevel[pair[,1],'level'] > ctlevel[pair[,2],'level'])
+  correctorder <- c(correctorder,sapply(corid,function(si) paste0(pair[si,],collapse = '_')))
+  wrongorder <- c(wrongorder,sapply(wroid,function(si) paste0(pair[si,],collapse = '_')))
+}
+correctorder <- unique(correctorder)
+wrongorder <- unique(wrongorder)
+###
 
 
+scorefunc <- function(cds) {
+  if (length(cds@auxOrderingData[[cds@dim_reduce_type]]$branch_points) > 0) {
+    sl <- NULL
+    for(i in 1:length(cds@auxOrderingData[[cds@dim_reduce_type]]$branch_points)){
+      tryCatch({cds_reduced <- buildBranchCellDataSet(cds,branch_point=i)},error=function(e) {})
+      df = data.frame(pData(cds_reduced),stringsAsFactors = F)
+      df <- df[order(df$Pseudotime),]
+      sl <- rbind(sl,rowSums(sapply(unique(df$Branch),function(ub) {
+        so <- as.character(df[df[,'Branch']==ub,1])
+        soct <- cluster_result[match(so,cluster_result[,1]),3]
+        eid <- expand.grid(1:length(soct),1:length(soct))
+        eid <- eid[eid[,1]<eid[,2],]
+        eid <- sprintf('%s_%s',soct[eid[,1]],soct[eid[,2]])
+        c(sum(eid %in% correctorder),sum(eid %in% wrongorder))
+      })))
+    }
+    sl[which.max(sl[,1]/rowSums(sl)),]
+  } else {
+    NA
+  }
+}
+###
+get_cds = function(expression_matrix){
+  set.seed(12345)
+  #  Firstly make a new CDS and use DDRTree for dimension reduction.
+  pd = new("AnnotatedDataFrame", data = data.frame(row.names = colnames(expression_matrix), cell = colnames(expression_matrix)))
+  fd = new("AnnotatedDataFrame", data = data.frame(row.names = rownames(expression_matrix), gene_short_name = rownames(expression_matrix)))
+  cds = newCellDataSet(as.matrix(expression_matrix),phenoData = pd, featureData = fd, expressionFamily = uninormal())
+  flag = 0
+  print("Reducing dimension...")
+  tryCatch({
+    cds = reduceDimension(cds, method = "DDRTree", norm_method = "none", pseudo_expr = 0)
+    flag = 1
+  },warning=function(w){},error=function(e){})
+  if(flag == 0){
+    print("Cannot use auto_param_selection")
+    cds = reduceDimension(cds, method = "DDRTree", norm_method = "none", pseudo_expr = 0, auto_param_selection = F)
+  }
+  cds = orderCells(cds)
+  print("Looking for the root state...")
+  cell_states = as.numeric(as.character(pData(cds)$State))
+  names(cell_states) = colnames(expression_matrix)
+  unique_states = unique(cell_states)
+  checkroot = sapply(unique_states, function(x){
+    cds = orderCells(cds, root_state = x)
+    return(length(cds@auxOrderingData[[cds@dim_reduce_type]]$root_cell))
+  })
+  unique_states_filt = unique_states[checkroot > 0]
+  root_state = unique_states_filt[which.min(sapply(unique_states_filt, function(x){
+    return(mean(ctlevel[match(cluster_result[match(names(cell_states)[cell_states == x], cluster_result[, 1]), 3], ctlevel[, 1]), 2], na.rm = T))
+  }))]
+  return(orderCells(cds, root_state = root_state)) # reorder the cells
+}
+###
+
+# raw_input = gene_bc_filt : 0.8891132
+# raw_input = norm_gene_bc_filt : 
+# raw_input = sc_hvg_data : 
+
+raw_input = norm_gene_bc_filt
+rownames(raw_input) = rownames(sc_data)
+str(raw_input)
+###
+cds = get_cds(raw_input)
+score = scorefunc(cds)
+result_list = list(cds = cds, score = score)
+print(score[1] / (score[1] + score[2]))
+saveRDS(result_list, "./data/BONE_MARROW/Raw_result.rds")
+
+```

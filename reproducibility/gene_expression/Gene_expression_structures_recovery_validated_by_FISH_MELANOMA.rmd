@@ -239,7 +239,7 @@ dir.create(dist_outdir, showWarnings = F)
 mfrow = make_mfrow(2, length(c("FISH", method_names)))
 pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
 library(parallel)
-no_cores <- detectCores() - 1
+no_cores <- max(c(detectCores() - 1, 1))
 cl <- makeCluster(no_cores)
 clusterExport(cl, varlist = c("dist_outdir", "text_color", "bar_color", "max_points", "rescale_mean_list", "method_names", "used_cells", "mfrow", "fish_gene_mat", "fish_mask_mat", "dataset_list", "utilities_path"))
 return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
