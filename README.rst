@@ -40,7 +40,7 @@ Installation
         * CUPTI ships with the CUDA Toolkit.
         * cuDNN SDK (>= 7.4.1)
 
-  see this__ for further information
+  See this__ for further information.
 
       .. __: https://www.tensorflow.org/install/gpu
 
@@ -71,20 +71,20 @@ Usage
       --dataset=matrix.loom \
       --out-dir=out_dir
 
-     where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the path of output directory.
+     where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the target path for output folder.
 
   (2). Results:
 
-  * ``log.tsv``: a tsv-formatted log file that records training states.
-  * ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
-  * ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
-  * ``result``: a directory for imputaion results as below:
+  * ``log.tsv``: records DISC training information.
+  * ``summary.pdf``: shows the fitting line and optimal point and will be updated in real time when DISC is running.
+  * ``summary.tsv``: records the raw data in ``summary.pdf``.
+  * ``result``: imputaion result folder, which contains:
 
-    * ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
-    * ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
-    * ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
+    * ``imputation.loom``: the imputed matrix with genes in rows and cells in columns.
+    * ``feature.loom``: the feature matrix with feature in rows and cells in columns.
+    * ``running_info.hdf5``: a `hdf5-formatted`_ file, contains saved some useful information of ``matrix.loom`` (e.g. library size, the expressed counts and cells for each genes, imputed genes, etc.).
 
-  * ``models``: a directory for trained models in every save interval
+  * ``models``: For every save interval, DISC freezes its parameters into this folder (in `pb`_ format).
 
 - **Data availability**
 
@@ -242,6 +242,7 @@ History
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`Data availability`: https://github.com/iyhaoo/DISC_data_availability/
 .. _`loom-formatted`: http://loompy.org/
+.. _`pb`: https://www.tensorflow.org/guide/saved_model/
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _PyPI: https://pypi.org/project/disc/
