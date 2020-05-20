@@ -7,7 +7,6 @@ library(Seurat)
 library(future)
 library(stringi)
 library(reshape2)
-library(scran)
 
 #  read data
 get_map = function(input){

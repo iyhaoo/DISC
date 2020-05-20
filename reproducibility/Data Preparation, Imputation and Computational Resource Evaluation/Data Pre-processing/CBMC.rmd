@@ -1,0 +1,42 @@
+---
+title: "Data preparation for CBMC"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Load Data
+CBMC original data can be found <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866">here</a>.</br>
+We filter cells following <a href="https://www.nature.com/articles/nmeth.4380">the original study</a>.
+```{r}
+gene_bc_mat = as.matrix(read.csv("./data/CBMC/original_data/GSE100866_CBMC_8K_13AB_10X-RNA_umi.csv.gz", sep = ",", strip.white = T, row.names = 1))
+save_h5("./data/CBMC/original.loom", t(gene_bc_mat))
+```
+<blockquote cite="https://www.nature.com/articles/nmeth.4380">
+After read alignment and cell filtering, we assigned the species to each cell barcode. If more than 90% of UMI counts were coming from human genes, the cell barcode was considered to be human. If it was less than 10% of UMI counts, the assigned species was mouse. Cell barcodes in between 10% and 90% human were considered mixed species. The resulting assignment was 8,005 human, 579 mouse, 33 mixed.</blockquote>
+```{r}
+human_genes = grep("human", tolower(rownames(gene_bc_mat)))
+mouse_genes = grep("mouse", tolower(rownames(gene_bc_mat)))
+human_library = colSums(gene_bc_mat[human_genes, ])
+all_library = colSums(gene_bc_mat)
+human_rate = human_library / all_library
+human_mask = human_rate > 0.9
+sum(human_mask)
+sum(human_rate < 0.1)
+sum(human_rate <= 0.9 & human_rate >= 0.1)
+```
+<blockquote cite="https://www.nature.com/articles/nmeth.4380">
+Unless stated otherwise, analysis was performed on only the human cells and genes from the human reference genome.
+</blockquote>
+```{r}
+gene_bc_filt = gene_bc_mat[human_genes, human_mask]
+save_h5("./data/CBMC/raw.loom", t(gene_bc_filt))
+```
+### Reference
+Stoeckius, M. et al. Simultaneous epitope and transcriptome measurement in single cells. Nature methods 14, 865-868 (2017).

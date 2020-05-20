@@ -17,7 +17,6 @@ Here, we use BONE_MARROW dataset. The detail information of this dataset can be 
 ```{r}
 gene_bc_mat = readh5_loom("./data/BONE_MARROW/raw.loom")
 ```
-Firstly, we assign cell types following these 2 scripts ( and https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/07_hca_assign_celltype.R).
 #### STEP 1
 Following this script (https://github.com/Winnie09/imputationBenchmark/blob/master/data/code/process/06_make_hca_MantonBM6.R), we use scran for normalization.
 ```{r}
@@ -216,13 +215,19 @@ get_cds = function(expression_matrix){
 }
 ###
 
-# raw_input = gene_bc_filt : 0.8891132
-# raw_input = norm_gene_bc_filt : 
-# raw_input = sc_hvg_data : 
 
-raw_input = norm_gene_bc_filt
+
+### test1 0.7704719
+raw_input = sc_data
+str(raw_input)
+
+### test2 0.8891132
+raw_input = gene_bc_filt
 rownames(raw_input) = rownames(sc_data)
 str(raw_input)
+
+
+
 ###
 cds = get_cds(raw_input)
 score = scorefunc(cds)
@@ -231,3 +236,34 @@ print(score[1] / (score[1] + score[2]))
 saveRDS(result_list, "./data/BONE_MARROW/Raw_result.rds")
 
 ```
+```{r}
+gene_bc_mat = readh5_loom("./data/BONE_MARROW/DISC.loom")
+
+gene_bc_filt = gene_bc_mat[dimnames_gene_bc_filt[[1]], ]
+dim(gene_bc_filt) #  12112, 6939
+dimnames(gene_bc_filt) = list()
+sce = SingleCellExperiment(list(counts = gene_bc_filt))
+no_cores <- max(c(detectCores() - 1, 1))
+if(ncol(gene_bc_mat) < 21){
+  sce = computeSumFactors(sce, BPPARAM = MulticoreParam(workers = no_cores), sizes = c(5, 10, 15, 20))
+} else {
+  sce = computeSumFactors(sce, BPPARAM = MulticoreParam(workers = no_cores))  
+}
+sf = sizeFactors(sce)
+dimnames(gene_bc_filt) = dimnames_gene_bc_filt
+norm_gene_bc_filt = log2(sweep(gene_bc_filt, 2, sf, "/") + 1)
+sc_data = norm_gene_bc_filt
+rownames(sc_data) = sub(".*:", "", rownames(norm_gene_bc_filt))
+### test1 0.7704719
+raw_input = sc_data
+str(raw_input)
+cds = get_cds(raw_input)
+score = scorefunc(cds)
+result_list = list(cds = cds, score = score)
+print(score[1] / (score[1] + score[2]))
+saveRDS(result_list, "./data/BONE_MARROW/DISC_result.rds")
+```
+
+
+
+

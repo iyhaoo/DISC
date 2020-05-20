@@ -1,0 +1,39 @@
+---
+title: "Data preparation for RETINA"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Load Data
+RETINA original data can be found <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63472">here</a>.</br>
+We can directly download the expression matrix <a href="https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63472&format=file&file=GSE63472%5FP14Retina%5Fmerged%5Fdigital%5Fexpression%2Etxt%2Egz">here</a>.</br>
+The cluster assignments for the 44,808 retinal cells in <a href="https://www.sciencedirect.com/science/article/pii/S0092867415005498">the paper</a> can be found <a href="http://mccarrolllab.org/wp-content/uploads/2015/05/retina_clusteridentities.txt">here</a>.
+```{r}
+gene_bc_mat = as.matrix(read.csv("./data/RETINA/original_data/GSE63472_P14Retina_merged_digital_expression.txt.gz", sep = "\t", row.names = 1))
+save_h5("./data/RETINA/raw.loom", t(gene_bc_mat))
+```
+```{r}
+cell_type = as.matrix(read.table("./data/RETINA/original_data/retina_clusteridentities.txt", sep = "\t", row.names = 1))[, 1]
+cell_type[cell_type == 1] = "Horizontal"
+cell_type[cell_type == 2] = "Retinal Ganglion"
+cell_type[cell_type %in% seq(3, 23)] = "Amacrine"
+cell_type[cell_type == 24] = "Rod"
+cell_type[cell_type == 25] = "Cone"
+cell_type[cell_type %in% seq(26, 33)] = "Bipolar"
+cell_type[cell_type == 34] = "Muller glia"
+cell_type[cell_type == 35] = "Astrocytes"
+cell_type[cell_type == 36] = "Fibroblasts"
+cell_type[cell_type == 37] = "Vascular endothelium"
+cell_type[cell_type == 38] = "Pericytes"
+cell_type[cell_type == 39] = "Microglia"
+saveRDS(cell_type, "./data/RETINA/cell_type.rds")
+```
+### Reference
+Macosko, Evan Z. et al. Highly Parallel Genome-wide Expression Profiling of Individual Cells Using Nanoliter Droplets. Cell 161, 1202-1214 (2015).

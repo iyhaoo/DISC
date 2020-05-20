@@ -132,49 +132,68 @@ Quick Start
       1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected (`BRAIN_1.3M`_).
 
 Tutorials
- 1. Data preparation and imputation
+ * Data Preparation, Imputation and Computational Resource Evaluation
 
-    * Data pre-processing
+   * Data Pre-processing
 
-      * `MELANOMA`__
-      * `MELANOMA_bulk`__
-      * `SSCORTEX`__
-      * `CBMC`__
-      * `RETINA`__
-      * `BRAIN_SPLiT`__
-      * `10X_5CL`__
-      * `BONE_MARROW`__
-      * `JURKAT and 293T`__
-      * `PBMC_TISSUE`__
+     1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__ 5. `JURKAT_293T`__
 
-      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA.ipynb
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_MELANOMA_bulk.nb.html
-      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_SSCORTEX.ipynb
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
-      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_PBMC_TISSUE.nb.html
+     6. `10X_5CL`__ 7. `BONE_MARROW`__ 8. `RETINA`__ 9. `BRAIN_SPLiT`__ 10. `BRAIN_1.3M`__
 
-    * `Run imputation`_
+     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data Preparation, Imputation and Computational Resource Evaluation/Data Pre-processing/MELANOMA.ipynb
+     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data Preparation, Imputation and Computational Resource Evaluation/Data Pre-processing/SSCORTEX.ipynb
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
+     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
+     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
 
- 2. Reproducing our results:
+   * Imputation
 
-    * Gene expression structures recovery validated by FISH (`MELANOMA`__)
+   * Computational Resource Evaluation
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+ * Data Structure Evaluation
 
-    * Dropout event recovery (`MELANOMA`__)
+   1. Gene Expression Structures (FISH)
+       1. `MELANOMA`__ 2. `SSCORTEX`__
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 
-    * Cell type identification improvement (`PBMC`__)
+   2. Gene and Cell Structures (Down-sampling)
+       1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Cell_type_identification_improvement_PBMC.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
- 3. Supplementary topics:
+   S1. Spearman Correlation (Bulk)
+
+   S2. Identification of True Zeros (Down-sampling)
+
+ * Down-stream Analysis:
+
+   1. Cell Type Identification (Down-sampling)
+       1. `MELANOMA`__ 2. `SSCORTEX`__
+
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+
+   2. DEG Identification (Bulk)
+       1. `MELANOMA`__ 2. `SSCORTEX`__
+
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+
+   3. Solution for Large Dataset Analysis
+
+   S1. Trajectory Analysis
+
+ Other utility scripts
 
     * Use DISC compressed features for Seurat clustering (`PBMC`__)
 
