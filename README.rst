@@ -140,8 +140,8 @@ Tutorials
 
      6. `10X_5CL`__ 7. `BONE_MARROW`__ 8. `RETINA`__ 9. `BRAIN_SPLiT`__ 10. `BRAIN_1.3M`__
 
-     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data Preparation, Imputation and Computational Resource Evaluation/Data Pre-processing/MELANOMA.ipynb
-     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data Preparation, Imputation and Computational Resource Evaluation/Data Pre-processing/SSCORTEX.ipynb
+     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
+     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
