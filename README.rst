@@ -103,14 +103,16 @@ Usage
       Mouse somatosensory cortex of CD-1 mice at age of p28 and p29
       were profiled by 10X where 7,477 cells were detected (`scRNA-seq`__).
       In addition, osmFISH experiment of 4,839 cells from somatosensory
-      cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected (`FISH`__).
+      cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was
+      conducted and 33 genes were detected (`FISH`__).
 
         .. __: http://loom.linnarssonlab.org/clone/Mousebrain.org.level1/L1_Cortex2.loom
         .. __: http://linnarssonlab.org/osmFISH/availability/
 
   * PBMC :
       2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from
-      a healthy donor were profiled by 10X, where 32,738 genes were detect (`scRNA-seq`__).
+      a healthy donor were profiled by 10X, where 32,738 genes
+      were detect (`scRNA-seq`__).
 
         .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a
 
@@ -145,6 +147,7 @@ Usage
       aligned to hg19, 6939 cells left after cell filtering (`scRNA-seq`__).
       This dataset has bulk RNA-seq data (`bulk RNA-seq`__).
 
+        .. __: https://data.humancellatlas.org/explore/projects/cc95ff89-2e68-4a08-a234-480eca21ce79
         .. __: https://doc-04-6g-docs.googleusercontent.com/docs/securesc/rm132bl2k8nvnlftqa8a8d5p239lbngf/6o5dsruhjpmecgnkd0nn4b1ak3ss8ufd/1588554075000/07888005335114604629/01857410241295225190/1euh8YB8ThSLHJNQMTCuuKp_nRiME1KzN?e=download&authuser=0&nonce=7apqnnaq9bch8&user=01857410241295225190&hash=a60rd66gq56e0af1vc5ua60146t3gq7m
         .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE74246
 
