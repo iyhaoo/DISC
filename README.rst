@@ -186,15 +186,15 @@ Usage
   +------------------+------------------+------------------+------------------+------------------+------------------+
   |`CBMC`__          |`YES`__           |`0.3`__,`0.5`__   |NO                |NO                |NO                |
   +------------------+------------------+------------------+------------------+------------------+------------------+
-  |JURKAT_293T       |`YES`__           |NO                |NO                |`YES`__           |NO                |
+  |`JURKAT_293T`__   |`YES`__           |NO                |NO                |`YES`__           |NO                |
   +------------------+------------------+------------------+------------------+------------------+------------------+
-  |10X_5CL           |`YES`__           |NO                |NO                |`YES`__           |NO                |
+  |`10X_5CL`__       |`YES`__           |NO                |NO                |`YES`__           |NO                |
   +------------------+------------------+------------------+------------------+------------------+------------------+
-  |BONE_MARROW       |`YES`__           |NO                |NO                |`YES`__           |`YES`__           |
+  |`BONE_MARROW`__   |`YES`__           |NO                |NO                |`YES`__           |`YES`__           |
   +------------------+------------------+------------------+------------------+------------------+------------------+
-  |RETINA            |`YES`__           |`0.3`__,`0.5`__   |NO                |NO                |`YES`__           |
+  |`RETINA`__        |`YES`__           |`0.3`__,`0.5`__   |NO                |NO                |`YES`__           |
   +------------------+------------------+------------------+------------------+------------------+------------------+
-  |BRAIN_SPLiT       |`YES`__           |`0.3`__,`0.5`__   |NO                |NO                |`YES`__           |
+  |`BRAIN_SPLiT`__   |`YES`__           |`0.3`__,`0.5`__   |NO                |NO                |`YES`__           |
   +------------------+------------------+------------------+------------------+------------------+------------------+
   |BRAIN_1.3M        |NO (Too large)    |NO                |NO                |NO                |NO                |
   +------------------+------------------+------------------+------------------+------------------+------------------+
@@ -203,7 +203,39 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/MELANOMA/raw.loom
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/MELANOMA/fish.loom
-
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/SSCORTEX
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/SSCORTEX/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/SSCORTEX/ds_0.5
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/SSCORTEX/fish.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/PBMC/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC/ds_0.3
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC/ds_0.5
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/PBMC/cell_type.rds
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/CBMC/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC/ds_0.3
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC/ds_0.5
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/JURKAT_293T
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/JURKAT_293T/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/JURKAT_293T/bulk.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/10X_5CL
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/10X_5CL/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/10X_5CL/bulk.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BONE_MARROW
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BONE_MARROW/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BONE_MARROW/bulk.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BONE_MARROW/cell_type.rds
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/RETINA/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA/ds_0.3
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA/ds_0.5
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/RETINA/cell_type.rds
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.3
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.5
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/cell_type.rds
 
 Tutorials
  * Data Preparation, Imputation and Computational Resource Evaluation
@@ -235,62 +267,84 @@ Tutorials
 
    (1). Gene Expression Structures (FISH)
 
-   +------------------+------------------+
-   |`MELANOMA`__      |`SSCORTEX`__      |
-   +------------------+------------------+
+   +------------------+
+   |`MELANOMA`__      |
+   +------------------+
 
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 
-   2. Gene and Cell Structures (Down-sampling)
+   (2). Gene and Cell Structures (Down-sampling)
 
-       1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__
+   +------------------+
+   |`MELANOMA`__      |
+   +------------------+
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+
+   (S1). Spearman Correlation (Bulk)
+
+   +------------------+
+   |`JURKAT_293T`__   |
+   +------------------+
+
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-   S1. Spearman Correlation (Bulk)
+   (S2). Identification of True Zeros (Down-sampling)
 
-   S2. Identification of True Zeros (Down-sampling)
+   +------------------+
+   |`MELANOMA`__      |
+   +------------------+
+
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
  * Down-stream Analysis:
 
-   1. Cell Type Identification (Down-sampling)
+   (1). Cell Type Identification (Down-sampling)
 
-       1. `MELANOMA`__ 2. `SSCORTEX`__
+   +------------------+
+   |`PBMC`__          |
+   +------------------+
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
    2. DEG Identification (Bulk)
 
-       1. `MELANOMA`__ 2. `SSCORTEX`__
+   +------------------+
+   |`JURKAT_293T`__   |
+   +------------------+
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
    3. Solution for Large Dataset Analysis
 
+   +------------------+
+   |`PBMC`__          |
+   +------------------+
+
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
+
    S1. Trajectory Analysis
+
+   +------------------+
+   |`BONE_MARROW`__   |
+   +------------------+
+
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
  Other utility scripts
 
-    * Use DISC compressed features for Seurat clustering (`PBMC`__)
+   +------------------+------------------+------------------+
+   |`Violin Plot`__   |`PBMC`__          |`RETINA`__        |
+   +------------------+------------------+------------------+
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
-
-    * Violin plots of marker genes across cell types (`script`__, `PBMC`__, `RETINA`__)
-
-      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/violin_plot.py
-      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/PBMC/violin_plot.pdf
-      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/RETINA/violin_plot.pdf
+       .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/violin_plot.py
+       .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/PBMC/violin_plot.pdf
+       .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/RETINA/violin_plot.pdf
 
 References
 ----------
 Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
-**"DISC: a highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning."**
+**"DISC: a highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning"**
 
 History
 -------
