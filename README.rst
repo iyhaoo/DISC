@@ -310,7 +310,7 @@ Tutorials
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-   2. DEG Identification (Bulk)
+   (2). DEG Identification (Bulk)
 
    +------------------+
    |`JURKAT_293T`__   |
@@ -318,7 +318,7 @@ Tutorials
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-   3. Solution for Large Dataset Analysis
+   (3). Solution for Large Dataset Analysis
 
    +------------------+
    |`PBMC`__          |
@@ -326,7 +326,7 @@ Tutorials
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
-   S1. Trajectory Analysis
+   (S1). Trajectory Analysis
 
    +------------------+
    |`BONE_MARROW`__   |
@@ -334,7 +334,7 @@ Tutorials
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
- Other utility scripts
+ * Other utility scripts
 
    +------------------+------------------+------------------+
    |`Violin Plot`__   |`PBMC`__          |`RETINA`__        |
