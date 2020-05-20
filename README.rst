@@ -311,7 +311,7 @@ Usage
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
-  * Other utility scripts
+  * Other Utility Scripts
 
     +------------------+------------------+------------------+
     |Script            |Output                               |
