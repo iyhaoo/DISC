@@ -88,7 +88,7 @@ Usage
 
 - **Data availability**
 
-  The sources of our data are list here.
+  The sources of our data are listed here.
 
   * MELANOMA :
       8,640 cells from the melanoma WM989 cell line were sequenced
