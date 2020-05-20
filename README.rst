@@ -123,40 +123,40 @@ Usage
         .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866
 
   * JURKAT_293T :
-      Jurkat (`scRNA-seq`__) and 293T (`scRNA-seq`__) were
-      profiled by 10X separately.
-      cells expressed less than 500 genes were removed and
-      3,258 Jurkat and 2,885 293T cells were left.
-      Single-cell RNA-seq data can be found at  and  while the corresponding bulk RNA-seq data can be found at GSE129240.
-
-      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
+      3258 jurkat cells (`scRNA-seq`__) and 2885 293T cells
+      (`scRNA-seq`__) were profiled by 10X separately.
+      This dataset has bulk RNA-seq data (`bulk RNA-seq`__).
 
         .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat
         .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/293t
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE129240
 
 
   * 10X_5CL :
-      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+      5,001 cells from 5 human lung adenocarcinoma cell lines H2228,
+      H1975, A549, H838 and HCC827 were profiled by 10X (`scRNA-seq`__).
+      This dataset has bulk RNA-seq data (`bulk RNA-seq`__).
 
-      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE126906
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86337
 
 
   * BONE_MARROW :
-      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+      6,941 human bone marrow cells from sample MantonBM6 were profiled by 10X.
+      The original single-cell RNA sequencing data provided by `HCA`__ was
+      aligned to hg19, 6939 cells left after cell filtering (`scRNA-seq`__).
+      This dataset has bulk RNA-seq data (`bulk RNA-seq`__).
 
-      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+        .. __: https://doc-04-6g-docs.googleusercontent.com/docs/securesc/rm132bl2k8nvnlftqa8a8d5p239lbngf/6o5dsruhjpmecgnkd0nn4b1ak3ss8ufd/1588554075000/07888005335114604629/01857410241295225190/1euh8YB8ThSLHJNQMTCuuKp_nRiME1KzN?e=download&authuser=0&nonce=7apqnnaq9bch8&user=01857410241295225190&hash=a60rd66gq56e0af1vc5ua60146t3gq7m
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE74246
 
   * RETINA :
-      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+      Retinas of mice at age of p14 were profiled in 7 different replicates
+      on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and
+      4000 (49,300 in total) STAMPs (single-cell transcriptomes attached
+      to micro-particles) were collected (`scRNA-seq`__).
 
-      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63472
 
   * BRAIN_SPLiT :
       156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
@@ -275,6 +275,5 @@ History
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _PyPI: https://pypi.org/project/disc/
-.. _RETINA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63472
 .. _BRAIN_SPLiT: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110823
 .. _BRAIN_1.3M: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.3.0/1M_neurons
