@@ -88,9 +88,7 @@ Usage
 
 - **Data availability**
 
-  The data we used in our paper can be found here.
-
-  We provide  original, raw, down-sampled (DS), imputed raw/DS RNA-seq data and FISH data.
+  The sources of our data are list here.
 
   * MELANOMA :
       8,640 cells from the melanoma WM989 cell line were sequenced
@@ -154,19 +152,41 @@ Usage
       Retinas of mice at age of p14 were profiled in 7 different replicates
       on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and
       4000 (49,300 in total) STAMPs (single-cell transcriptomes attached
-      to micro-particles) were collected (`scRNA-seq`__).
+      to micro-particles) were collected (`scRNA-seq`__). The dataset has
+      `cell annotation`__.
 
         .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63472
+        .. __: http://mccarrolllab.org/wp-content/uploads/2015/05/retina_clusteridentities.txt
 
   * BRAIN_SPLiT :
-      156,049 mice nuclei from developing brain and spinal cord at age of p2 or p11 mice were profiled by SPLiT-seq, where 26,894 genes were detected (`BRAIN_SPLiT`_).
+      156,049 mice nuclei from developing brain and spinal cord at
+      age of p2 or p11 mice were profiled by SPLiT-seq (`scRNA-seq`__).
+      The cell annotation of this dataset is included in file
+      GSM3017261_150000_CNS_nuclei.mat.gz at the same GEO page.
 
-      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110823
 
   * BRAIN_1.3M :
-      1,306,127 cells from combined cortex, hippocampus, and subventricular zone of 2 E18 C57BL/6 mice were profiled by 10X, where 27998 genes were detected (`BRAIN_1.3M`_).
+      1,306,127 cells from combined cortex, hippocampus,
+      and subventricular zone of 2 E18 C57BL/6 mice were
+      profiled by 10X (`scRNA-seq`__).
+
+        .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.3.0/1M_neurons
+
+  We provide our pre-processed data here.
+
+  +------------+------------+-----------+
+  | Header 1   | Header 2   | Header 3  |
+  +============+============+===========+
+  | body row 1 | column 2   | column 3  |
+  +------------+------------+-----------+
+  | body row 2 | Cells may span columns.|
+  +------------+------------+-----------+
+  | body row 3 | Cells may  | - Cells   |
+  +------------+ span rows. | - contain |
+  | body row 4 |            | - blocks. |
+  +------------+------------+-----------+
+
 
 Tutorials
  * Data Preparation, Imputation and Computational Resource Evaluation
@@ -275,5 +295,3 @@ History
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _PyPI: https://pypi.org/project/disc/
-.. _BRAIN_SPLiT: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110823
-.. _BRAIN_1.3M: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.3.0/1M_neurons
