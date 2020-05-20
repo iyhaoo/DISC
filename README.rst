@@ -161,7 +161,9 @@ Tutorials
 
    1. Gene Expression Structures (FISH)
 
-       1. `MELANOMA`__ 2. `SSCORTEX`__
+       +------------------+------------------+
+       |    `MELANOMA`__  |`SSCORTEX`__      |
+       +------------------+------------------+
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
