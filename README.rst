@@ -22,7 +22,8 @@ Requirements
 Installation
 ------------
 
-**Install TensorFlow**
+- **Install TensorFlow**
+
   If you have an Nvidia GPU, be sure to install a version of TensorFlow that supports it first -- DISC runs much faster with GPU::
 
     pip install "tensorflow-gpu>= 1.13.1,<2.0.0"
@@ -43,12 +44,14 @@ Installation
 
       .. __: https://www.tensorflow.org/install/gpu
 
-**Install DISC with pip**
+- **Install DISC with pip**
+
   To install with ``pip``, run the following from a terminal::
 
     pip install disc
 
-**Install DISC from GitHub**
+- **Install DISC from GitHub**
+
   To clone the repository and install manually, run the following from a terminal::
 
     git clone git://github.com/iyhaoo/DISC.git
@@ -60,29 +63,34 @@ Installation
 Usage
 -----
 
-Quick Start
- 1. Run DISC::
+- **Quick Start**
 
-     disc \
-     --dataset=matrix.loom \
-     --out-dir=out_dir
+  1. Run DISC::
 
-    where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the path of output directory.
- 2. Results:
+      disc \
+      --dataset=matrix.loom \
+      --out-dir=out_dir
 
-    * ``log.tsv``: a tsv-formatted log file that records training states.
-    * ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
-    * ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
-    * ``result``: a directory for imputaion results as below:
+     where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the path of output directory.
 
-      * ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
-      * ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
-      * ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
+  2. Results:
 
-    * ``models``: a directory for trained models in every save interval
+  * ``log.tsv``: a tsv-formatted log file that records training states.
+  * ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
+  * ``summary.tsv``: a tsv-formatted file that shows the raw data of visualization.
+  * ``result``: a directory for imputaion results as below:
 
-`Data availability`_
-  We provide `loom-formatted`_ original, raw, down-sampled (DS), imputed raw/DS RNA-seq data and FISH data.
+    * ``imputation.loom``: a `loom-formatted`_ imputed matrix with genes in rows and cells in columns.
+    * ``feature.loom``: a `loom-formatted`_ dimensionally reduced feature matrix provided by our method based on the imputed matrix above with feature in rows and cells in columns.
+    * ``running_info.hdf5``: a `hdf5-formatted`_ saved some basic information about the input dataset such as library size, genes used for modelling and so on.
+
+  * ``models``: a directory for trained models in every save interval
+
+- `Data availability`_
+
+  The data we used in our paper can be found here.
+
+  We provide  original, raw, down-sampled (DS), imputed raw/DS RNA-seq data and FISH data.
 
   * MELANOMA :
       8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected (`MELANOMA`_).
@@ -137,9 +145,9 @@ Tutorials
    * Data Pre-processing
 
      +------------------+------------------+------------------+------------------+------------------+
-     |    `MELANOMA`__  |`SSCORTEX`__      |        `PBMC`__  |    `CBMC`__      |  `JURKAT_293T`__ |
+     |`MELANOMA`__      |`SSCORTEX`__      |`PBMC`__          |`CBMC`__          |`JURKAT_293T`__   |
      +------------------+------------------+------------------+------------------+------------------+
-     |   `10X_5CL`__    |`BONE_MARROW`__   | `RETINA`__       |  `BRAIN_SPLiT`__ | `BRAIN_1.3M`__   |
+     |`10X_5CL`__       |`BONE_MARROW`__   |`RETINA`__        |`BRAIN_SPLiT`__   |`BRAIN_1.3M`__    |
      +------------------+------------------+------------------+------------------+------------------+
 
      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
@@ -161,9 +169,9 @@ Tutorials
 
    (1). Gene Expression Structures (FISH)
 
-      +------------------+------------------+
-      |    `MELANOMA`__  |`SSCORTEX`__      |
-      +------------------+------------------+
+   +------------------+------------------+
+   |`MELANOMA`__      |`SSCORTEX`__      |
+   +------------------+------------------+
 
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
