@@ -65,7 +65,7 @@ Usage
 
 - **Quick Start**
 
-  (1). Run DISC::
+  **(1). How to run DISC**::
 
       disc \
       --dataset=matrix.loom \
@@ -73,7 +73,7 @@ Usage
 
   where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the target path for output folder.
 
-  (2). Results:
+  **(2). What DISC outputs**:
 
   * ``log.tsv``: records DISC training information.
   * ``summary.pdf``: shows the fitting line and optimal point and will be updated in real time when DISC is running.
