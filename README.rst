@@ -136,9 +136,11 @@ Tutorials
 
    * Data Pre-processing
 
-    1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__ 5. `JURKAT_293T`__
-
-    6. `10X_5CL`__ 7. `BONE_MARROW`__ 8. `RETINA`__ 9. `BRAIN_SPLiT`__ 10. `BRAIN_1.3M`__
+     +------------------+------------------+------------------+------------------+------------------+
+     |    `MELANOMA`__  |`SSCORTEX`__      |        `PBMC`__  |    `CBMC`__      |  `JURKAT_293T`__ |
+     +------------------+------------------+------------------+------------------+------------------+
+     |   `10X_5CL`__    |`BONE_MARROW`__   | `RETINA`__       |  `BRAIN_SPLiT`__ | `BRAIN_1.3M`__   |
+     +------------------+------------------+------------------+------------------+------------------+
 
      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
