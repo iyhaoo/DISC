@@ -82,7 +82,7 @@ Usage
 
     * ``imputation.loom``: the imputed matrix with genes in rows and cells in columns.
     * ``feature.loom``: the feature matrix with feature in rows and cells in columns.
-    * ``running_info.hdf5``: a `hdf5-formatted`_ file, contains saved some useful information of ``matrix.loom`` (e.g. library size, the expressed counts and cells for each genes, imputed genes, etc.).
+    * ``running_info.hdf5``: a `hdf5-formatted`_ file, contains some useful information of ``matrix.loom`` (e.g. library size, the expressed counts and cells for each genes, imputed genes, etc.).
 
   * ``models``: For every save interval, DISC freezes its parameters into this folder (in `pb`_ format).
 
@@ -93,34 +93,63 @@ Usage
   We provide  original, raw, down-sampled (DS), imputed raw/DS RNA-seq data and FISH data.
 
   * MELANOMA :
-      8,640 cells from the melanoma WM989 cell line were sequenced using Drop-seq, where 32,287 genes were detected (`MELANOMA`_).
-      In addition, RNA FISH experiment of across 7,000-88,000 cells from the same cell line was conducted and 26 genes were detected (`MELANOMA_FISH`_).
+      8,640 cells from the melanoma WM989 cell line were sequenced
+      using Drop-seq, where 32,287 genes were detected (`scRNA-seq`__).
+      In addition, RNA FISH experiment of across 7,000-88,000 cells
+      from the same cell line was conducted and 26 genes were detected (`FISH`__).
 
-      The original, raw, DS (0.5), imputed raw/DS RNA-seq data and FISH data are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE99330
+        .. __: https://www.dropbox.com/s/ia9x0iom6dwueix/fishSubset.txt?dl=0
 
   * SSCORTEX :
-      Mouse somatosensory cortex of CD-1 mice at age of p28 and p29 were profiled by 10X where 7,477 cells were detected (`SSCORTEX`_).
-      In addition, osmFISH experiment of 4,839 cells from somatosensory cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected (`SSCORTEX_FISH`_).
+      Mouse somatosensory cortex of CD-1 mice at age of p28 and p29
+      were profiled by 10X where 7,477 cells were detected (`scRNA-seq`__).
+      In addition, osmFISH experiment of 4,839 cells from somatosensory
+      cortex, hippocampus and ventricle of a CD-1 mouse at age of p22 was conducted and 33 genes were detected (`FISH`__).
 
-      The original, raw RNA-seq data and FISH data are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/SSCORTEX
+        .. __: http://loom.linnarssonlab.org/clone/Mousebrain.org.level1/L1_Cortex2.loom
+        .. __: http://linnarssonlab.org/osmFISH/availability/
 
   * PBMC :
-      2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from a healthy donor were profiled by 10X, where 32,738 genes were detect (`PBMC`_).
+      2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from
+      a healthy donor were profiled by 10X, where 32,738 genes were detect (`scRNA-seq`__).
 
-      The  original, raw, DS (0.3), imputed DS RNA-seq data are provide `here`__.
-
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC
+        .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a
 
   * CBMC :
-      Cord blood mononuclear cells were profiled by CITE-seq, where 8,005 human cells were detected in total (`CBMC`_).
+      Cord blood mononuclear cells were profiled by CITE-seq, where
+      8,005 human cells were detected in total (`scRNA-seq`__).
 
-      The original and raw RNA-seq data are provide `here`__.
+        .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866
 
-        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
+  * JURKAT_293T :
+      Jurkat (`scRNA-seq`__) and 293T (`scRNA-seq`__) were
+      profiled by 10X separately.
+      cells expressed less than 500 genes were removed and
+      3,258 Jurkat and 2,885 293T cells were left.
+      Single-cell RNA-seq data can be found at  and  while the corresponding bulk RNA-seq data can be found at GSE129240.
+
+      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
+
+        .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat
+        .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/293t
+        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+
+
+  * 10X_5CL :
+      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+
+      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
+
+        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
+
+
+  * BONE_MARROW :
+      Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
+
+      The raw RNA-seq data and the `RDS-formatted`_ cluster assignments data from the original study are provide `here`__.
+
+        .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
 
   * RETINA :
       Retinas of mice at age of p14 were profiled in 7 different replicates on by Drop-seq, where 6,600, 9,000, 6,120, 7,650, 7,650, 8280, and 4000 (49,300 in total) STAMPs (single-cell transcriptomes attached to micro-particles) were collected with totally 24,658 genes detected (`RETINA`_).
@@ -246,12 +275,6 @@ History
 .. _`RDS-formatted`: https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html
 .. _`Run imputation`: https://github.com/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/run_imputation.md
 .. _PyPI: https://pypi.org/project/disc/
-.. _MELANOMA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE99330
-.. _MELANOMA_FISH: https://www.dropbox.com/s/ia9x0iom6dwueix/fishSubset.txt?dl=0
-.. _SSCORTEX: http://loom.linnarssonlab.org/clone/Mousebrain.org.level1/L1_Cortex2.loom
-.. _SSCORTEX_FISH: http://linnarssonlab.org/osmFISH/availability/
-.. _PBMC: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a
-.. _CBMC: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866
 .. _RETINA: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63472
 .. _BRAIN_SPLiT: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110823
 .. _BRAIN_1.3M: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.3.0/1M_neurons
