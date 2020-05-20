@@ -205,4 +205,8 @@ save_h5("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/DI
 
 
 
+DeSCI_imputation = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/DISC.hdf5", with_outliers = T)
+save_h5("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/DISC.loom", t(DeSCI_imputation))
+
+
 
