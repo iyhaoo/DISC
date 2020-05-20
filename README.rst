@@ -71,7 +71,7 @@ Usage
       --dataset=matrix.loom \
       --out-dir=out_dir
 
-     where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the target path for output folder.
+  where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the target path for output folder.
 
   (2). Results:
 
