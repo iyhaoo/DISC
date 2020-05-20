@@ -270,44 +270,44 @@ Usage
   * Data Structure Evaluation
 
     (1). Gene Expression Structures (FISH)
-      Example : `MELANOMA`__
+      Tutorial : `MELANOMA`__
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 
     (2). Gene and Cell Structures (Down-sampling)
-      Example : `MELANOMA`__
+      Tutorial : `MELANOMA`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (S1). Spearman Correlation (Bulk)
-      Example : `JURKAT_293T`__
+      Tutorial : `JURKAT_293T`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (S2). Identification of True Zeros (Down-sampling)
-      Example : `MELANOMA`__
+      Tutorial : `MELANOMA`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
   * Down-stream Analysis:
 
     (1). Cell Type Identification (Down-sampling)
-      Example : `PBMC`__
+      Tutorial : `PBMC`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (2). DEG Identification (Bulk)
-      Example : `JURKAT_293T`__
+      Tutorial : `JURKAT_293T`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (3). Solution for Large Dataset Analysis
-      Example : `PBMC`__
+      Tutorial : `PBMC`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
     (S1). Trajectory Analysis
-      Example : `BONE_MARROW`__
+      Tutorial : `BONE_MARROW`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
