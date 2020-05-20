@@ -65,7 +65,7 @@ Usage
 
 - **Quick Start**
 
-  1. Run DISC::
+  (1). Run DISC::
 
       disc \
       --dataset=matrix.loom \
@@ -73,7 +73,7 @@ Usage
 
      where ``matrix.loom`` is a `loom-formatted`_ raw count matrix with genes in rows and cells in columns and ``out_dir`` is the path of output directory.
 
-  2. Results:
+  (2). Results:
 
   * ``log.tsv``: a tsv-formatted log file that records training states.
   * ``summary.pdf``: a pdf-formatted file that visualizes the fitting line and optimal point and it will be updated in real time when running.
@@ -86,7 +86,7 @@ Usage
 
   * ``models``: a directory for trained models in every save interval
 
-- `Data availability`_
+- **Data availability**
 
   The data we used in our paper can be found here.
 
