@@ -136,9 +136,9 @@ Tutorials
 
    * Data Pre-processing
 
-     1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__ 5. `JURKAT_293T`__
+    1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__ 5. `JURKAT_293T`__
 
-     6. `10X_5CL`__ 7. `BONE_MARROW`__ 8. `RETINA`__ 9. `BRAIN_SPLiT`__ 10. `BRAIN_1.3M`__
+    6. `10X_5CL`__ 7. `BONE_MARROW`__ 8. `RETINA`__ 9. `BRAIN_SPLiT`__ 10. `BRAIN_1.3M`__
 
      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
@@ -158,12 +158,14 @@ Tutorials
  * Data Structure Evaluation
 
    1. Gene Expression Structures (FISH)
+
        1. `MELANOMA`__ 2. `SSCORTEX`__
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 
    2. Gene and Cell Structures (Down-sampling)
+
        1. `MELANOMA`__ 2. `SSCORTEX`__ 3. `PBMC`__ 4. `CBMC`__
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
@@ -178,12 +180,14 @@ Tutorials
  * Down-stream Analysis:
 
    1. Cell Type Identification (Down-sampling)
+
        1. `MELANOMA`__ 2. `SSCORTEX`__
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 
    2. DEG Identification (Bulk)
+
        1. `MELANOMA`__ 2. `SSCORTEX`__
 
        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
