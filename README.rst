@@ -240,87 +240,88 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/cell_type.rds
 
-Tutorials
- * Data Preparation, Imputation and Computational Resource Evaluation
+- Evaluations
 
-   * Data Pre-processing
+  * Data Preparation, Imputation and Computational Resource Evaluation
 
-     +------------------+------------------+------------------+------------------+------------------+
-     |`MELANOMA`__      |`SSCORTEX`__      |`PBMC`__          |`CBMC`__          |`JURKAT_293T`__   |
-     +------------------+------------------+------------------+------------------+------------------+
-     |`10X_5CL`__       |`BONE_MARROW`__   |`RETINA`__        |`BRAIN_SPLiT`__   |`BRAIN_1.3M`__    |
-     +------------------+------------------+------------------+------------------+------------------+
+    * Data Pre-processing
 
-     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
-     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
-     .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
-     .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
+      +------------------+------------------+------------------+------------------+------------------+
+      |`MELANOMA`__      |`SSCORTEX`__      |`PBMC`__          |`CBMC`__          |`JURKAT_293T`__   |
+      +------------------+------------------+------------------+------------------+------------------+
+      |`10X_5CL`__       |`BONE_MARROW`__   |`RETINA`__        |`BRAIN_SPLiT`__   |`BRAIN_1.3M`__    |
+      +------------------+------------------+------------------+------------------+------------------+
 
-   * Imputation
+      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
+      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_CBMC.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
+      .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
 
-   * Computational Resource Evaluation
+    * Imputation
 
- * Data Structure Evaluation
+    * Computational Resource Evaluation
 
-   (1). Gene Expression Structures (FISH)
-     Example : `MELANOMA`__
+  * Data Structure Evaluation
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+    (1). Gene Expression Structures (FISH)
+      Example : `MELANOMA`__
 
-   (2). Gene and Cell Structures (Down-sampling)
-     Example : `MELANOMA`__
+       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+    (2). Gene and Cell Structures (Down-sampling)
+      Example : `MELANOMA`__
 
-   (S1). Spearman Correlation (Bulk)
-     Example : `JURKAT_293T`__
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+    (S1). Spearman Correlation (Bulk)
+      Example : `JURKAT_293T`__
 
-   (S2). Identification of True Zeros (Down-sampling)
-     Example : `MELANOMA`__
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+    (S2). Identification of True Zeros (Down-sampling)
+      Example : `MELANOMA`__
 
- * Down-stream Analysis:
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-   (1). Cell Type Identification (Down-sampling)
-     Example : `PBMC`__
+  * Down-stream Analysis:
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+    (1). Cell Type Identification (Down-sampling)
+      Example : `PBMC`__
 
-   (2). DEG Identification (Bulk)
-     Example : `JURKAT_293T`__
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+    (2). DEG Identification (Bulk)
+      Example : `JURKAT_293T`__
 
-   (3). Solution for Large Dataset Analysis
-     Example : `PBMC`__
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
+    (3). Solution for Large Dataset Analysis
+      Example : `PBMC`__
 
-   (S1). Trajectory Analysis
-     Example : `BONE_MARROW`__
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
+    (S1). Trajectory Analysis
+      Example : `BONE_MARROW`__
 
- * Other utility scripts
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
 
-   +------------------+------------------+------------------+
-   |Script            |Output                               |
-   +==================+==================+==================+
-   |`Violin Plot`__   |`PBMC`__          |`RETINA`__        |
-   +------------------+------------------+------------------+
+  * Other utility scripts
 
-       .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/violin_plot.py
-       .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/PBMC/violin_plot.pdf
-       .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/RETINA/violin_plot.pdf
+    +------------------+------------------+------------------+
+    |Script            |Output                               |
+    +==================+==================+==================+
+    |`Violin Plot`__   |`PBMC`__          |`RETINA`__        |
+    +------------------+------------------+------------------+
+
+        .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/violin_plot.py
+        .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/PBMC/violin_plot.pdf
+        .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/RETINA/violin_plot.pdf
 
 References
 ----------
