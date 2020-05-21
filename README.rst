@@ -189,7 +189,7 @@ Usage
   +------------------+------------------+------------------+------------------+------------------+----------------------+
   |`PBMC`__          |`YES`__           |`0.3`__, `0.5`__  |NO                |NO                |`YES`__               |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
-  |`CBMC`__          |`YES`__           |`0.3`__, `0.5`__  |NO                |NO                |NO                    |
+  |`CBMC`__          |`YES`__           |`0.5`__           |NO                |NO                |NO                    |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
   |`JURKAT_293T`__   |`YES`__           |NO                |NO                |`YES`__           |NO                    |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
@@ -201,7 +201,7 @@ Usage
   +------------------+------------------+------------------+------------------+------------------+----------------------+
   |`BRAIN_SPLiT`__   |`YES`__           |`0.3`__, `0.5`__  |NO                |NO                |`YES`__               |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
-  |BRAIN_1.3M        |NO (Too large)    |NO                |NO                |NO                |`Clustering Result`__ |
+  |`BRAIN_1.3M`__    |NO (Too large)    |NO                |NO                |NO                |`Clustering Result`__ |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
 
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA
@@ -219,7 +219,6 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/PBMC/cell_type.rds
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/CBMC/raw.loom
-  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC/ds_0.3
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/JURKAT_293T
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/JURKAT_293T/raw.loom
@@ -241,6 +240,7 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.3
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/cell_type.rds
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_1.3M
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_1.3M/clustering_result.txt.gz
 
 - Evaluations
