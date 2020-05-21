@@ -241,6 +241,7 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.3
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/cell_type.rds
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_1.3M/clustering_result.txt.gz
 
 - Evaluations
 
