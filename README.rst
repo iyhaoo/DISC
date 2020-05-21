@@ -254,8 +254,8 @@ Usage
 
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/MELANOMA.ipynb
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility//Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/PBMC.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility//Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/CBMC.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data Preparation, Imputation and Computational Resource Evaluation/Data Pre-processing/PBMC.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data Preparation, Imputation and Computational Resource Evaluation/Data Pre-processing/CBMC.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
