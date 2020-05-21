@@ -151,7 +151,9 @@ for(ii in method_names){
 }
 print(result_list)
 
-
+sapply(result_list, function(x){
+  return(x[which.max(x[, 2]), ])
+})
 
 
 
