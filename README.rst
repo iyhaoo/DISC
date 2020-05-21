@@ -230,12 +230,12 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BONE_MARROW/bulk.loom
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BONE_MARROW/cell_type.rds
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA
-  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/RETINA/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/RETINA/raw.loom.gz
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA/ds_0.3
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/RETINA/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/RETINA/cell_type.rds
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT
-  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.3
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_SPLiT/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_SPLiT/cell_type.rds
