@@ -270,7 +270,7 @@ Usage
 
     * Computational Resource Evaluation
 
-  * Data Structure Evaluation
+  * Data Structure Recovery Evaluation
 
     (1). Gene Expression Structures (FISH)
       Tutorial : `MELANOMA`__
@@ -292,7 +292,7 @@ Usage
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-  * Down-stream Analysis:
+  * Down-stream Improvement Analysis:
 
     (1). Cell Type Identification (Down-sampling)
       Tutorial : `PBMC`__
