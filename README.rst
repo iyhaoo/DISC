@@ -176,7 +176,9 @@ Usage
 
         .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.3.0/1M_neurons
 
-  We provide our pre-processed data here.
+  We provide our pre-processed data here__.
+
+    .. __: https://github.com/iyhaoo/DISC_data_availability
 
   +------------------+------------------+------------------+------------------+------------------+------------------+
   |Dataset           |Raw Data          |DS Data           |FISH Data         |Bulk Data         |Cell Annotation   |
@@ -256,12 +258,12 @@ Usage
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/SSCORTEX.ipynb
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation,%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/PBMC.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation,%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/CBMC.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation,%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/JURKAT_293T.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation,%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/10X_5CL.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_RETINA.nb.html
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BRAIN_SPLiT.ipynb
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_BONE_MARROW.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_JURKAT_293T.nb.html
 
     * Imputation
 
