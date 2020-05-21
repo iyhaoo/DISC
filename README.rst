@@ -263,7 +263,7 @@ Usage
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation,%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/BONE_MARROW.nb.html
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation,%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/RETINA.nb.html
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/BRAIN_SPLiT.ipynb
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/data_preparation_and_imputation/data_preprocessing_10X_5CL.nb.html
+      .. __: https://github.com/iyhaoo/DISC/tree/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/BRAIN_1.3M
 
     * Imputation
 
