@@ -12,10 +12,9 @@ utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
 ### Filter cells as Seurat tutorial
-Following <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we download original PBMC_3k data and perform cell filtering.</br>
-The original PBMC data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a.</br>
-The original PBMC data provided by Seurat can be found at https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz.</br>
-These two sources are identical.
+Following <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we download the original PBMC_3k data and perform cell filtering.</br>
+The original PBMC data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a (the original page of 10X) and https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz (the link in Seurat tutorial).
+We cached this dataset in our github, which can be found at https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC/filtered_gene_bc_matrices/hg19.
 ```{r}
 if(!file.exists("./data/PBMC/raw.loom")){
   temp <- tempfile()
@@ -37,7 +36,6 @@ if(!file.exists("./data/PBMC/raw.loom")){
   raw_data = readh5_loom("./data/PBMC/raw.loom")
   keep_gene_names = readRDS("./data/PBMC/used_gene_names.rds")
 }
-
 ```
 ### Identify cells as Seurat tutorial
 Following <a href="https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html">Seurat tutorial</a>, we identify cells.

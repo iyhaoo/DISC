@@ -222,6 +222,9 @@ readh5_sample_id = function(h5_path){
 }
 
 save_h5 = function(output_path, bc_gene_mat){
+  if(file.exists(output_path)){
+    unlink(output_path)
+  }
   h5createFile(output_path)
   h5createGroup(output_path, "col_attrs")
   h5write(rownames(bc_gene_mat), output_path,"col_attrs/CellID")
@@ -1494,7 +1497,7 @@ cell_type_heatmap = function(method_type_mat, title){
   plot_df = melt(method_type_mat)
   ggplot(data = plot_df, aes(x = Var2, y = Var1, fill = value)) + geom_tile() +
     labs(x="Cell Type", y = "Method") + theme_classic() +
-    scale_fill_gradient(low='white',high='red') + geom_text(aes(Var2, Var1, label = round(value,2)), color = "black", size = 4) + 
+    scale_fill_gradientn(colors = colorRampPalette(colors = c("white", "yellow", "red"))(100)) + geom_text(aes(Var2, Var1, label = round(value,2)), color = "black", size = 4) + 
     ggtitle(title) + scale_y_discrete(limits = rev(levels(plot_df$Var1))) +
     theme(axis.text.x = element_text(size = 10,angle = 45, hjust = 1, vjust = 1),
           axis.text.y = element_text(size = 10, hjust = 1, vjust = 1),
@@ -1503,6 +1506,8 @@ cell_type_heatmap = function(method_type_mat, title){
           plot.title = element_text(size=14, face="bold"))
 }
 
+pheatmap(plot_df, scale = "none", color = colorRampPalette(colors = c("white","yellow","red"))(100),
+         cluster_rows = FALSE, cluster_cols = FALSE, display_numbers = TRUE, labels_col=1)
 
 
 

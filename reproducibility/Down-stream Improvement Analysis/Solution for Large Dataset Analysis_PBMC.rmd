@@ -1,0 +1,67 @@
+---
+title: "Use DISC compressed features for Seurat clustering"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+```
+### Filtering cells as Seurat tutorial
+DISC outputs both values and compressed features after imputation.</br>
+Here, we demostrate how to DISC compressed features for Seurat clustering using PBMC data.
+Genes filtered by our gene selection are used for cell type identification evaluation.
+```{r fig.height=5, fig.width=6}
+ds_dir = "./data/PBMC/ds_0.3/r2"
+observed_path = paste0(ds_dir, "/observed.loom")
+observed_data = readh5_loom(observed_path)
+gene_filter = gene_selection(observed_data, 10)
+observed_filt = observed_data[gene_filter, ]
+DISC_values = readh5_loom(paste0(ds_dir, "/DISC.loom"))[gene_filter, ]
+DISC_features = readh5_feature(paste0(ds_dir, "/DISC_feature.hdf5"))
+cell_type = readRDS("./data/PBMC/cell_type.rds")
+cell_type_identification_result_list = list()
+cell_type_identification_result_list[["Observed"]] = seurat_classification(gene_bc_mat = observed_filt, cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
+cell_type_identification_result_list[["DISC"]] = seurat_classification(gene_bc_mat = DISC_values, cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
+cell_type_identification_result_list[["DISC_feature"]] = seurat_classification(gene_bc_mat = DISC_values, feature_bc_mat = DISC_features, cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show = T, cell_type_identification_fun = cell_type_identification_pbmc)
+```
+```{r fig.height=8, fig.width=2.5}
+acc_result = rep(NA, length(cell_type_identification_result_list))
+names(acc_result) = names(cell_type_identification_result_list)
+ari_result = rep(NA, length(cell_type_identification_result_list))
+names(ari_result) = names(cell_type_identification_result_list)
+for(ii in names(cell_type_identification_result_list)){
+  acc_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ACC"]
+  ari_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ARI"]
+}
+method_names = names(cell_type_identification_result_list)
+text_color = rep("black", length(method_names))
+names(text_color) = method_names
+text_color["DISC"] = "red"
+bar_color = rep("gray50", length(method_names))
+names(bar_color) = method_names
+bar_color["Raw"] = "white"
+bar_color["Observed"] = "gray80"
+bar_color["DISC"] = "red"
+barplot_usage(acc_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ACC", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
+barplot_usage(ari_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ARI", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
+```
+
+```{r fig.height=3, fig.width=10}
+unique_cell_type = unique(cell_type)
+jaccard_mat = matrix(ncol = length(unique_cell_type), nrow = length(cell_type_identification_result_list), dimnames = list(names(cell_type_identification_result_list), unique_cell_type))
+f1_mat = matrix(ncol = length(unique_cell_type), nrow = length(cell_type_identification_result_list), dimnames = list(names(cell_type_identification_result_list), unique_cell_type))
+acc_mat = matrix(ncol = length(unique_cell_type), nrow = length(cell_type_identification_result_list), dimnames = list(names(cell_type_identification_result_list), unique_cell_type))
+for(ii in names(cell_type_identification_result_list)){
+  jaccard_mat[ii, ] = cell_type_identification_result_list[[ii]][["cell_type_result"]][, "Jaccard"]
+  f1_mat[ii, ] = cell_type_identification_result_list[[ii]][["cell_type_result"]][, "F1-score"]
+  acc_mat[ii, ] = cell_type_identification_result_list[[ii]][["cell_type_result"]][, "ACC"]
+}
+cell_type_heatmap(jaccard_mat, "Jaccard")
+cell_type_heatmap(f1_mat, "F1-score")
+cell_type_heatmap(acc_mat, "ACC")
+```

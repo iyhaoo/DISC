@@ -16,6 +16,8 @@ The fraction of sampling is set to 30% of the original library size across cells
 Only 1 replicate will be generated here as an example.</br>
 Only imputed genes will be kept for comparison.
 ```{r}
+raw_data = readh5_loom("./data/PBMC/raw.loom")
+cell_type = readRDS("./data/PBMC/cell_type.rds")
 ds_dir = "./data/PBMC/ds_0.3/r2"
 dir.create(ds_dir, showWarnings = F, recursive = T)
 observed_path = paste0(ds_dir, "/observed.loom")
@@ -29,9 +31,7 @@ if(!file.exists(observed_path)){
 ```
 Here, we use genes filtered by our gene selection for cell type identification evaluation.
 ```{r}
-expressed_cell = rowSums(observed_data > 0)
-gene_expression = rowSums(observed_data)
-gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
+gene_filter = gene_selection(observed_data, 10)
 data_list = list(Raw = raw_data[gene_filter, ], Observed = observed_data[gene_filter, ])
 rm(raw_data, observed_data)
 ```
@@ -39,7 +39,7 @@ rm(raw_data, observed_data)
 We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">run imputation</a> using downsampling data.</br>
 Here, we load the imputation results, which can be found <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC">here</a>.
 ```{r}
-data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[gene_filter, ]
+data_list[["DISC"]] = readh5_loom(paste0(ds_dir, "/DISC.loom"))[gene_filter, ]
 data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
 data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
 data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
@@ -55,6 +55,7 @@ for(ii in data_list){
 ```{r}
 cell_type_identification_result_list = list()
 for(ii in names(data_list)){
+  print(ii)
   cell_type_identification_result_list[[ii]] = seurat_classification(gene_bc_mat = data_list[[ii]], cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show_plots = T, cell_type_identification_fun = cell_type_identification_pbmc)
 }
 ```
