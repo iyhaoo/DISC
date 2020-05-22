@@ -292,12 +292,12 @@ Usage
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
-  * Down-stream Improvement Analysis:
+  * Down-stream Analysis Improvement:
 
     (1). Cell Type Identification (Down-sampling)
       Tutorial : `PBMC`__
 
-        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Down-stream%20Analysis%20Improvement/Cell%20Type%20Identification_PBMC.nb.html
 
     (2). DEG Identification (Bulk)
       Tutorial : `JURKAT_293T`__
@@ -307,7 +307,7 @@ Usage
     (3). Solution for Large Dataset Analysis
       Tutorial : `PBMC`__
 
-        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Down-stream%20Analysis%20Improvement/Solution%20for%20Large%20Dataset%20Analysis_PBMC.nb.html
 
     (S1). Trajectory Analysis
       Tutorial : `BONE_MARROW`__
