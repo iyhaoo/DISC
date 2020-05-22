@@ -52,7 +52,7 @@ for(ii in data_list){
 }
 ```
 ### Cell identification
-```{r}
+```{r fig.height=6, fig.width=10}
 cell_type_identification_result_list = list()
 for(ii in names(data_list)){
   print(ii)

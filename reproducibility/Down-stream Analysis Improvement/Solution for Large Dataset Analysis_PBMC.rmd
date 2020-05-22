@@ -15,7 +15,7 @@ source(utilities_path)
 DISC outputs both values and compressed features after imputation.</br>
 Here, we demostrate how to DISC compressed features for Seurat clustering using PBMC data.
 Genes filtered by our gene selection are used for cell type identification evaluation.
-```{r fig.height=5, fig.width=6}
+```{r fig.height=6, fig.width=10}
 ds_dir = "./data/PBMC/ds_0.3/r2"
 observed_path = paste0(ds_dir, "/observed.loom")
 observed_data = readh5_loom(observed_path)
