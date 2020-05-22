@@ -1506,8 +1506,4 @@ cell_type_heatmap = function(method_type_mat, title){
           plot.title = element_text(size=14, face="bold"))
 }
 
-pheatmap(plot_df, scale = "none", color = colorRampPalette(colors = c("white","yellow","red"))(100),
-         cluster_rows = FALSE, cluster_cols = FALSE, display_numbers = TRUE, labels_col=1)
-
-
 
