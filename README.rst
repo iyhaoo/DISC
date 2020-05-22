@@ -275,12 +275,12 @@ Usage
     (1). Gene Expression Structures (FISH)
       Tutorial : `MELANOMA`__
 
-       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Gene_expression_structures_recovery_validated_by_FISH_MELANOMA.nb.html
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Gene%20Expression%20Structures_MELANOMA.nb.html
 
     (2). Gene and Cell Structures (Down-sampling)
       Tutorial : `MELANOMA`__
 
-        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Dropout_event_recovery_MELANOMA.nb.html
 
     (S1). Spearman Correlation (Bulk)
       Tutorial : `JURKAT_293T`__
