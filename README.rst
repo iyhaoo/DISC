@@ -324,7 +324,7 @@ Usage
     |`Violin Plot`__   |`PBMC`__          |`RETINA`__        |
     +------------------+------------------+------------------+
 
-    .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/gene_expression/violin_plot.py
+    .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/Other%20Utility%20Scripts/violin_plot.py
     .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/PBMC/violin_plot.pdf
     .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/results/RETINA/violin_plot.pdf
 
