@@ -272,11 +272,11 @@ Usage
 
     * Computational Resource Evaluation
 
-      * `Result`__
+      (1) `Result`__
 
         .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Run%20Imputation.md
 
-      * `Evatualtion Script`__
+      (2) `Test Program`__
 
         .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/source/memusg
 
