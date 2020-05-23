@@ -290,7 +290,7 @@ Usage
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (S2). Identification of True Zeros (Down-sampling)
-      * Tutorial : `MELANOMA, SSCORTEX, CBMC, PBMC`__
+      * Tutorial : `MELANOMA, SSCORTEX, CBMC and PBMC`__
 
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Identification%20of%20True%20Zeros.nb.html
 
