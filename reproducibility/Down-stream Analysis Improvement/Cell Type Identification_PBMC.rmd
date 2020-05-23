@@ -40,19 +40,19 @@ We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials
 Here, we load the imputation results, which can be found <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC">here</a>.
 ```{r}
 data_list[["DISC"]] = readh5_loom(paste0(ds_dir, "/DISC.loom"))[gene_filter, ]
-data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
-data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
+data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
 data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
 data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
-data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
 data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
-data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
+data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
+data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
+data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
 for(ii in data_list){
   print(dim(ii))
 }
 ```
 ### Cell identification
-```{r fig.height=6, fig.width=10}
+```{r fig.height=6, fig.width=8}
 cell_type_identification_result_list = list()
 for(ii in names(data_list)){
   print(ii)

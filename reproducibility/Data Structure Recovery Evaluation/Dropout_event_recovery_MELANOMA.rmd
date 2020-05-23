@@ -18,9 +18,9 @@ Only 1 replicate will be generated here as an example.</br>
 Only imputed genes will be kept for comparison.
 ```{r}
 raw_data = readh5_loom("./data/MELANOMA/raw.loom")
-ds_dir = "./data/MELANOMA/ds_0.5"
+ds_dir = "./data/MELANOMA/ds_0.5/r1"
 dir.create(ds_dir, showWarnings = F, recursive = T)
-output_dir = "./results/MELANOMA/ds_0.5"
+output_dir = "./results/MELANOMA/ds_0.5/r1"
 dir.create(output_dir, showWarnings = F, recursive = T)
 observed_path = paste0(ds_dir, "/observed.loom")
 if(!file.exists(observed_path)){
@@ -29,9 +29,7 @@ if(!file.exists(observed_path)){
 }else{
   observed_data = readh5_loom(observed_path)
 }
-expressed_cell = rowSums(observed_data > 0)
-gene_expression = rowSums(observed_data)
-gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
+gene_filter = gene_selection(observed_data, 10)
 raw_data = raw_data[gene_filter, ]
 observed_data = observed_data[gene_filter, ]
 used_genes = rownames(observed_data)
@@ -44,30 +42,26 @@ rm(raw_data, observed_data)
 We <a href="https://github.com/iyhaoo/DISC/blob/master/reproducibility/tutorials/run_imputation.md">run imputation</a>  using downsampling data.</br>
 Here, we load all imputation results.
 ```{r}
-data_list[["DISC"]] = readh5_imputation(paste0(ds_dir, "/DISC.hdf5"), with_outliers = T)[used_genes, ]
+data_list[["DISC"]] = readh5_loom(paste0(ds_dir, "/DISC.loom"))[used_genes, ]
 print(dim(data_list[["DISC"]]))
-data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
-data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
+data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
 data_list[["MAGIC"]] = readh5_imputation(paste0(ds_dir, "/MAGIC.hdf5"))
 data_list[["DCA"]] = readh5_imputation(paste0(ds_dir, "/DCA.hdf5"))
-data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
 data_list[["scScope"]] = readh5_imputation(paste0(ds_dir, "/scScope.hdf5"))
-data_list[["scVI"]] = readh5_imputation(paste0(ds_dir, "/scVI.hdf5"))
+data_list[["DeepImpute"]] = readh5_imputation(paste0(ds_dir, "/DeepImpute.hdf5"))
+data_list[["VIPER"]] = readh5_imputation(paste0(ds_dir, "/VIPER.hdf5"))
+data_list[["scImpute"]] = readh5_imputation(paste0(ds_dir, "/scImpute.hdf5"))
 cell_number = ncol(data_list[["Raw"]])
 gene_number = length(used_genes)
 ```
 ### Settings
 ```{r}
-method_names = setdiff(names(data_list), "Raw")
-method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
+method_names = c("Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
 names(method_color) = method_names
 text_color = rep("black", length(method_names))
 names(text_color) = method_names
 text_color["DISC"] = "red"
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
-bar_color["Observed"] = "gray80"
-bar_color["DISC"] = "red"
 ```
 ### MAE
 ```{r}
@@ -104,16 +98,14 @@ ggplot(MAE_df, aes(x = factor(Var1, levels = MAE_levels), y = value, fill = fact
 
 ### CMD
 ```{r}
-CMD_output_dir = paste0(output_dir, "/CMD")
-dir.create(CMD_output_dir, showWarnings = F, recursive = T)
-vst_file = paste0(CMD_output_dir, "/vst_gene.tsv")
+vst_file = paste0(output_dir, "/vst_gene.tsv")
 if(file.exists(vst_file)){
   hvg_info = read.table(vst_file)
   print("load vst_file")
 }else{
   hvg_info = FindVariableFeatures_vst_by_genes(data_list[["Raw"]])
   hvg_info = hvg_info[order(hvg_info$variance.standardized, decreasing = T), ]
-  write.table(hvg_info, paste0(CMD_output_dir, "/vst_gene.tsv"), sep = "\t", quote = F, row.names = T, col.names = T)
+  write.table(hvg_info, paste0(output_dir, "/vst_gene.tsv"), sep = "\t", quote = F, row.names = T, col.names = T)
 }
 used_feature_genes = rownames(hvg_info)[1:300]
 cor_all = list()
@@ -125,7 +117,7 @@ for(ii in names(data_list)){
   }
   print(ii)
 }
-saveRDS(cor_all, paste0(CMD_output_dir, "/cor_all.rds"))
+saveRDS(cor_all, paste0(output_dir, "/cor_all.rds"))
 cmd_value = c()
 for(ii in method_names){
   cmd_value = c(cmd_value, calc_cmd(cor_all[["Raw"]], cor_all[[ii]]))

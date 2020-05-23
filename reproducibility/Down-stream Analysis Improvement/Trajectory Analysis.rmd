@@ -1,0 +1,70 @@
+---
+title: "Pseudotemporal Analysis"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+source_path = "./source/trajectory_analysis.r"
+source(source_path)
+```
+Settings.
+```{r}
+method_names = c("Raw", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
+names(method_color) = method_names
+text_color = rep("black", length(method_names))
+names(text_color) = method_names
+cell_type = readRDS("./data/BONE_MARROW/cell_type.rds")
+raw_mat = readh5_loom("./data/BONE_MARROW/raw.loom")
+raw_filt = raw_mat[gene_selection(raw_mat, 10), ]
+dim(raw_filt) #  13813, 6939
+used_genes = rownames(raw_filt)
+result_list = list()
+```
+```{r fig.height=6, fig.width=8}
+for(ii in method_names){
+  switch(ii, 
+         "Raw" = {
+           gene_bc_filt = raw_filt
+         },
+         "DISC" = {
+           gene_bc_mat = readh5_loom(paste0("./data/BONE_MARROW/", ii, ".loom"))
+           gene_bc_filt = gene_bc_mat[used_genes, ]
+         }, {
+           gene_bc_mat = readh5_imputation(paste0("./data/BONE_MARROW/", ii, ".hdf5"))
+           gene_bc_filt = gene_bc_mat[used_genes, ]
+         }
+  )
+  used_cells = names(cell_type)[!is.na(cell_type)]
+  cds = get_cds_monocle2(gene_bc_filt[, used_cells])
+  result_mat = get_score_monocle2(cds, cell_type, correct_order = correct_order_all, wrong_order = wrong_order_all, type_level = type_level, show_interactively = T)
+  print(ii)
+  print(result_mat[which.max(result_mat[, 2]), ])
+  result_list[[ii]] = result_mat
+}
+```
+```{r fig.height=8, fig.width=6}
+print(result_list)
+percentage_value = sapply(result_list, function(x){
+  return(x[which.max(x[, 2]), ])
+})
+method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
+
+barplot_usage(percentage_value, main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F)
+```
+
+
+
+
+
+
+
+
+
+
+
+

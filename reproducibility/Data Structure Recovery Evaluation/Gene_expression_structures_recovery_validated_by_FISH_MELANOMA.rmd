@@ -20,9 +20,7 @@ Only the overlapped gene in both filtered RNA-seq and FISH matrixes will be used
 dataset_list = list()
 dataset_list[["FISH"]] = readh5_loom("./data/MELANOMA/fish.loom")
 raw_data = readh5_loom("./data/MELANOMA/raw.loom")
-expressed_cell = rowSums(raw_data > 0)
-gene_expression = rowSums(raw_data)
-gene_filter = expressed_cell >= 10 & gene_expression > expressed_cell * 1
+gene_filter = gene_selection(raw_data, 10)
 raw_input_data = raw_data[gene_filter, ]
 use_genes = intersect(rownames(dataset_list[["FISH"]]), rownames(raw_input_data))
 used_cells = colnames(dataset_list[["Raw"]])
@@ -41,25 +39,24 @@ Now we load them.</br>
 Note that SAVER needs to generate gene expression values following gamma distribution (FF, Gini CMD) or poisson–gamma mixture (density distribution). For this reason, we load its rds-formatted file here.
 ```{r}
 ### DISC
-our_result = "./data/MELANOMA/DISC.hdf5"
-dataset_list[["DISC"]] = readh5_imputation(our_result, use_genes, with_outliers=T)
+dataset_list[["DISC"]] = readh5_loom("./data/MELANOMA/DISC.loom", use_genes)
 ### Other methods
 #dataset_list[["SAVER"]] = readRDS("./data/MELANOMA/SAVER.rds")
 #set.seed(42)
 #dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, used_cells]
-dataset_list[["scImpute"]] = readh5_imputation("./data/MELANOMA/scImpute.hdf5", use_genes, used_cells)
-dataset_list[["VIPER"]] = readh5_imputation("./data/MELANOMA/VIPER.hdf5", use_genes, used_cells)
+dataset_list[["scVI"]] = readh5_imputation("./data/MELANOMA/scVI.hdf5", use_genes, used_cells)
 dataset_list[["MAGIC"]] = readh5_imputation("./data/MELANOMA/MAGIC.hdf5", use_genes, used_cells)
 dataset_list[["DCA"]] = readh5_imputation("./data/MELANOMA/DCA.hdf5", use_genes, used_cells)
-dataset_list[["DeepImpute"]] = readh5_imputation("./data/MELANOMA/DeepImpute.hdf5", use_genes)
 dataset_list[["scScope"]] = readh5_imputation("./data/MELANOMA/scScope.hdf5", use_genes, used_cells)
-dataset_list[["scVI"]] = readh5_imputation("./data/MELANOMA/scVI.hdf5", use_genes, used_cells)
+dataset_list[["DeepImpute"]] = readh5_imputation("./data/MELANOMA/DeepImpute.hdf5", use_genes)
+dataset_list[["VIPER"]] = readh5_imputation("./data/MELANOMA/VIPER.hdf5", use_genes, used_cells)
+dataset_list[["scImpute"]] = readh5_imputation("./data/MELANOMA/scImpute.hdf5", use_genes, used_cells)
 ```
 ### Output settings
 The output color for each method and the output directory will be setup here.
 ```{r}
-method_names = c("Raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
-method_color = c("gray80", "#FF0000", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
+method_names = c("Raw", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
 names(method_color) = method_names
 bar_color = rep("gray50", length(method_names))
 names(bar_color) = method_names
@@ -68,8 +65,6 @@ bar_color["DISC"] = "red"
 text_color = rep("black", length(method_names))
 names(text_color) = method_names
 text_color["DISC"] = "red"
-path_fragments = unlist(strsplit(our_result, "/", fixed = T))
-length_path_fragments = length(path_fragments)
 ### make output dir
 outdir = "./results/MELANOMA/structure_recovery"
 dir.create(outdir, showWarnings = F, recursive = T)
@@ -121,12 +116,12 @@ use_order = order(colMeans(matrix(apply(cor_all[["FISH"]], 2, function(x){
 #pdf(outfile, height = 7, width = 12.5)
 cmd_vector = layout_correlogram_plot(cor_all, use_order=use_order)
 #dev.off()
+names(cmd_vector) = names(cor_all)
+cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
 ```
 #### CMD
 ```{r fig.height=6, fig.width=4.5}
-names(cmd_vector) = names(cor_all)
-cmd_vector = cmd_vector[setdiff(names(cmd_vector), "FISH")]
-barplot_usage(cmd_vector, main = "CMD", bar_color = bar_color, text_color = text_color, use_data_order = T)
+barplot_usage(cmd_vector, main = "CMD", bar_color = method_color, text_color = text_color, use_data_order = T, use_border = F)
 saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
 ```
 #### Normalization
@@ -174,7 +169,7 @@ saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
 ```
 ```{r fig.height=6, fig.width=4.5}
 par(mfrow = c(1, 1))
-barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = bar_color, text_color = text_color, use_data_order = T)
+barplot_usage(gini_rmse, main = "Gini RMSE", bar_color = method_color, text_color = text_color, use_data_order = T, use_border = F)
 ```
 #### Density
 ```{r fig.height=9, fig.width=16.5, warning=FALSE}
@@ -228,7 +223,7 @@ outfile = paste0(outdir, "/density_summary.pdf")
 ks_mean = Matrix::colMeans(ks_matrix)
 standard_error_ks = apply(ks_matrix, 2, function(x) sqrt(var(x)/length(x)))
 par(mfrow = c(1, 1))
-barplot_usage(ks_mean, main = "K-S Statistic", bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks)
+barplot_usage(ks_mean, main = "K-S Statistic", bar_color = method_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks, use_border = F)
 #dev.off()
 ```
 #### 2D distribution
@@ -359,6 +354,6 @@ saveRDS(output_list, paste(outdir, "/Bar_stat.rds", sep = ""))
 ```
 ### Notes:
 Single plots of FF are saved in <a href="https://github.com/iyhaoo/DISC/tree/master/reproducibility/results/MELANOMA/structure_recovery/2d_distribution">here</a>.</br>
-ALL data we used here can be found <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA">here</a>.
+ALL data we used in this script can be found <a href="https://github.com/iyhaoo/DISC_data_availability/tree/master/MELANOMA">here</a>.
 
 
