@@ -272,32 +272,36 @@ Usage
 
     * Computational Resource Evaluation
 
-      (1) `Results`__
+      * `Results`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Computational%20Resource%20Evaluation/Show%20Results.nb.html
 
-      (2) `Test Program`__
+      * `Test Program`__
 
         .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/source/memusg
 
   * Data Structure Recovery Evaluation
 
     (1). Gene Expression Structures (FISH)
+
       Tutorial : `MELANOMA`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Gene%20Expression%20Structures_MELANOMA.nb.html
 
     (2). Gene and Cell Structures (Down-sampling)
+
       Tutorial : `MELANOMA`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Dropout_event_recovery_MELANOMA.nb.html
 
     (S1). Spearman Correlation (Bulk)
+
       Tutorial : `JURKAT_293T`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (S2). Identification of True Zeros (Down-sampling)
+
       Tutorial : `MELANOMA`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
@@ -305,21 +309,25 @@ Usage
   * Down-stream Analysis Improvement:
 
     (1). Cell Type Identification (Down-sampling)
+
       Tutorial : `PBMC`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Down-stream%20Analysis%20Improvement/Cell%20Type%20Identification_PBMC.nb.html
 
     (2). DEG Identification (Bulk)
+
       Tutorial : `JURKAT_293T`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (3). Solution for Large Dataset Analysis
+
       Tutorial : `PBMC`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Down-stream%20Analysis%20Improvement/Solution%20for%20Large%20Dataset%20Analysis_PBMC.nb.html
 
     (S1). Trajectory Analysis
+
       Tutorial : `BONE_MARROW`__
 
         .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
