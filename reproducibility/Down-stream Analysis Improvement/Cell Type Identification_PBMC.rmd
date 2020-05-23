@@ -51,6 +51,15 @@ for(ii in data_list){
   print(dim(ii))
 }
 ```
+Settings
+```{r}
+method_names = c("Raw", "Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("black", "#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
+text_color = rep("black", length(method_names))
+names(text_color) = method_names
+text_color["DISC"] = "red"
+
+```
 ### Cell identification
 ```{r fig.height=6, fig.width=8}
 cell_type_identification_result_list = list()
@@ -59,7 +68,7 @@ for(ii in names(data_list)){
   cell_type_identification_result_list[[ii]] = seurat_classification(gene_bc_mat = data_list[[ii]], cell_type = cell_type, pca_dim = 10, res = 0.5, min_pct = 0.25, show_plots = T, cell_type_identification_fun = cell_type_identification_pbmc)
 }
 ```
-```{r fig.height=5, fig.width=4.5}
+```{r fig.height=8, fig.width=6}
 acc_result = rep(NA, length(cell_type_identification_result_list))
 names(acc_result) = names(cell_type_identification_result_list)
 ari_result = rep(NA, length(cell_type_identification_result_list))
@@ -68,15 +77,6 @@ for(ii in names(cell_type_identification_result_list)){
   acc_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ACC"]
   ari_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ARI"]
 }
-method_names = names(cell_type_identification_result_list)
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
-text_color["DISC"] = "red"
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
-bar_color["Raw"] = "white"
-bar_color["Observed"] = "gray80"
-bar_color["DISC"] = "red"
 barplot_usage(acc_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ACC", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
 barplot_usage(ari_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ARI", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)
 ```

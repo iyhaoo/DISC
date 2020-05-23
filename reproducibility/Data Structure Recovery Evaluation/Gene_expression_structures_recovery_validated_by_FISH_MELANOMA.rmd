@@ -204,7 +204,7 @@ for(ii in plot_genes){
   plot(fish_density, lwd = 2, col = "black", lty = 1,
        xlim = c(min(fish_density$x, 0), xlim_max + 5),
        ylim = c(0, ylim_max), yaxt = "s", bty="n",
-       main = paste0(firstup(ii), " (", zero_proportion, "%)"),
+       main = paste0(toupper(ii), " (", zero_proportion, "%)"),
        sub = "", ylab = "Density", xlab = "mRNA Counts")
   par(las = 0)
   for(this_density_name in names(use_density)){
@@ -313,13 +313,13 @@ saveRDS(ks_stat_mat, paste(outdir, "/ks_stat_mat.rds", sep = ""))
 mean_ks_stat = Matrix::colMeans(ks_stat_mat)
 standard_error_ks_stat = apply(ks_stat_mat, 2, function(x) sqrt(var(x)/length(x)))
 ```
-```{r fig.height=5, fig.width=9.5}
+```{r fig.height=8, fig.width=12}
 outfile = paste(outdir, "/score_compare.pdf", sep = "")
 #pdf(outfile, height = 5, width = 11)
 par(mfrow = c(1, 2))
-barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5,bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks_stat)
+barplot_usage(mean_ks_stat, main = "Fasano and Franceschini's Test", cex.main = 1.5,bar_color = method_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks_stat, use_border = F)
 corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
-barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T)
+barplot_usage(corr_rmse, main = "FISH - Impute Correlation RMSE", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, use_border = F)
 #dev.off()
 ```
 ### Summary
