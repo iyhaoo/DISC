@@ -141,3 +141,5 @@ cp /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_6/merged_set_ds_0.3
 cp /home/yuanhao/data/fn/retina/ds/downsampling_first_repeat_5/merged_set_unique_rename_ds_0.3.loom /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/ds_0.3/r5/Observed.loom
 
 
+cp -r /home/yuanhao/data/fn/sscortex/filt_gene_500_5000/merge/imputation/* /home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX
+cp -r /home/yuanhao/data/fn/melanoma/imputation/SAVER_tmp /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA

@@ -1,41 +1,41 @@
-## Run imputation
+## Run Imputation
 We use a Linux CentOS 7 machine which has 2 Intel® Xeon® E5-2650 v4 CPUs, 128GB RAM and 1 NVIDIA® Tesla® V100 GPU.
 
-For Some datasets which have duplicated gene names, we can run a python script in terminal as 
+For some datasets which have duplicated gene names, we run a python script in terminal like this 
     
     python3 reproducibility/source/loom_rename_duplicated.py \
     --input=matrix.loom
 
-The renamed loom-formatted file will be generated in the same directory of `matrix.loom`.
+The renamed loom-formatted file will be generated in the same folder as `matrix.loom`.
 #### SAVER
-    R --slave < reproducibility/source/other_methods/SAVER.r \
+    R --slave < "./reproducibility/source/Running Scripts for Other Methods/SAVER.r" \
     --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom 16 10
+#### scVI
+    python3 "./reproducibility/source/Running Scripts for Other Methods/scVI.py" \
+    --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
+    --min-expressed-cell=10
 #### MAGIC
-    python3 reproducibility/source/other_methods/MAGIC.py \
+    python3 "./reproducibility/source/Running Scripts for Other Methods/MAGIC.py" \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --min-expressed-cell=10
 #### DCA
-    python3 reproducibility/source/other_methods/DCA.py \
+    python3 "./reproducibility/source/Running Scripts for Other Methods/DCA.py" \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --min-expressed-cell=10
 #### scScope
-    python3 reproducibility/source/other_methods/scScope.py \
+    python3 "./reproducibility/source/Running Scripts for Other Methods/scScope.py" \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --min-expressed-cell=10
-#### scVI
-    python3 reproducibility/source/other_methods/scVI.py \
+#### DeepImpute
+    python3 "./reproducibility/source/Running Scripts for Other Methods/DeepImpute.py" \
     --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
     --min-expressed-cell=10
-#### deepImpute
-    python3 reproducibility/source/other_methods/deepImpute.py \
-    --loom=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
-    --min-expressed-cell=10
-#### scImpute
-    R --slave < reproducibility/source/other_methods/scImpute.r \
-    --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom 16 10
 #### VIPER
-    R --slave < reproducibility/source/other_methods/VIPER.r \
+    R --slave < "./reproducibility/source/Running Scripts for Other Methods/VIPER.r" \
     --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom gene 10
+#### scImpute
+    R --slave < "./reproducibility/source/Running Scripts for Other Methods/scImpute.r" \
+    --args /home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom 16 10
     
 Here, all results will be saved in `/home/yuanhao/data/fn/melanoma/imputation` with genes filtered.
 We can easily run
@@ -46,7 +46,7 @@ We can easily run
 and get `output_file_resume_dim.loom` with complete dimension (only genes as we don't resume cells here) as `/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom`.
 
 #### DISC
-For `DISC`, the loom-formatted result with complete genes is saved in `out_dir/result/imputation.loom`, we also provide a low dimensional (default 50) recovery result which is saved in `out_dir/result/feature.loom`. 
+For `DISC`, the imputation result (DISC outputs a matrix of the same dimension with `input.loom`, in which genes selected by "gene selection" are updated using DISC imputaion result) is saved in `out_dir/result/imputation.loom`, the low dimensional (default 50) of  DISC imputaion result is saved in `out_dir/result/feature.loom`. 
 
     disc \
     --dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
