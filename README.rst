@@ -109,18 +109,18 @@ Usage
       .. __: http://loom.linnarssonlab.org/clone/Mousebrain.org.level1/L1_Cortex2.loom
       .. __: http://linnarssonlab.org/osmFISH/availability/
 
+  * CBMC :
+      Cord blood mononuclear cells were profiled by CITE-seq, where
+      8,005 human cells were detected in total (`scRNA-seq`__).
+
+      .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866
+
   * PBMC :
       2,700 freeze-thaw peripheral blood mononuclear cells (PBMC) from
       a healthy donor were profiled by 10X, where 32,738 genes
       were detect (`scRNA-seq`__).
 
       .. __: https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/frozen_pbmc_donor_a
-
-  * CBMC :
-      Cord blood mononuclear cells were profiled by CITE-seq, where
-      8,005 human cells were detected in total (`scRNA-seq`__).
-
-      .. __: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100866
 
   * JURKAT_293T :
       3258 jurkat cells (`scRNA-seq`__) and 2885 293T cells
@@ -187,9 +187,9 @@ Usage
   +------------------+------------------+------------------+------------------+------------------+----------------------+
   |`SSCORTEX`__      |`YES`__           |`0.5`__           |`YES`__           |NO                |NO                    |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
-  |`PBMC`__          |`YES`__           |`0.3`__, `0.5`__  |NO                |NO                |`YES`__               |
-  +------------------+------------------+------------------+------------------+------------------+----------------------+
   |`CBMC`__          |`YES`__           |`0.5`__           |NO                |NO                |NO                    |
+  +------------------+------------------+------------------+------------------+------------------+----------------------+
+  |`PBMC`__          |`YES`__           |`0.3`__, `0.5`__  |NO                |NO                |`YES`__               |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
   |`JURKAT_293T`__   |`YES`__           |NO                |NO                |`YES`__           |NO                    |
   +------------------+------------------+------------------+------------------+------------------+----------------------+
@@ -212,14 +212,14 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/SSCORTEX/raw.loom
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/SSCORTEX/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/SSCORTEX/fish.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
+  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/CBMC/raw.loom
+  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/PBMC/raw.loom
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC/ds_0.3
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/PBMC/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/PBMC/cell_type.rds
-  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC
-  .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/CBMC/raw.loom
-  .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/CBMC/ds_0.5
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/JURKAT_293T
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/JURKAT_293T/raw.loom
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/JURKAT_293T/bulk.loom
@@ -290,7 +290,7 @@ Usage
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
 
     (S2). Identification of True Zeros (Down-sampling)
-      * Tutorial : `MELANOMA`__
+      * Tutorial : `MELANOMA, SSCORTEX, CBMC, PBMC`__
 
       .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Identification%20of%20True%20Zeros.nb.html
 
