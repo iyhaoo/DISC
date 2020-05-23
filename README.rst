@@ -266,9 +266,19 @@ Usage
       .. __: https://nbviewer.jupyter.org/github/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/BRAIN_SPLiT.ipynb
       .. __: https://github.com/iyhaoo/DISC/tree/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Data%20Pre-processing/BRAIN_1.3M
 
-    * Imputation
+    * `Imputation`__
+
+      .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Run%20Imputation.md
 
     * Computational Resource Evaluation
+
+      * `Result`__
+
+        .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Run%20Imputation.md
+
+      * `Evatualtion Script`__
+
+        .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/source/memusg
 
   * Data Structure Recovery Evaluation
 
