@@ -272,9 +272,9 @@ Usage
 
     * Computational Resource Evaluation
 
-      (1) `Result`__
+      (1) `Results`__
 
-        .. __: https://github.com/iyhaoo/DISC/blob/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Run%20Imputation.md
+        .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Preparation%2C%20Imputation%20and%20Computational%20Resource%20Evaluation/Computational%20Resource%20Evaluation/Show%20Results.nb.html
 
       (2) `Test Program`__
 
