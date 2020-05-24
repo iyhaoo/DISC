@@ -5,7 +5,7 @@ output: html_notebook
 ### Setup knitr and load utility functions
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
 ```
 ```{r}
 utilities_path = "./source/utilities.r"
@@ -44,4 +44,33 @@ if(!file.exists("./data/10X_5CL/raw.loom")){
   print(dim(raw_data))
 }
 print("10X_5CL...OK!")
+```
+The bulk data can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE86337. </br>
+```{r}
+if(!file.exists("./data/10X_5CL/bulk.loom")){
+  library(org.Hs.eg.db)
+  gene_bulk_mat_raw = as.matrix(read.table("./data/10X_5CL/original_data/GSE86337_reverse.stranded.unfiltered.count.matrix.txt.gz", header = T, row.names = 1, sep = "\t"))
+  sample_mapping = as.matrix(read.csv("./data/10X_5CL/original_data/GSE86337_sample_id_sample_name.txt", sep = "\t"))
+  sample_name = sample_mapping[, 2]
+  names(sample_name) = sample_mapping[, 1]
+  colnames(gene_bulk_mat_raw) = sample_name[colnames(gene_bulk_mat_raw)]
+  gene_name_all = select(org.Hs.eg.db, key = as.character(rownames(gene_bulk_mat_raw)), columns = c("SYMBOL"), keytype = "ENTREZID")$SYMBOL
+  rownames(gene_bulk_mat_raw) = gene_name_0
+  gene_bulk_filt_0 = gene_bulk_mat_raw[!is.na(gene_name_0), ]
+  gene_name_used = rownames(gene_bulk_filt_0)
+  used_index = sapply(unique(gene_name_used), function(x){
+    this_index = which(gene_name_used == x)
+    if(length(this_index) > 1){
+      return(this_index[which.max(rowSums(gene_bulk_filt_0[this_index, ]))])
+    }else{
+      return(this_index)
+    }
+  })
+  gene_bulk_mat = gene_bulk_filt_0[used_index, ]
+  save_h5("./data/10X_5CL/bulk.loom", as.matrix(t(gene_bulk_mat)))
+}else{
+  gene_bulk_mat = readh5_loom("./data/10X_5CL/bulk.loom")
+}
+print(dim(gene_bulk_mat))
+print("10X_5CL_Bulk...OK!")
 ```

@@ -5,59 +5,60 @@ output: html_notebook
 ### Setup knitr and load utility functions
 ```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+knitr::opts_knit$set(root.dir="D:/github_repositories/DISC/reproducibility")
 ```
 ```{r}
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
 ### Generate data file
-The original JURKAT data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat.</br>
-The original 293T data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/293t.</br>
-We filter cells following this paper https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1.
+The original JURKAT data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat. </br>
+The original 293T data can be found at https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/293t. </br>
+We filter cells following this paper (https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1).
 ```{r}
-if(!file.exists("./data/JURKAT/raw.loom")){
+if(!file.exists("./data/JURKAT_293T/raw_Jurkat.loom")){
   temp <- tempfile()
   download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/jurkat/jurkat_filtered_gene_bc_matrices.tar.gz", temp)
-  exdir = "./data/JURKAT"
+  exdir = "./data/JURKAT_293T/original_data/Jurkat"
+  dir.create(exdir, showWarnings = F, recursive = T)
   untar(temp, exdir = exdir)
   unlink(temp)
   original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
-  save_h5("./data/JURKAT/original.loom", as.matrix(t(original_data)))
+  save_h5("./data/JURKAT_293T/original_Jurkat.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names_JURKAT = colnames(seurat_obj[["RNA"]]@counts)
   gene_names_JURKAT = rownames(original_data)
   raw_data_JURKAT = as.matrix(original_data[, cell_names_JURKAT])
-  save_h5("./data/JURKAT/raw.loom", t(raw_data_JURKAT))
+  save_h5("./data/JURKAT_293T/raw_Jurkat.loom", t(raw_data_JURKAT))
 }else{
-  raw_data_JURKAT = readh5_loom("./data/JURKAT/raw.loom")
+  raw_data_JURKAT = readh5_loom("./data/JURKAT_293T/raw_Jurkat.loom")
   cell_names_JURKAT = colnames(raw_data_JURKAT)
   gene_names_JURKAT = rownames(raw_data_JURKAT)
 }
 print(dim(raw_data_JURKAT))
 print("JURKAT...OK!")
-if(!file.exists("./data/293T/raw.loom")){
+if(!file.exists("./data/JURKAT_293T/raw_293T.loom")){
   temp <- tempfile()
   download.file("http://cf.10xgenomics.com/samples/cell-exp/1.1.0/293t/293t_filtered_gene_bc_matrices.tar.gz", temp)
-  exdir = "./data/293T"
+  exdir = "./data/JURKAT_293T/original_data/293T"
+  dir.create(exdir, showWarnings = F, recursive = T)
   untar(temp, exdir = exdir)
   unlink(temp)
   original_data <- Read10X(data.dir = paste0(exdir, "/filtered_matrices_mex/hg19/"))
-  save_h5("./data/293T/original.loom", as.matrix(t(original_data)))
+  save_h5("./data/JURKAT_293T/original_293T.loom", as.matrix(t(original_data)))
   seurat_obj <- CreateSeuratObject(counts = as.data.frame(original_data), min.features = 500)
   cell_names_293T = colnames(seurat_obj[["RNA"]]@counts)
   gene_names_293T = rownames(original_data)
   raw_data_293T = as.matrix(original_data[, cell_names_293T])
-  save_h5("./data/293T/raw.loom", t(raw_data_293T))
+  save_h5("./data/JURKAT_293T/raw_293T.loom", t(raw_data_293T))
 }else{
-  raw_data_293T = readh5_loom("./data/293T/raw.loom")
+  raw_data_293T = readh5_loom("./data/JURKAT_293T/raw_293T.loom")
   cell_names_293T = colnames(raw_data_293T)
   gene_names_293T = rownames(raw_data_293T)
 }
 print(dim(raw_data_293T))
 print("293T...OK!")
 if(!file.exists("./data/JURKAT_293T/raw.loom")){
-  dir.create("./data/JURKAT_293T", showWarnings = F)
   gene_names_JURKAT_293T = unique(c(gene_names_JURKAT, gene_names_293T))
   raw_data_JURKAT_293T = matrix(0, nrow = length(gene_names_JURKAT_293T), ncol = ncol(raw_data_JURKAT) + ncol(raw_data_293T), dimnames = list(gene_names_JURKAT_293T, c(cell_names_JURKAT, cell_names_293T)))
   raw_data_JURKAT_293T[gene_names_JURKAT, cell_names_JURKAT] = raw_data_JURKAT
@@ -69,3 +70,63 @@ if(!file.exists("./data/JURKAT_293T/raw.loom")){
 print(dim(raw_data_JURKAT_293T))
 print("JURKAT_293T...OK!")
 ```
+The bulk data can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE129240. </br>
+The FPKMs are extracted from GSE129240_RAW.tar.
+GSM3703348	Mixture 1: 100% HEK, 0% Jurkat
+GSM3703349	Mixture 2: 100% HEK, 0% Jurkat
+GSM3703350	Mixture 3: 80% HEK, 20% Jurkat
+GSM3703351	Mixture 4: 80% HEK, 20% Jurkat
+GSM3703352	Mixture 5: 60% HEK, 40% Jurkat
+GSM3703353	Mixture 6: 60% HEK, 40% Jurkat
+GSM3703354	Mixture 7: 50% HEK, 50% Jurkat
+GSM3703355	Mixture 8: 50% HEK, 50% Jurkat
+GSM3703356	Mixture 9: 40% HEK, 60% Jurkat
+GSM3703357	Mixture 10: 40% HEK, 60% Jurkat
+GSM3703358	Mixture 11: 20% HEK, 80% Jurkat
+GSM3703359	Mixture 12: 20% HEK, 80% Jurkat
+GSM3703360	Mixture 13: 0% HEK, 100% Jurkat
+GSM3703361	Mixture 14: 0% HEK, 100% Jurkat </br>
+We averaged across replicate bulk samples as this paper (https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1)
+```{r}
+if(!file.exists("./data/JURKAT_293T/bulk_fpkm.loom") | !file.exists("./data/JURKAT_293T/bulk.loom")){
+  s1_293t = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703348_AS_2_ATAGCGTC.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]
+  s2_293t = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703349_AS_2_CGTTACCA.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]
+  s1_jurkat = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703360_AS_1_TTACGCAC.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]
+  s2_jurkat = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703361_AS_1_ATTCTAGG.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]
+  gene_bulk_fpkm = as.matrix(data.frame(s1_293t = s1_293t[rownames(s1_293t), "FPKM"], s2_293t = s2_293t[rownames(s1_293t), "FPKM"], s1_jurkat = s1_jurkat[rownames(s1_293t), "FPKM"], s2_jurkat = s2_jurkat[rownames(s1_293t), "FPKM"], row.names = rownames(s1_293t)))
+  gene_bulk_mat = as.matrix(data.frame(s1_293t = s1_293t[rownames(s1_293t), "expected_count"], s2_293t = s2_293t[rownames(s1_293t), "expected_count"], s1_jurkat = s1_jurkat[rownames(s1_293t), "expected_count"], s2_jurkat = s2_jurkat[rownames(s1_293t), "expected_count"], row.names = rownames(s1_293t)))
+  gz_path = "./data/hg19/Homo_sapiens.GRCh37.87.gtf.gz"
+  annotation_mat = get_map(gz_path)
+  mapping = annotation_mat$gene_name
+  names(mapping) = annotation_mat$gene_id
+  gene_name = mapping[sapply(rownames(gene_bulk_mat), function(x){
+    strsplit(x, ".", fixed = T)[[1]][1]
+  })]
+  rownames(gene_bulk_fpkm) = gene_name
+  rownames(gene_bulk_mat) = gene_name
+  gene_bulk_fpkm = gene_bulk_fpkm[!is.na(gene_name), ]
+  gene_bulk_mat = gene_bulk_mat[!is.na(gene_name), ]
+  gene_name_used = rownames(gene_bulk_mat)
+  used_index = sapply(unique(gene_name_used), function(x){
+    this_index = which(gene_name_used == x)
+    if(length(this_index) > 1){
+      return(this_index[which.max(rowSums(gene_bulk_mat[this_index, ]))])
+    }else{
+      return(this_index)
+    }
+  })
+  gene_bulk_fpkm = gene_bulk_fpkm[used_index, ]
+  gene_bulk_mat = gene_bulk_mat[used_index, ]
+  save_h5("./data/JURKAT_293T/bulk_fpkm.loom", as.matrix(t(gene_bulk_fpkm)))
+  save_h5("./data/JURKAT_293T/bulk.loom", as.matrix(t(gene_bulk_mat)))
+}else{
+  gene_bulk_mat = readh5_loom("./data/JURKAT_293T/bulk.loom")
+  gene_bulk_fpkm = readh5_loom("./data/JURKAT_293T/bulk_fpkm.loom")
+}
+print(dim(gene_bulk_mat))
+print(dim(gene_bulk_fpkm))
+print("JURKAT_293T_Bulk...OK!")
+
+```
+
+
