@@ -47,14 +47,14 @@ for(ii in method_names){
   result_list[[ii]] = result_mat
 }
 ```
-```{r fig.height=8, fig.width=6}
-print(result_list)
+We show results of DISC and no imputation here since our pc cannot not handle this analysis for the imputation results of some methods, the complete results are shown in our paper which were using a 128GB machine for computation.
+```{r fig.height=5, fig.width=2.5}
 percentage_value = sapply(result_list, function(x){
   return(x[which.max(x[, 2]), ])
-})
-method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
+})["acc", c(1, 2)]
 
-barplot_usage(percentage_value, main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F)
+
+barplot_usage(percentage_value, main = "", cex.main = 1.5, bar_color = method_color[c(1, 2)], text_color = text_color[c(1, 2)], use_data_order = T, ylab = "Percentage", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F)
 ```
 
 

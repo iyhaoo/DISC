@@ -314,7 +314,7 @@ Usage
     (S1). Trajectory Analysis
       Tutorial : `BONE_MARROW`__
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/cell_type_identification/Use_DISC_compressed_features_for_Seurat_clustering_PBMC.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Down-stream%20Analysis%20Improvement/Trajectory%20Analysis.nb.html
 
   * Other Utility Scripts
 
