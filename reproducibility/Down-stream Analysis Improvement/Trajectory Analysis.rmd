@@ -25,6 +25,7 @@ dim(raw_filt) #  13813, 6939
 used_genes = rownames(raw_filt)
 result_list = list()
 ```
+The percentage of correct order is calculated for every possible root state.
 ```{r fig.height=6, fig.width=8}
 for(ii in method_names){
   switch(ii, 
@@ -48,6 +49,7 @@ for(ii in method_names){
 }
 ```
 We show results of DISC and no imputation here since our pc cannot not handle this analysis for the imputation results of some methods, the complete results are shown in our paper which were using a 128GB machine for computation.
+The highest percentage of correct orders is used for the comparison among methods.
 ```{r fig.height=5, fig.width=2.5}
 percentage_value = sapply(result_list, function(x){
   return(x[which.max(x[, 2]), ])
