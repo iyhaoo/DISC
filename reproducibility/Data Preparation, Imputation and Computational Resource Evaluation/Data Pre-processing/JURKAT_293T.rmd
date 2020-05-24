@@ -86,7 +86,6 @@ GSM3703358	Mixture 11: 20% HEK, 80% Jurkat
 GSM3703359	Mixture 12: 20% HEK, 80% Jurkat
 GSM3703360	Mixture 13: 0% HEK, 100% Jurkat
 GSM3703361	Mixture 14: 0% HEK, 100% Jurkat </br>
-We averaged across replicate bulk samples as this paper (https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1)
 ```{r}
 if(!file.exists("./data/JURKAT_293T/bulk_fpkm.loom") | !file.exists("./data/JURKAT_293T/bulk.loom")){
   s1_293t = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703348_AS_2_ATAGCGTC.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]
