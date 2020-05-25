@@ -72,20 +72,20 @@ print("JURKAT_293T...OK!")
 ```
 The bulk data can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE129240. </br>
 The FPKMs are extracted from GSE129240_RAW.tar.
-GSM3703348	Mixture 1: 100% HEK, 0% Jurkat
-GSM3703349	Mixture 2: 100% HEK, 0% Jurkat
-GSM3703350	Mixture 3: 80% HEK, 20% Jurkat
-GSM3703351	Mixture 4: 80% HEK, 20% Jurkat
-GSM3703352	Mixture 5: 60% HEK, 40% Jurkat
-GSM3703353	Mixture 6: 60% HEK, 40% Jurkat
-GSM3703354	Mixture 7: 50% HEK, 50% Jurkat
-GSM3703355	Mixture 8: 50% HEK, 50% Jurkat
-GSM3703356	Mixture 9: 40% HEK, 60% Jurkat
-GSM3703357	Mixture 10: 40% HEK, 60% Jurkat
-GSM3703358	Mixture 11: 20% HEK, 80% Jurkat
-GSM3703359	Mixture 12: 20% HEK, 80% Jurkat
-GSM3703360	Mixture 13: 0% HEK, 100% Jurkat
-GSM3703361	Mixture 14: 0% HEK, 100% Jurkat </br>
+GSM3703348	Mixture 1: 100% HEK, 0% Jurkat </br>
+GSM3703349	Mixture 2: 100% HEK, 0% Jurkat </br>
+GSM3703350	Mixture 3: 80% HEK, 20% Jurkat </br>
+GSM3703351	Mixture 4: 80% HEK, 20% Jurkat </br>
+GSM3703352	Mixture 5: 60% HEK, 40% Jurkat </br>
+GSM3703353	Mixture 6: 60% HEK, 40% Jurkat </br>
+GSM3703354	Mixture 7: 50% HEK, 50% Jurkat </br>
+GSM3703355	Mixture 8: 50% HEK, 50% Jurkat </br>
+GSM3703356	Mixture 9: 40% HEK, 60% Jurkat </br>
+GSM3703357	Mixture 10: 40% HEK, 60% Jurkat </br>
+GSM3703358	Mixture 11: 20% HEK, 80% Jurkat </br>
+GSM3703359	Mixture 12: 20% HEK, 80% Jurkat </br>
+GSM3703360	Mixture 13: 0% HEK, 100% Jurkat </br>
+GSM3703361	Mixture 14: 0% HEK, 100% Jurkat 
 ```{r}
 if(!file.exists("./data/JURKAT_293T/bulk_fpkm.loom") | !file.exists("./data/JURKAT_293T/bulk.loom")){
   s1_293t = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703348_AS_2_ATAGCGTC.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]

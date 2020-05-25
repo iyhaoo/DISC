@@ -11,12 +11,14 @@ knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
-### Load raw data and downsampling
-Here, we use PBMC dataset as an example.</br>
-The fraction of sampling is set to 50% of the original library size across cells.</br>
-Only 1 replicate will be generated here as an example.</br>
-Only imputed genes will be kept for comparison.
+Here, we use Spearman Correlation Coefficient as an indicator to evaluate the similarity between bulk data and imputed single data.
+For replicated bulk samples, we average their profiles as this paper (https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1).
 ```{r}
+gene_bulk_fpkm = readh5_loom("./data/JURKAT_293T/bulk_fpkm.loom")
+gene_bulk_fpkm_logb1p = log2(gene_bulk_fpkm + 1)
+bulk_data = cbind(rowMeans(gene_bulk_fpkm_logb1p[, 1:2]), rowMeans(gene_bulk_fpkm_logb1p[, 3:4]))
+colnames(bulk_data) = c("293T", "Jurkat")
+
 used_datasets = c("MELANOMA", "SSCORTEX", "CBMC", "PBMC")
 method_names = c("DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
 output_dir = "./results/Identification_of_true_zeros"
