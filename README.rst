@@ -287,7 +287,7 @@ Usage
     (S1). Spearman Correlation (Bulk)
       * Tutorial : `JURKAT_293T`__
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Data%20Structure%20Recovery%20Evaluation/Spearman%20Correlation%20between%20SC%20and%20Bulk.nb.html
 
     (S2). Identification of True Zeros (Down-sampling)
       * Tutorial : `MELANOMA, SSCORTEX, CBMC and PBMC`__
@@ -304,7 +304,7 @@ Usage
     (2). DEG Identification (Bulk)
       * Tutorial : `JURKAT_293T`__
 
-      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/gene_expression/Dropout_event_recovery_MELANOMA.nb.html
+      .. __: https://raw.githack.com/iyhaoo/DISC/master/reproducibility/Down-stream%20Analysis%20Improvement/DEG%20Identification.nb.html
 
     (3). Solution for Large Dataset Analysis
       * Tutorial : `PBMC`__
