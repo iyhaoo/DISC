@@ -2,10 +2,10 @@ setwd("/home/yuanhao/github_repositories/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 #  Use the same color as Figure 4
-method_names = c("Observed", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
+method_name = c("Observed", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
 method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
-names(method_color) = method_names
-text_color = rep("black", length(method_names))
+names(method_color) = method_name
+text_color = rep("black", length(method_name))
 ### Load raw data and downsampling
 raw_data = readh5_loom("./data/PBMC/raw.loom")
 compared_genes = rownames(raw_data)
@@ -40,7 +40,7 @@ cat("Use ", gene_number, " genes for comparison.\n")
 #  Read imputation results
 for(ii in repeats){
   data_list[["Observed"]][[ii]] = data_list[["Observed"]][[ii]][compared_genes, ]
-  for(jj in setdiff(method_names, "Observed")){
+  for(jj in setdiff(method_name, "Observed")){
     if(jj == "DISC"){
       file_format = "loom"
     }else{
@@ -53,16 +53,16 @@ for(ii in repeats){
 result_list = list()
 ### MAE
 #  Here, we only evaluate the expressed genes in RAW (before down-sampling) dataset.
-MAE_O_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Overall
-MAE_DID_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Dropouts Introduced by Down-sampling
-MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Retained Gene Expressions
+MAE_O_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name)) # Overall
+MAE_DID_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name)) # Dropouts Introduced by Down-sampling
+MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name)) # Retained Gene Expressions
 top_1000_genes = hvg_genes[1:1000]
 top_1000_index = which(rownames(data_list[["Raw"]]) %in% top_1000_genes)
-top_MAE_O_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Overall
-top_MAE_DID_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Dropouts Introduced by Down-sampling
-top_MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names)) # Retained Gene Expressions
+top_MAE_O_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name)) # Overall
+top_MAE_DID_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name)) # Dropouts Introduced by Down-sampling
+top_MAE_RGE_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name)) # Retained Gene Expressions
 ls_raw = colSums(data_list[["Raw"]])
-for(ii in method_names){
+for(ii in method_name){
   for(jj in repeats){
     ls_this = colSums(data_list[[ii]][[jj]])
     scale_factor = ls_raw / ls_this
@@ -208,8 +208,8 @@ for(ii in names(data_list)){
   print(ii)
 }
 saveRDS(cor_all, paste0(output_dir, "/cor_all.rds"))
-cmd_mat = matrix(nrow = length(method_names), ncol = length(repeats), dimnames = list(method_names, repeats))
-for(ii in method_names){
+cmd_mat = matrix(nrow = length(method_name), ncol = length(repeats), dimnames = list(method_name, repeats))
+for(ii in method_name){
   for(jj in repeats){
     cmd_mat[ii, jj] = calc_cmd(cor_all[["Raw"]], cor_all[[ii]][[jj]])
   }
@@ -219,8 +219,8 @@ barplot_usage(rowMeans(cmd_mat), standard_error = apply(cmd_mat, 1, ste), main =
 dev.off()
 result_list[["CMD"]] = cmd_mat
 ### Gene correlation
-gene_corr_mat = matrix(nrow = gene_number, ncol = length(method_names), dimnames = list(c(), method_names))
-for(ii in method_names){
+gene_corr_mat = matrix(nrow = gene_number, ncol = length(method_name), dimnames = list(c(), method_name))
+for(ii in method_name){
   for(jj in repeats){
     if(jj == repeats[1]){
       cor_mat = calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "gene")
@@ -246,8 +246,8 @@ ggsave(paste0(output_dir, "/CORR_GENE.pdf"), p, height = 6, width = 5)
 result_list[["CORR_GENE"]] = gene_corr_mat
 ### Gene correlation top 1000 genes
 top_1000_genes = hvg_genes[1:1000]
-gene_corr_mat = matrix(nrow = length(top_1000_genes), ncol = length(method_names), dimnames = list(c(), method_names))
-for(ii in method_names){
+gene_corr_mat = matrix(nrow = length(top_1000_genes), ncol = length(method_name), dimnames = list(c(), method_name))
+for(ii in method_name){
   for(jj in repeats){
     if(jj == repeats[1]){
       cor_mat = calc_corr(data_list[["Raw"]][top_1000_genes, ], data_list[[ii]][[jj]][top_1000_genes, ], "gene")
@@ -272,8 +272,8 @@ p = ggplot(gene_corr_df, aes(x = factor(Var1, levels = gene_corr_levels), y = va
 ggsave(paste0(output_dir, "/CORR_GENE_top_1000_genes.pdf"), p, height = 6, width = 5)
 result_list[["CORR_GENE_top_1000_genes"]] = gene_corr_mat
 ### Cell correlation
-cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
-for(ii in method_names){
+cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name))
+for(ii in method_name){
   for(jj in repeats){
     if(jj == repeats[1]){
       cor_mat = calc_corr(data_list[["Raw"]], data_list[[ii]][[jj]], "cell")
@@ -298,8 +298,8 @@ p = ggplot(cell_corr_df, aes(x = factor(Var1, levels = cell_corr_levels), y = va
 ggsave(paste0(output_dir, "/CORR_CELL.pdf"), p, height = 6, width = 5)
 result_list[["CORR_CELL"]] = cell_corr_mat
 ### Cell correlation top 1000 genes
-cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
-for(ii in method_names){
+cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name))
+for(ii in method_name){
   for(jj in repeats){
     if(jj == repeats[1]){
       cor_mat = calc_corr(data_list[["Raw"]][top_1000_genes, ], data_list[[ii]][[jj]][top_1000_genes, ], "cell")

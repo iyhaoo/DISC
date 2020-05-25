@@ -951,7 +951,7 @@ layout_correlogram_plot = function(cor_all, lab_cex = 3, this_xlab = "Gene2", th
     }else{
       plot_cor_mat = cor_all[[this_title]]
     }
-    if(this_title == "DeSCI"){
+    if(this_title == "DISC"){
       plot_NA_legend = plot_NA_legend + correlogram_plot(plot_cor_mat, main = this_title, col.main = "red", cex.axis = 0.7, plot_color_legend = plot_color_legend, plot_NA_legend = plot_NA_legend, ...)
     }else{
       plot_NA_legend = plot_NA_legend + correlogram_plot(plot_cor_mat, main = this_title, col.main = "black", cex.axis = 0.7, plot_color_legend = plot_color_legend, plot_NA_legend = plot_NA_legend, ...)
@@ -971,10 +971,10 @@ layout_correlogram_plot = function(cor_all, lab_cex = 3, this_xlab = "Gene2", th
   return(cmd_vector)
 }
 
-layout_scatter = function(result_list, method_names, mask_or_index=NULL, color_point=NULL, lab_cex=3, plot_width=3.5, plot_height=4, plot_row=2, this_xlab=NULL, this_ylab=NULL, point_size=4.25, ...){
-  plot_number = ceiling(length(method_names) / plot_row) * plot_row
+layout_scatter = function(result_list, method_name, mask_or_index=NULL, color_point=NULL, lab_cex=3, plot_width=3.5, plot_height=4, plot_row=2, this_xlab=NULL, this_ylab=NULL, point_size=4.25, ...){
+  plot_number = ceiling(length(method_name) / plot_row) * plot_row
   plot_region = t(matrix(seq(plot_number), ncol = plot_row))
-  plot_region[plot_region > length(method_names)] = 0
+  plot_region[plot_region > length(method_name)] = 0
   this_height = rep(plot_height, nrow(plot_region))
   this_width = rep(plot_width, ncol(plot_region))
   this_index = max(plot_region)
@@ -1006,8 +1006,8 @@ layout_scatter = function(result_list, method_names, mask_or_index=NULL, color_p
   cex = point_size
   cex.text = 1.5
   pch = 21
-  for(ii in method_names){
-    if(ii == "DeSCI"){
+  for(ii in method_name){
+    if(ii == "DISC"){
       col.main = "red"
     }else{
       col.main = "black"
@@ -1036,7 +1036,7 @@ layout_scatter = function(result_list, method_names, mask_or_index=NULL, color_p
     legend("bottomright", paste0("RMSE = ", round(rmse(fish_values, this_values), 4)), bty = "n", cex = cex.text)
     abline(0, 1, col = "gray", lty = 2)
   }
-  names(all_rmse) = method_names
+  names(all_rmse) = method_name
   if(!is.null(this_ylab)){
     par(mar = rep(0, 4))
     plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')

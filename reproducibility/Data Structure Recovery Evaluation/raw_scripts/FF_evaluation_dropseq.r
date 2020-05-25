@@ -20,19 +20,19 @@ dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositorie
 dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_VIPER_gene_mc_10_mce_1.hdf5", use_genes)
 dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_MAGIC_mc_10_mce_1.hdf5", use_genes)
 dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_DCA_mc_10_mce_1.hdf5", use_genes)
-dataset_list[["deepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_deepImpute_mc_10_mce_1.hdf5", use_genes)
+dataset_list[["DeepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/imputation/raw_DeepImpute_mc_10_mce_1.hdf5", use_genes)
 dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scScope_mc_10_mce_1.hdf5", use_genes)
 dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/data/fn/melanoma/imputation/dropseq_filt_ls_scVI_mc_10_mce_1.hdf5", use_genes)
 ### Output settings
-method_names = c("Raw", "DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "deepImpute", "scScope", "scVI")
+method_name = c("Raw", "DISC", "SAVER", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
 method_color = c("gray80", "#FF0000", "#000080", "#BFBF00", "#408000", "#804000", "#00FF00", "#FF8000", "#FF00FF", "#00FFFF")
-names(method_color) = method_names
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
+names(method_color) = method_name
+bar_color = rep("gray50", length(method_name))
+names(bar_color) = method_name
 bar_color["Raw"] = "gray80"
 bar_color["DISC"] = "red"
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
+text_color = rep("black", length(method_name))
+names(text_color) = method_name
 text_color["DISC"] = "red"
 path_fragments = unlist(strsplit(our_result, "/", fixed = T))
 length_path_fragments = length(path_fragments)
@@ -42,13 +42,13 @@ dir.create(outdir, showWarnings = F, recursive = T)
 ### calculate correlation of FISH
 cor_mat = matrix(ncol = 3, nrow = 0, dimnames = list(c(), c("Gene x", "Gene y", "FISH Correlation")))
 cor_all = list()
-for(ii in c("FISH", method_names)){
+for(ii in c("FISH", method_name)){
   cor_all[[ii]] = matrix(nrow = length(use_genes), ncol = length(use_genes), dimnames = list(use_genes, use_genes))
 }
 for(ii in use_genes){
   for(jj in use_genes){
     #cat(ii, "\t", jj, "\n")
-    for(kk in c("FISH", method_names)){
+    for(kk in c("FISH", method_name)){
       if(kk == "SAVER"){
         cor_all[["SAVER"]][ii, jj] = cor(dataset_list[["SAVER_gamma"]][ii, ], dataset_list[["SAVER_gamma"]][jj, ], use = "pairwise.complete.obs")
       }else{
@@ -65,9 +65,9 @@ for(ii in 1:length(use_genes)){
 fish_mask = as.vector(fish_mask_mat)
 fish_gene_mat = apply(fish_mask_mat, 1, names)
 outfile = paste0(outdir, "/correlation_map.pdf")
-mfrow = make_mfrow(2, length(method_names))
+mfrow = make_mfrow(2, length(method_name))
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
-layout_scatter(cor_all, method_names, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1), point_size = 2.75)
+layout_scatter(cor_all, method_name, fish_mask, this_xlab = "FISH", this_ylab = "scRNA-seq", xlim = c(-0.2, 1), ylim = c(-0.2, 1), point_size = 2.75)
 dev.off()
 #  heatmap & CMD
 outfile = paste0(outdir, "/correlation_heatmap.pdf")
@@ -88,7 +88,7 @@ saveRDS(cor_all, paste0(outdir, "/cor_all.rds"))
 #### Normalization
 example_gene = c("WNT5A", "SOX10")
 rescale_mean_list = list()
-for(ii in method_names){
+for(ii in method_name){
   if(ii != "SAVER"){
     rescale_mean_list[[ii]] = mean_norm_fun(dataset_list[[ii]], dataset_list[["FISH"]])
   }else{
@@ -114,7 +114,7 @@ gene_x = list()
 gene_y = list()
 gene_x_ws = list()
 gene_y_ws = list()
-for(ii in method_names){
+for(ii in method_name){
   gene_x[[ii]] = rescale_mean_list[[ii]][gene1, ]
   gene_y[[ii]] = rescale_mean_list[[ii]][gene2, ]
   if(ii != "SAVER"){
@@ -151,15 +151,15 @@ for(ii in names(saver_style_filt_norm_list)){
 color_point = c("#31a354", "#a63603")
 names(color_point) = example_gene
 outfile = paste0(outdir, "/Gini.pdf")
-mfrow = make_mfrow(2, length(method_names))
+mfrow = make_mfrow(2, length(method_name))
 pdf(outfile, height = mfrow[1] * 3.75, width = mfrow[2] * 3.25)
-gini_rmse = layout_scatter(gini_result_list, method_names, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
+gini_rmse = layout_scatter(gini_result_list, method_name, use_genes, color_point = color_point, this_xlab = "FISH Gini", this_ylab = "scRNA-seq Gini", xlim = c(0, 1), ylim = c(0, 1))
 dev.off()
 saveRDS(gini_result_list, paste0(outdir, "/gini_result_list.rds"))
 ###density
 #plot_genes = setdiff(use_genes, "GAPDH")
 plot_genes = use_genes
-ks_matrix = matrix(nrow = length(plot_genes), ncol = length(method_names), dimnames = list(plot_genes, method_names))
+ks_matrix = matrix(nrow = length(plot_genes), ncol = length(method_name), dimnames = list(plot_genes, method_name))
 mfrow = c(3, 6)
 outfile = paste0(outdir, "/density.pdf")
 pdf(outfile, height = mfrow[1] * 3, width = mfrow[2] * 2.75)
@@ -173,15 +173,15 @@ for(ii in plot_genes){
   dens.bw = fish_density$bw
   ylim_max = max(fish_density$y)
   use_density = list()
-  for(method_index in 1:length(method_names)){
-    this_method_expression = saver_style_filt_norm_list[[method_names[method_index]]][ii, ]
+  for(method_index in 1:length(method_name)){
+    this_method_expression = saver_style_filt_norm_list[[method_name[method_index]]][ii, ]
     if(length(unique(this_method_expression)) == 1){
       this_method_expression[1] = this_method_expression[1] * 1.0001
     }
     #if(method_index <= 2){
     if(T){
       this_density = density(this_method_expression, bw = dens.bw)
-      use_density[[method_names[method_index]]] = this_density
+      use_density[[method_name[method_index]]] = this_density
       ylim_max = max(c(ylim_max, this_density$y))
     }
     ks_matrix[ii, method_index] = ks.test(delete_lt0.5(this_method_expression), delete_lt0.5(this_fish))$statistic
@@ -212,12 +212,12 @@ dev.off()
 # Make the plots
 dist_outdir = paste0(outdir, "/2d_distribution")
 dir.create(dist_outdir, showWarnings = F)
-mfrow = make_mfrow(2, length(c("FISH", method_names)))
+mfrow = make_mfrow(2, length(c("FISH", method_name)))
 pairs_2d_distribution = cor_mat[order(abs(cor_mat[, 3]), decreasing = TRUE), ]
 library(parallel)
 no_cores <- max(c(detectCores() - 1, 1))
 cl <- makeCluster(no_cores)
-clusterExport(cl, varlist = c("dist_outdir", "text_color", "bar_color", "max_points", "rescale_mean_list", "method_names", "used_cells", "mfrow", "fish_gene_mat", "fish_mask_mat", "dataset_list", "utilities_path"))
+clusterExport(cl, varlist = c("dist_outdir", "text_color", "bar_color", "max_points", "rescale_mean_list", "method_name", "used_cells", "mfrow", "fish_gene_mat", "fish_mask_mat", "dataset_list", "utilities_path"))
 return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   source(utilities_path)
   gene_x = fish_gene_mat[t(fish_mask_mat)][ii]
@@ -234,15 +234,15 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   corr_score = cor(x_fish, y_fish)
   x_i = list(FISH = x_fish)
   y_i = list(FISH = y_fish)
-  for(jj in 1:length(method_names)){
-    method_name = method_names[jj]
-    x_i[[method_name]] = rescale_mean_list[[method_name]][gene_x, ]
-    y_i[[method_name]] = rescale_mean_list[[method_name]][gene_y, ]
-    ks_stat = c(ks_stat, ks2d2s(round(x_fish), round(y_fish), round(x_i[[method_name]]), round(y_i[[method_name]])))
-    corr_score = c(corr_score, cor(x_i[[method_name]], y_i[[method_name]]))
+  for(jj in 1:length(method_name)){
+    this_method_name = method_name[jj]
+    x_i[[this_method_name]] = rescale_mean_list[[this_method_name]][gene_x, ]
+    y_i[[this_method_name]] = rescale_mean_list[[this_method_name]][gene_y, ]
+    ks_stat = c(ks_stat, ks2d2s(round(x_fish), round(y_fish), round(x_i[[this_method_name]]), round(y_i[[this_method_name]])))
+    corr_score = c(corr_score, cor(x_i[[this_method_name]], y_i[[this_method_name]]))
   }
-  names(corr_score) = c("FISH", method_names)
-  names(ks_stat) = method_names
+  names(corr_score) = c("FISH", method_name)
+  names(ks_stat) = method_name
   this_name = c(paste(gene_x, gene_y, sep = "_"))
   pdf(paste0(dist_outdir, "/", this_name, ".pdf"),
       height = mfrow[1] * 4,
@@ -251,7 +251,7 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
   nbin = 128
   x_fish_95 = quantile(x_fish, 0.95) + 1### R is from 1 to max + 1
   y_fish_95 = quantile(y_fish, 0.95) + 1
-  for(jj in c("FISH", method_names)){
+  for(jj in c("FISH", method_name)){
     if(jj == "DISC"){
       col.main = "red"
     }else{
@@ -282,8 +282,8 @@ return_list = parLapply(cl, 1:sum(fish_mask), function(ii){
               "corr_score" = matrix(corr_score, nrow = 1, dimnames = list(paste(gene_x, gene_y, sep = " - "), c()))))
 })
 stopCluster(cl)
-ks_stat_mat = matrix(nrow = 0, ncol = length(method_names), dimnames = list(c(), method_names))
-corr_mat = matrix(nrow = 0, ncol = length(method_names) + 1, dimnames = list(c(), c("FISH", method_names)))
+ks_stat_mat = matrix(nrow = 0, ncol = length(method_name), dimnames = list(c(), method_name))
+corr_mat = matrix(nrow = 0, ncol = length(method_name) + 1, dimnames = list(c(), c("FISH", method_name)))
 
 for(ii in return_list){
   ks_stat_mat = rbind(ks_stat_mat, ii$ks_stat)
@@ -297,7 +297,7 @@ outfile = paste(outdir, "/score_compare.pdf", sep = "")
 pdf(outfile, height = 5, width = 11)
 par(mfrow = c(1, 2))
 barplot_usage(mean_ks_stat, main = "Fasano and\nFranceschini's Test", cex.main = 1.5,bar_color = bar_color, text_color = text_color, use_data_order = T, standard_error = standard_error_ks_stat)
-corr_rmse = sapply(method_names, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
+corr_rmse = sapply(method_name, function(x) rmse(corr_mat[, "FISH"], corr_mat[, x]))
 barplot_usage(corr_rmse, main = "FISH - Impute\nCorrelation RMSE", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T)
 dev.off()
 

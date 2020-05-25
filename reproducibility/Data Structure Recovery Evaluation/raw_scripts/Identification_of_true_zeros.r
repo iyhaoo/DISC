@@ -2,7 +2,7 @@ setwd("/home/yuanhao/github_repositories/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 used_datasets = c("MELANOMA", "SSCORTEX", "CBMC", "PBMC", "RETINA", "BRAIN_SPLiT")
-method_names = c("DISC", "scScope")
+method_name = c("DISC", "scScope")
 output_dir = "./results/Identification_of_true_zeros"
 dir.create(output_dir, showWarnings = F, recursive = T)
 data_list = list()
@@ -23,7 +23,7 @@ for(ii in used_datasets){
   compared_genes = rownames(observed_data)
   top_1000_genes = rownames(hvg_info)[rownames(hvg_info) %in% compared_genes][1:1000]
   raw_data = raw_data[compared_genes, ]
-  for(jj in method_names){
+  for(jj in method_name){
     if(jj == "DISC"){
       imputation = readh5_loom(paste0(ds_dir, "/", jj, ".loom"))[compared_genes, ]
     }else{
@@ -48,7 +48,7 @@ mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(l
 names(mtext_position) = used_datasets
 for(ii in used_datasets){
   max_value = 0
-  for(jj in method_names){
+  for(jj in method_name){
     max_value = max(c(max_value, data_list[[ii]][[jj]][["raw_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_imputation"]]))
   }
   n = 2 ^ (round(log(max_value, base = 2)) + 7)
@@ -56,7 +56,7 @@ for(ii in used_datasets){
   to = max_value + (bw * 5)
   from = -(bw * 5)
   x_max = 0
-  for(jj in method_names){
+  for(jj in method_name){
     data_list[[ii]][[jj]][["raw_zero_density"]] = density(data_list[[ii]][[jj]][["raw_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["induced_zero_density"]] = density(data_list[[ii]][[jj]][["induced_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["y_max"]] = max(c(data_list[[ii]][[jj]][["raw_zero_density"]]$y, data_list[[ii]][[jj]][["induced_zero_density"]]$y))
@@ -72,7 +72,7 @@ for(ii in used_datasets){
   data_list[[ii]][["x_max"]] = x_max
   cat("Finish: ", ii, "\n")
 }
-for(ii in method_names){
+for(ii in method_name){
   for(jj in used_datasets){
     plot(0, type = "n", xlim = c(-min(c(1, data_list[[jj]][["x_max"]] * 0.05)), data_list[[jj]][["x_max"]]), ylim = c(0, data_list[[jj]][[ii]][["y_max"]]), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(data_list[[jj]][[ii]][["raw_zero_density"]], col = "black", lwd = 2)
@@ -93,7 +93,7 @@ mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(l
 names(mtext_position) = used_datasets
 for(ii in used_datasets){
   max_value = 0
-  for(jj in method_names){
+  for(jj in method_name){
     max_value = max(c(max_value, data_list[[ii]][[jj]][["top_raw_zero_imputation"]], data_list[[ii]][[jj]][["top_induced_zero_imputation"]]))
   }
   n = 2 ^ (round(log(max_value, base = 2)) + 7)
@@ -101,7 +101,7 @@ for(ii in used_datasets){
   to = max_value + (bw * 5)
   from = -(bw * 5)
   x_max = 0
-  for(jj in method_names){
+  for(jj in method_name){
     data_list[[ii]][[jj]][["top_raw_zero_density"]] = density(data_list[[ii]][[jj]][["top_raw_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["top_induced_zero_density"]] = density(data_list[[ii]][[jj]][["top_induced_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["top_y_max"]] = max(c(data_list[[ii]][[jj]][["top_raw_zero_density"]]$y, data_list[[ii]][[jj]][["top_induced_zero_density"]]$y))
@@ -117,7 +117,7 @@ for(ii in used_datasets){
   data_list[[ii]][["top_x_max"]] = x_max
   cat("Finish: ", ii, "\n")
 }
-for(ii in method_names){
+for(ii in method_name){
   for(jj in used_datasets){
     plot(0, type = "n", xlim = c(-min(c(1, data_list[[jj]][["top_x_max"]] * 0.05)), data_list[[jj]][["top_x_max"]]), ylim = c(0, data_list[[jj]][[ii]][["top_y_max"]]), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(data_list[[jj]][[ii]][["top_raw_zero_density"]], col = "black", lwd = 2)
