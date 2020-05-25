@@ -11,7 +11,7 @@ knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
-Settings
+### Settings
 ```{r}
 method_name = c("Raw", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
 method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
@@ -29,7 +29,7 @@ colnames(bulk_data) = c("293T", "Jurkat")
 
 cor_list = list()
 ```
-293T
+### 293T
 ```{r}
 gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw_293T.loom")
 gene_filter = gene_selection(gene_bc_mat, 10)
@@ -58,7 +58,7 @@ for(ii in method_name){
 }
 names(cor_list[["293T"]]) = method_name
 ```
-Jurkat
+### Jurkat
 ```{r}
 gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw_Jurkat.loom")
 gene_filter = gene_selection(gene_bc_mat, 10)
@@ -87,7 +87,7 @@ for(ii in method_name){
 }
 names(cor_list[["Jurkat"]]) = method_name
 ```
-JURKAT_293T
+### JURKAT_293T
 ```{r}
 gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw.loom")
 gene_filter = gene_selection(gene_bc_mat, 10)
@@ -112,6 +112,7 @@ for(ii in method_name){
 }
 names(cor_list[["JURKAT_293T"]]) = method_name
 ```
+### Results
 ```{r fig.height=6, fig.width=5}
 barplot_usage(cor_list[["Jurkat"]], main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "Jurkat", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F, decreasing = T)
 barplot_usage(cor_list[["293T"]], main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "293T", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F, decreasing = T)
