@@ -53,10 +53,10 @@ for(ii in data_list){
 ```
 Settings
 ```{r}
-method_names = c("Raw", "Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_name = c("Raw", "Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
 method_color = c("black", "#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
+text_color = rep("black", length(method_name))
+names(text_color) = method_name
 text_color["DISC"] = "red"
 
 ```

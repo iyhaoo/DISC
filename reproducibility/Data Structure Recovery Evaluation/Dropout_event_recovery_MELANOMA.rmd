@@ -56,18 +56,18 @@ gene_number = length(used_genes)
 ```
 ### Settings
 ```{r}
-method_names = c("Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_name = c("Observed", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
 method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
-names(method_color) = method_names
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
+names(method_color) = method_name
+text_color = rep("black", length(method_name))
+names(text_color) = method_name
 text_color["DISC"] = "red"
 ```
 ### MAE
 ```{r}
-MAE_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
+MAE_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name))
 ls_raw = colSums(data_list[["Raw"]])
-for(ii in method_names){
+for(ii in method_name){
   ls_this = colSums(data_list[[ii]])
     scale_factor = ls_raw / ls_this
     MAE_cell = sapply(seq(cell_number), function(x){
@@ -119,10 +119,10 @@ for(ii in names(data_list)){
 }
 saveRDS(cor_all, paste0(output_dir, "/cor_all.rds"))
 cmd_value = c()
-for(ii in method_names){
+for(ii in method_name){
   cmd_value = c(cmd_value, calc_cmd(cor_all[["Raw"]], cor_all[[ii]]))
 }
-names(cmd_value) = method_names
+names(cmd_value) = method_name
 ```
 ```{r fig.height=6, fig.width=5}
 barplot_usage(cmd_value, main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "CMD", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F)
@@ -131,8 +131,8 @@ barplot_usage(cmd_value, main = "", cex.main = 1.5, bar_color = method_color, te
 
 ### Gene correlation
 ```{r}
-gene_corr_mat = matrix(nrow = gene_number, ncol = length(method_names), dimnames = list(c(), method_names))
-for(ii in method_names){
+gene_corr_mat = matrix(nrow = gene_number, ncol = length(method_name), dimnames = list(c(), method_name))
+for(ii in method_name){
   gene_corr_mat[, ii] = calc_corr(data_list[["Raw"]], data_list[[ii]], "gene")
   print(ii)
 }
@@ -152,8 +152,8 @@ ggplot(gene_corr_df, aes(x = factor(Var1, levels = gene_corr_levels), y = value,
 ```
 ### Cell correlation
 ```{r}
-cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_names), dimnames = list(c(), method_names))
-for(ii in method_names){
+cell_corr_mat = matrix(nrow = cell_number, ncol = length(method_name), dimnames = list(c(), method_name))
+for(ii in method_name){
   cell_corr_mat[, ii] = calc_corr(data_list[["Raw"]], data_list[[ii]], "cell")
   print(ii)
 }

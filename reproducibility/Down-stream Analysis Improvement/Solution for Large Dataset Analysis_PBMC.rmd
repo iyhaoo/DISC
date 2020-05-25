@@ -38,12 +38,12 @@ for(ii in names(cell_type_identification_result_list)){
   acc_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ACC"]
   ari_result[ii] = cell_type_identification_result_list[[ii]][["summary"]]["ARI"]
 }
-method_names = names(cell_type_identification_result_list)
-text_color = rep("black", length(method_names))
-names(text_color) = method_names
+method_name = names(cell_type_identification_result_list)
+text_color = rep("black", length(method_name))
+names(text_color) = method_name
 text_color["DISC_feature"] = "red"
-bar_color = rep("gray50", length(method_names))
-names(bar_color) = method_names
+bar_color = rep("gray50", length(method_name))
+names(bar_color) = method_name
 bar_color["Observed"] = "white"
 bar_color["DISC_feature"] = "red"
 barplot_usage(acc_result, main = "", cex.main = 1.5, bar_color = bar_color, text_color = text_color, use_data_order = T, ylab = "ACC", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), decreasing = TRUE)

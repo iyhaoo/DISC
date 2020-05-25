@@ -11,16 +11,120 @@ knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 utilities_path = "./source/utilities.r"
 source(utilities_path)
 ```
+Settings
+```{r}
+method_name = c("Raw", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
+text_color = rep("black", length(method_name))
+names(text_color) = method_name
+text_color["DISC"] = "red"
+```
 Here, we use Spearman Correlation Coefficient as an indicator to evaluate the similarity between bulk data and imputed single data.
 For replicated bulk samples, we average their profiles as this paper (https://www.biorxiv.org/content/10.1101/2020.01.29.925974v1).
 ```{r}
 gene_bulk_fpkm = readh5_loom("./data/JURKAT_293T/bulk_fpkm.loom")
-gene_bulk_fpkm_logb1p = log2(gene_bulk_fpkm + 1)
-bulk_data = cbind(rowMeans(gene_bulk_fpkm_logb1p[, 1:2]), rowMeans(gene_bulk_fpkm_logb1p[, 3:4]))
+gene_bulk_fpkm_log1p = log1p(gene_bulk_fpkm)
+bulk_data = cbind(rowMeans(gene_bulk_fpkm_log1p[, 1:2]), rowMeans(gene_bulk_fpkm_log1p[, 3:4]))
 colnames(bulk_data) = c("293T", "Jurkat")
 
+cor_list = list()
+```
+293T
+```{r}
+gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw_293T.loom")
+gene_filter = gene_selection(gene_bc_mat, 10)
+sc_gene = rownames(gene_bc_mat)[gene_filter]
+compare_gene = intersect(sc_gene, rownames(bulk_data))
+cor_list[["293T"]] = c()
+for(ii in method_name){
+  switch(ii, 
+         "Raw" = {
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         },
+         "DISC" = {
+           gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/DISC_293T.loom"))
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         }, {
+           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "293T.hdf5"))
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         }
+  )
+  seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
+  seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+  sc_data = as.matrix(seurat_obj[["RNA"]]@data)[compare_gene, ]
+  cor_list[["293T"]] = c(cor_list[["293T"]], cor(rowMeans(sc_data[compare_gene, ]), rowMeans(bulk_data[compare_gene, ][, 1:2]), method = "spearman"))
+}
+```
+Jurkat
+```{r}
+gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw_Jurkat.loom")
+gene_filter = gene_selection(gene_bc_mat, 10)
+sc_gene = rownames(gene_bc_mat)[gene_filter]
+compare_gene = intersect(sc_gene, rownames(bulk_data))
+cor_list[["Jurkat"]] = c()
+for(ii in method_name){
+  switch(ii, 
+         "Raw" = {
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         },
+         "DISC" = {
+           gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/DISC_Jurkat.loom"))
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         }, {
+           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "Jurkat.hdf5"))
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         }
+  )
+  seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
+  seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+  sc_data = as.matrix(seurat_obj[["RNA"]]@data)[compare_gene, ]
+  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data[compare_gene, ]), rowMeans(bulk_data[compare_gene, ][, 3:4]), method = "spearman"))
+}
+```
+JURKAT_293T
+```{r}
+gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw.loom")
+gene_filter = gene_selection(gene_bc_mat, 10)
+sc_gene = rownames(gene_bc_mat)[gene_filter]
+compare_gene = intersect(sc_gene, rownames(bulk_data))
+cor_list[["JURKAT_293T"]] = c()
+for(ii in method_name){
+  switch(ii, 
+         "Raw" = {
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         },
+         "DISC" = {
+           gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/DISC_JURKAT_293T.loom"))
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         }, {
+           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "JURKAT_293T.hdf5"))
+           gene_bc_filt = gene_bc_mat[gene_filter, ]
+         }
+  )
+  seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
+  seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+  sc_data = as.matrix(seurat_obj[["RNA"]]@data)[compare_gene, ]
+  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data[compare_gene, ]) - rowMeans(sc_data[compare_gene, ]), rowMeans(bulk_data[compare_gene, ][, 1:2]) - rowMeans(bulk_data[compare_gene, ][, 3:4]), method = "spearman"))
+}
+```
+
+```{r}
+
+pbmc <- CreateSeuratObject(counts = as.data.frame(pbmc.data))
+pbmc
+pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize", scale.factor = 10000)
+scData <-as.matrix(pbmc[["RNA"]]@data)
+gene <-intersect(rownames(scData),rownames(bulk))
+aa <-rowMeans(bulk[gene,][,1:2])
+bb <-rowMeans(scData[gene,])
+library(ggplot2)
+df <- data.frame(x = bb, y = aa)
+library(psych)
+coorda <-corr.test(aa,bb,method="spearman")
+Raw <-coorda$r
+
 used_datasets = c("MELANOMA", "SSCORTEX", "CBMC", "PBMC")
-method_names = c("DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_name = c("DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
 output_dir = "./results/Identification_of_true_zeros"
 dir.create(output_dir, showWarnings = F, recursive = T)
 data_list = list()
@@ -41,7 +145,7 @@ for(ii in used_datasets){
   compared_genes = rownames(observed_data)
   top_1000_genes = rownames(hvg_info)[rownames(hvg_info) %in% compared_genes][1:1000]
   raw_data = raw_data[compared_genes, ]
-  for(jj in method_names){
+  for(jj in method_name){
     if(jj == "DISC"){
       imputation = readh5_loom(paste0(ds_dir, "/", jj, ".loom"))[compared_genes, ]
     }else{
@@ -70,7 +174,7 @@ mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(l
 names(mtext_position) = used_datasets
 for(ii in used_datasets){
   max_value = 0
-  for(jj in method_names){
+  for(jj in method_name){
     max_value = max(c(max_value, data_list[[ii]][[jj]][["raw_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_imputation"]]))
   }
   n = 2 ^ (round(log(max_value, base = 2)) + 7)
@@ -78,7 +182,7 @@ for(ii in used_datasets){
   to = max_value + (bw * 5)
   from = -(bw * 5)
   x_max = 0
-  for(jj in method_names){
+  for(jj in method_name){
     data_list[[ii]][[jj]][["raw_zero_density"]] = density(data_list[[ii]][[jj]][["raw_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["induced_zero_density"]] = density(data_list[[ii]][[jj]][["induced_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["y_max"]] = max(c(data_list[[ii]][[jj]][["raw_zero_density"]]$y, data_list[[ii]][[jj]][["induced_zero_density"]]$y))
@@ -94,7 +198,7 @@ for(ii in used_datasets){
   data_list[[ii]][["x_max"]] = x_max
   cat("Finish: ", ii, "\n")
 }
-for(ii in method_names){
+for(ii in method_name){
   for(jj in used_datasets){
     plot(0, type = "n", xlim = c(-min(c(1, data_list[[jj]][["x_max"]] * 0.05)), data_list[[jj]][["x_max"]]), ylim = c(0, data_list[[jj]][[ii]][["y_max"]]), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(data_list[[jj]][[ii]][["raw_zero_density"]], col = "black", lwd = 2)
@@ -114,7 +218,7 @@ mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(l
 names(mtext_position) = used_datasets
 for(ii in used_datasets){
   max_value = 0
-  for(jj in method_names){
+  for(jj in method_name){
     max_value = max(c(max_value, data_list[[ii]][[jj]][["top_raw_zero_imputation"]], data_list[[ii]][[jj]][["top_induced_zero_imputation"]]))
   }
   n = 2 ^ (round(log(max_value, base = 2)) + 7)
@@ -122,7 +226,7 @@ for(ii in used_datasets){
   to = max_value + (bw * 5)
   from = -(bw * 5)
   x_max = 0
-  for(jj in method_names){
+  for(jj in method_name){
     data_list[[ii]][[jj]][["top_raw_zero_density"]] = density(data_list[[ii]][[jj]][["top_raw_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["top_induced_zero_density"]] = density(data_list[[ii]][[jj]][["top_induced_zero_imputation"]], from = from, to = to, n = n, bw = bw)
     data_list[[ii]][[jj]][["top_y_max"]] = max(c(data_list[[ii]][[jj]][["top_raw_zero_density"]]$y, data_list[[ii]][[jj]][["top_induced_zero_density"]]$y))
@@ -138,7 +242,7 @@ for(ii in used_datasets){
   data_list[[ii]][["top_x_max"]] = x_max
   cat("Finish: ", ii, "\n")
 }
-for(ii in method_names){
+for(ii in method_name){
   for(jj in used_datasets){
     plot(0, type = "n", xlim = c(-min(c(1, data_list[[jj]][["top_x_max"]] * 0.05)), data_list[[jj]][["top_x_max"]]), ylim = c(0, data_list[[jj]][[ii]][["top_y_max"]]), axes = FALSE, ann = FALSE, frame.plot = TRUE)
     lines(data_list[[jj]][[ii]][["top_raw_zero_density"]], col = "black", lwd = 2)
