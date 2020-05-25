@@ -39,21 +39,24 @@ cor_list[["293T"]] = c()
 for(ii in method_name){
   switch(ii, 
          "Raw" = {
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
+           gene_bc_filt = gene_bc_mat[sc_gene, ]
          },
          "DISC" = {
            gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/DISC_293T.loom"))
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
+           gene_bc_filt = gene_bc_mat[sc_gene, ]
          }, {
-           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "293T.hdf5"))
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
+           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "_293T.hdf5"))
+           gene_bc_filt = gene_bc_mat[sc_gene, ]
          }
   )
   seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
   seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
-  sc_data = as.matrix(seurat_obj[["RNA"]]@data)[compare_gene, ]
-  cor_list[["293T"]] = c(cor_list[["293T"]], cor(rowMeans(sc_data[compare_gene, ]), rowMeans(bulk_data[compare_gene, ][, 1:2]), method = "spearman"))
+  sc_norm = as.matrix(seurat_obj[["RNA"]]@data)
+  rownames(sc_norm) = sc_gene
+  sc_data = sc_norm[compare_gene, ]
+  cor_list[["293T"]] = c(cor_list[["293T"]], cor(rowMeans(sc_data[compare_gene, ]), bulk_data[compare_gene, 1], method = "spearman"))
 }
+names(cor_list[["293T"]]) = method_name
 ```
 Jurkat
 ```{r}
@@ -65,193 +68,52 @@ cor_list[["Jurkat"]] = c()
 for(ii in method_name){
   switch(ii, 
          "Raw" = {
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
+           gene_bc_filt = gene_bc_mat[sc_gene, ]
          },
          "DISC" = {
            gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/DISC_Jurkat.loom"))
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
+           gene_bc_filt = gene_bc_mat[sc_gene, ]
          }, {
-           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "Jurkat.hdf5"))
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
+           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "_Jurkat.hdf5"))
+           gene_bc_filt = gene_bc_mat[sc_gene, ]
          }
   )
   seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
   seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
-  sc_data = as.matrix(seurat_obj[["RNA"]]@data)[compare_gene, ]
-  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data[compare_gene, ]), rowMeans(bulk_data[compare_gene, ][, 3:4]), method = "spearman"))
+  sc_norm = as.matrix(seurat_obj[["RNA"]]@data)
+  rownames(sc_norm) = sc_gene
+  sc_data = sc_norm[compare_gene, ]
+  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data[compare_gene, ]), bulk_data[compare_gene, 2], method = "spearman"))
 }
+names(cor_list[["Jurkat"]]) = method_name
 ```
 JURKAT_293T
 ```{r}
 gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw.loom")
 gene_filter = gene_selection(gene_bc_mat, 10)
 sc_gene = rownames(gene_bc_mat)[gene_filter]
+cell_Jurkat = colnames(gene_bc_mat)[grep("JURKAT", colnames(gene_bc_mat))]
+cell_293T = colnames(gene_bc_mat)[grep("293T", colnames(gene_bc_mat))]
 compare_gene = intersect(sc_gene, rownames(bulk_data))
 cor_list[["JURKAT_293T"]] = c()
 for(ii in method_name){
-  switch(ii, 
-         "Raw" = {
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
-         },
-         "DISC" = {
-           gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/DISC_JURKAT_293T.loom"))
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
-         }, {
-           gene_bc_mat = readh5_imputation(paste0("./data/JURKAT_293T/", ii, "JURKAT_293T.hdf5"))
-           gene_bc_filt = gene_bc_mat[gene_filter, ]
-         }
-  )
+  if(ii == "Raw"){
+    gene_bc_filt = gene_bc_mat[sc_gene, ]
+  }else{
+    gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/", ii, "_JURKAT_293T.loom"))
+    gene_bc_filt = gene_bc_mat[sc_gene, ]
+  }
   seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
   seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
-  sc_data = as.matrix(seurat_obj[["RNA"]]@data)[compare_gene, ]
-  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data[compare_gene, ]) - rowMeans(sc_data[compare_gene, ]), rowMeans(bulk_data[compare_gene, ][, 1:2]) - rowMeans(bulk_data[compare_gene, ][, 3:4]), method = "spearman"))
+  sc_norm = as.matrix(seurat_obj[["RNA"]]@data)
+  rownames(sc_norm) = sc_gene
+  sc_data = sc_norm[compare_gene, ]
+  cor_list[["JURKAT_293T"]] = c(cor_list[["JURKAT_293T"]], cor(rowMeans(sc_data[compare_gene, cell_293T]) - rowMeans(sc_data[compare_gene, cell_Jurkat]), bulk_data[compare_gene, 1] - bulk_data[compare_gene, 2], method = "spearman"))
 }
+names(cor_list[["JURKAT_293T"]]) = method_name
 ```
-
-```{r}
-
-pbmc <- CreateSeuratObject(counts = as.data.frame(pbmc.data))
-pbmc
-pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize", scale.factor = 10000)
-scData <-as.matrix(pbmc[["RNA"]]@data)
-gene <-intersect(rownames(scData),rownames(bulk))
-aa <-rowMeans(bulk[gene,][,1:2])
-bb <-rowMeans(scData[gene,])
-library(ggplot2)
-df <- data.frame(x = bb, y = aa)
-library(psych)
-coorda <-corr.test(aa,bb,method="spearman")
-Raw <-coorda$r
-
-used_datasets = c("MELANOMA", "SSCORTEX", "CBMC", "PBMC")
-method_name = c("DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
-output_dir = "./results/Identification_of_true_zeros"
-dir.create(output_dir, showWarnings = F, recursive = T)
-data_list = list()
-for(ii in used_datasets){
-  data_list[[ii]] = list()
-  raw_data = readh5_loom(paste0("./data/", ii, "/raw.loom"))
-  vst_file = paste0(output_dir, "/", ii, "_vst_gene.tsv")
-  if(file.exists(vst_file)){
-    hvg_info = read.table(vst_file)
-    print("load vst_file")
-  }else{
-    hvg_info = FindVariableFeatures_vst_by_genes(raw_data)
-    hvg_info = hvg_info[order(hvg_info$variance.standardized, decreasing = T), ]
-    write.table(hvg_info, vst_file, sep = "\t", quote = F, row.names = T, col.names = T)
-  }
-  ds_dir = paste0("./data/", ii, "/ds_0.5/r1")
-  observed_data = readh5_loom(paste0(ds_dir, "/gene_selection.loom"))
-  compared_genes = rownames(observed_data)
-  top_1000_genes = rownames(hvg_info)[rownames(hvg_info) %in% compared_genes][1:1000]
-  raw_data = raw_data[compared_genes, ]
-  for(jj in method_name){
-    if(jj == "DISC"){
-      imputation = readh5_loom(paste0(ds_dir, "/", jj, ".loom"))[compared_genes, ]
-    }else{
-      imputation = readh5_imputation(paste0(ds_dir, "/", jj, ".hdf5"))[compared_genes, ]
-    }
-    imputation_cp10k = sweep(imputation, 2, 10000 / colSums(imputation), "*")
-    raw_zero = raw_data == 0 & observed_data == 0
-    induced_zero = raw_data != 0 & observed_data == 0
-    kept_values = raw_data != 0 & observed_data != 0
-    data_list[[ii]][[jj]] = list(raw_zero_imputation = imputation_cp10k[raw_zero],
-                                 induced_zero_imputation = imputation_cp10k[induced_zero],
-                                 top_raw_zero_imputation = imputation_cp10k[top_1000_genes, ][raw_zero[top_1000_genes, ]],
-                                 top_induced_zero_imputation = imputation_cp10k[top_1000_genes, ][induced_zero[top_1000_genes, ]])
-    cat("Finish: ", ii, " - ", jj, "\n")
-  }
-  cat("Finish: ", ii, "\n")
-}
-```
-Following this paper (SAVER: gene expression recovery for single-cell RNA sequencing, https://www.nature.com/articles/s41592-018-0033-z), we evaluate the performance of different imputation methods to indentify true zeros.
-```
-```
-### All genes
-```{r fig.height=5, fig.width=8}
-par(mfrow = c(1, length(used_datasets)), mar = c(5, 0, 0.5, 0), oma = c(0, 5, 6, 2), mgp = c(3.5, 1, 0), cex.axis = 1.1, cex.lab = 1.5, font.lab = 2, cex.main = 1.5)
-mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(length(used_datasets)) * 2]
-names(mtext_position) = used_datasets
-for(ii in used_datasets){
-  max_value = 0
-  for(jj in method_name){
-    max_value = max(c(max_value, data_list[[ii]][[jj]][["raw_zero_imputation"]], data_list[[ii]][[jj]][["induced_zero_imputation"]]))
-  }
-  n = 2 ^ (round(log(max_value, base = 2)) + 7)
-  bw = (max_value * (n + 10)) / (n ^ 2)
-  to = max_value + (bw * 5)
-  from = -(bw * 5)
-  x_max = 0
-  for(jj in method_name){
-    data_list[[ii]][[jj]][["raw_zero_density"]] = density(data_list[[ii]][[jj]][["raw_zero_imputation"]], from = from, to = to, n = n, bw = bw)
-    data_list[[ii]][[jj]][["induced_zero_density"]] = density(data_list[[ii]][[jj]][["induced_zero_imputation"]], from = from, to = to, n = n, bw = bw)
-    data_list[[ii]][[jj]][["y_max"]] = max(c(data_list[[ii]][[jj]][["raw_zero_density"]]$y, data_list[[ii]][[jj]][["induced_zero_density"]]$y))
-    cutoff = data_list[[ii]][[jj]][["y_max"]] * 0.005
-    test_vector = !(data_list[[ii]][[jj]][["raw_zero_density"]]$y < cutoff & data_list[[ii]][[jj]][["induced_zero_density"]]$y < cutoff)
-    for(kk in seq(from = length(test_vector), to = 1)){
-      if(test_vector[kk]){
-        x_max = max(c(x_max, data_list[[ii]][[jj]][["raw_zero_density"]]$x[kk + 1]))
-        break()
-      }
-    }
-  }
-  data_list[[ii]][["x_max"]] = x_max
-  cat("Finish: ", ii, "\n")
-}
-for(ii in method_name){
-  for(jj in used_datasets){
-    plot(0, type = "n", xlim = c(-min(c(1, data_list[[jj]][["x_max"]] * 0.05)), data_list[[jj]][["x_max"]]), ylim = c(0, data_list[[jj]][[ii]][["y_max"]]), axes = FALSE, ann = FALSE, frame.plot = TRUE)
-    lines(data_list[[jj]][[ii]][["raw_zero_density"]], col = "black", lwd = 2)
-    lines(data_list[[jj]][[ii]][["induced_zero_density"]], col = "red", lwd = 2)
-    axis(1)
-    mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
-    cat("Finish: ", ii, " - ", jj, "\n")
-  }
-  mtext(paste0(ii, " - All genes"), outer = TRUE, cex = 1.4, font = 2, line = 3)
-  legend("topright", c("Raw zero", "Sampled zero"), lty = 1, col = c("black", "red"), lwd = 2)
-}
-```
-### Top 1000 genes
-```{r fig.height=5, fig.width=8}
-par(mfrow = c(1, length(used_datasets)), mar = c(5, 0, 0.5, 0), oma = c(0, 5, 6, 2), mgp = c(3.5, 1, 0), cex.axis = 1.1, cex.lab = 1.5, font.lab = 2, cex.main = 1.5)
-mtext_position = seq(from = 0, to = 1, by = 1 / length(used_datasets) / 2)[seq(length(used_datasets)) * 2]
-names(mtext_position) = used_datasets
-for(ii in used_datasets){
-  max_value = 0
-  for(jj in method_name){
-    max_value = max(c(max_value, data_list[[ii]][[jj]][["top_raw_zero_imputation"]], data_list[[ii]][[jj]][["top_induced_zero_imputation"]]))
-  }
-  n = 2 ^ (round(log(max_value, base = 2)) + 7)
-  bw = (max_value * (n + 10)) / (n ^ 2)
-  to = max_value + (bw * 5)
-  from = -(bw * 5)
-  x_max = 0
-  for(jj in method_name){
-    data_list[[ii]][[jj]][["top_raw_zero_density"]] = density(data_list[[ii]][[jj]][["top_raw_zero_imputation"]], from = from, to = to, n = n, bw = bw)
-    data_list[[ii]][[jj]][["top_induced_zero_density"]] = density(data_list[[ii]][[jj]][["top_induced_zero_imputation"]], from = from, to = to, n = n, bw = bw)
-    data_list[[ii]][[jj]][["top_y_max"]] = max(c(data_list[[ii]][[jj]][["top_raw_zero_density"]]$y, data_list[[ii]][[jj]][["top_induced_zero_density"]]$y))
-    cutoff = data_list[[ii]][[jj]][["top_y_max"]] * 0.005
-    test_vector = !(data_list[[ii]][[jj]][["top_raw_zero_density"]]$y < cutoff & data_list[[ii]][[jj]][["top_induced_zero_density"]]$y < cutoff)
-    for(kk in seq(from = length(test_vector), to = 1)){
-      if(test_vector[kk]){
-        x_max = max(c(x_max, data_list[[ii]][[jj]][["top_raw_zero_density"]]$x[kk + 1]))
-        break()
-      }
-    }
-  }
-  data_list[[ii]][["top_x_max"]] = x_max
-  cat("Finish: ", ii, "\n")
-}
-for(ii in method_name){
-  for(jj in used_datasets){
-    plot(0, type = "n", xlim = c(-min(c(1, data_list[[jj]][["top_x_max"]] * 0.05)), data_list[[jj]][["top_x_max"]]), ylim = c(0, data_list[[jj]][[ii]][["top_y_max"]]), axes = FALSE, ann = FALSE, frame.plot = TRUE)
-    lines(data_list[[jj]][[ii]][["top_raw_zero_density"]], col = "black", lwd = 2)
-    lines(data_list[[jj]][[ii]][["top_induced_zero_density"]], col = "red", lwd = 2)
-    axis(1)
-    mtext(jj, outer = TRUE, cex = 1.2, font = 2, line = 0.5, at = mtext_position[jj])
-    cat("Finish: ", ii, " - ", jj, "\n")
-  }
-  mtext(paste0(ii, " - Top 1000 genes"), outer = TRUE, cex = 1.4, font = 2, line = 3)
-  legend("topright", c("Raw zero", "Sampled zero"), lty = 1, col = c("black", "red"), lwd = 2)
-}
+```{r fig.height=6, fig.width=5}
+barplot_usage(cor_list[["Jurkat"]], main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "Jurkat", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F, decreasing = T)
+barplot_usage(cor_list[["293T"]], main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "293T", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F, decreasing = T)
+barplot_usage(cor_list[["JURKAT_293T"]], main = "", cex.main = 1.5, bar_color = method_color, text_color = text_color, use_data_order = T, ylab = "JURKAT_293T", cex.lab = 1.5, font.main = 1, ylim = c(-0.1, 1), use_border = F, decreasing = T)
 ```

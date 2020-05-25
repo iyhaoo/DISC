@@ -214,3 +214,35 @@ save_h5("/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/DI
 
 
 
+gene_bc_mat = readh5_loom("E:/DISC/reproducibility/data/JURKAT_293T/raw.loom")
+DISC_imputation = readh5_loom("E:/DISC/reproducibility/data/JURKAT_293T/DISC_JURKAT_293T.loom")
+print(sum(rownames(DISC_imputation) != rownames(gene_bc_mat)))
+rownames(DISC_imputation) = rownames(gene_bc_mat)
+save_h5("E:/DISC/reproducibility/data/JURKAT_293T/DISC_JURKAT_293T.loom", t(DISC_imputation))
+
+
+
+gene_bc_filt = gene_bc_mat[gene_selection(gene_bc_mat, 10), ]
+for(ii in c("scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")){
+  imputation_result = readh5_imputation(paste0("E:/DISC/reproducibility/data/JURKAT_293T/", ii, "_JURKAT_293T.hdf5"))
+  print(sum(rownames(imputation_result) != rownames(gene_bc_filt)))
+  rownames(imputation_result) = rownames(gene_bc_filt)
+  save_h5(paste0("E:/DISC/reproducibility/data/JURKAT_293T/", ii, "_JURKAT_293T.loom"), t(imputation_result))
+}
+
+imputation_result = readh5_loom(paste0("E:/DISC/reproducibility/data/JURKAT_293T/gene_selection_JURKAT_293T.loom"))
+print(sum(rownames(imputation_result) != rownames(gene_bc_filt)))
+rownames(imputation_result) = rownames(gene_bc_filt)
+save_h5(paste0("E:/DISC/reproducibility/data/JURKAT_293T/gene_selection_JURKAT_293T.loom"), t(imputation_result))
+
+
+
+
+
+
+
+
+
+
+
+
