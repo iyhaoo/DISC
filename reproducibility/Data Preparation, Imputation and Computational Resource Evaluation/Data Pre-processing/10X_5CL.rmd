@@ -18,7 +18,7 @@ We use 3918 filtered cells and all genes to make raw.loom (genes will be filtere
 ```{r}
 if(!file.exists("./data/10X_5CL/raw.loom")){
   original_data = as.matrix(read.csv("./data/10X_5CL/original_data/GSM3618014_gene_count.csv.gz", header = T, sep = ",", row.names = 1))# 32895  5001
-  gz_path = "./data/hg19/Homo_sapiens.GRCh37.87.gtf.gz"
+  gz_path = "./data/annotation/Homo_sapiens.GRCh37.87.gtf.gz"
   annotation_mat = get_map(gz_path)
   mapping = annotation_mat$gene_name
   names(mapping) = annotation_mat$gene_ids

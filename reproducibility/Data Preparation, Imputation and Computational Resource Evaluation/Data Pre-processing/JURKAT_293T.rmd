@@ -98,7 +98,7 @@ if(!file.exists("./data/JURKAT_293T/bulk_fpkm.loom") | !file.exists("./data/JURK
   s2_jurkat = read.table("./data/JURKAT_293T/original_data/bulk/GSE129240_RAW/GSM3703361_AS_1_ATTCTAGG.genes.results.txt.gz", header = T, row.names = 1, sep = "\t")[, c("FPKM", "expected_count")]
   gene_bulk_fpkm = as.matrix(data.frame(s1_293t = s1_293t[rownames(s1_293t), "FPKM"], s2_293t = s2_293t[rownames(s1_293t), "FPKM"], s1_jurkat = s1_jurkat[rownames(s1_293t), "FPKM"], s2_jurkat = s2_jurkat[rownames(s1_293t), "FPKM"], row.names = rownames(s1_293t)))
   gene_bulk_mat = as.matrix(data.frame(s1_293t = s1_293t[rownames(s1_293t), "expected_count"], s2_293t = s2_293t[rownames(s1_293t), "expected_count"], s1_jurkat = s1_jurkat[rownames(s1_293t), "expected_count"], s2_jurkat = s2_jurkat[rownames(s1_293t), "expected_count"], row.names = rownames(s1_293t)))
-  gz_path = "./data/hg19/Homo_sapiens.GRCh37.87.gtf.gz"
+  gz_path = "./data/annotation/Homo_sapiens.GRCh38.100.gtf.gz"
   annotation_mat = get_map(gz_path)
   mapping = annotation_mat$gene_name
   names(mapping) = annotation_mat$gene_id

@@ -54,7 +54,7 @@ for(ii in method_name){
   sc_norm = as.matrix(seurat_obj[["RNA"]]@data)
   rownames(sc_norm) = sc_gene
   sc_data = sc_norm[compare_gene, ]
-  cor_list[["293T"]] = c(cor_list[["293T"]], cor(rowMeans(sc_data[compare_gene, ]), bulk_data[compare_gene, 1], method = "spearman"))
+  cor_list[["293T"]] = c(cor_list[["293T"]], cor(rowMeans(sc_data), bulk_data[compare_gene, 1], method = "spearman"))
 }
 names(cor_list[["293T"]]) = method_name
 ```
@@ -83,7 +83,7 @@ for(ii in method_name){
   sc_norm = as.matrix(seurat_obj[["RNA"]]@data)
   rownames(sc_norm) = sc_gene
   sc_data = sc_norm[compare_gene, ]
-  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data[compare_gene, ]), bulk_data[compare_gene, 2], method = "spearman"))
+  cor_list[["Jurkat"]] = c(cor_list[["Jurkat"]], cor(rowMeans(sc_data), bulk_data[compare_gene, 2], method = "spearman"))
 }
 names(cor_list[["Jurkat"]]) = method_name
 ```
@@ -108,7 +108,7 @@ for(ii in method_name){
   sc_norm = as.matrix(seurat_obj[["RNA"]]@data)
   rownames(sc_norm) = sc_gene
   sc_data = sc_norm[compare_gene, ]
-  cor_list[["JURKAT_293T"]] = c(cor_list[["JURKAT_293T"]], cor(rowMeans(sc_data[compare_gene, cell_293T]) - rowMeans(sc_data[compare_gene, cell_Jurkat]), bulk_data[compare_gene, 1] - bulk_data[compare_gene, 2], method = "spearman"))
+  cor_list[["JURKAT_293T"]] = c(cor_list[["JURKAT_293T"]], cor(rowMeans(sc_data[, cell_293T]) - rowMeans(sc_data[, cell_Jurkat]), bulk_data[compare_gene, 1] - bulk_data[compare_gene, 2], method = "spearman"))
 }
 names(cor_list[["JURKAT_293T"]]) = method_name
 ```

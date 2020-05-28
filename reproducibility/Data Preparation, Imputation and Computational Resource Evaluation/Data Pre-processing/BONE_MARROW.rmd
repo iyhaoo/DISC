@@ -79,7 +79,7 @@ if(!file.exists("./data/BONE_MARROW/cell_type.rds")){
     scalematrix(t(m1)) %*% t(scalematrix(t(m2))) / (nrow(m1) - 1)
   }
   #  Use annotation information
-  gz_path = "./data/hg19/Homo_sapiens.GRCh37.87.gtf.gz"
+  gz_path = "./data/annotation/Homo_sapiens.GRCh37.87.gtf.gz"
   annotation_mat = get_map(gz_path)
   tgngl = tapply(annotation_mat[, "gene_length"] / 1000, annotation_mat[, "gene_name"], max)
   gngl = as.vector(tgngl)
