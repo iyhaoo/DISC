@@ -243,7 +243,7 @@ Usage
   .. __: https://github.com/iyhaoo/DISC_data_availability/tree/master/BRAIN_1.3M
   .. __: https://github.com/iyhaoo/DISC_data_availability/blob/master/BRAIN_1.3M/clustering_result.txt.gz
 
-- Evaluations
+- **Evaluations**
 
   * Data Preparation, Imputation and Computational Resource Evaluation
 
