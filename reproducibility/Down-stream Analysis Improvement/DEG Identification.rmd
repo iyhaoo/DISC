@@ -33,7 +33,7 @@ bulk_sample_cell_type = sapply(colnames(gene_bulk_filt1), function(x){
 design_mat = cbind(1, ifelse(bulk_sample_cell_type == bulk_sample_cell_type[1], 1, 0))
 fit <- eBayes(lmFit(voom(gene_bulk_filt1, design = design_mat), design = design_mat))
 bulk_DE_matrix = topTable(fit, coef = 2, number = nrow(gene_bulk_filt1))
-bulk_DEG = rownames(bulk_DE_matrix)[abs(bulk_DE_matrix[, "logFC"]) >= 1.5 & bulk_DE_matrix[, "adj.P.Val"] <= 0.05]
+bulk_DEG = rownames(bulk_DE_matrix)[abs(bulk_DE_matrix[, "logFC"]) >= 1.5 & bulk_DE_matrix[, "adj.P.Val"] < 0.05]
 print(head(bulk_DE_matrix))
 print(head(bulk_DEG))
 ```

@@ -13,7 +13,7 @@ source(utilities_path)
 ```
 ### Generate data file
 The original 10X_5CL data can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE126906.</br>
-The filtered 10X_5CL data can be found at https://github.com/LuyiTian/sc_mixology/blob/master/data/csv/sc_10x_5cl.count.csv.gz.</br>
+The 10X_5CL metadata can be found at https://github.com/LuyiTian/sc_mixology/blob/master/data/csv/sc_10x_5cl.metadata.csv.gz. </br>
 We use 3918 filtered cells and all genes to make raw.loom (genes will be filtered in the following step gene selection as our DISC paper).
 ```{r}
 if(!file.exists("./data/10X_5CL/raw.loom")){
@@ -35,9 +35,11 @@ if(!file.exists("./data/10X_5CL/raw.loom")){
   rownames(original_data) = gene_name
   print(dim(original_data))
   save_h5("./data/10X_5CL/original.loom", t(original_data))
-  filtered_data = read.csv("./data/10X_5CL/original_data/sc_10x_5cl.count.csv.gz", header = T, row.names = 1)
-  cell_id = colnames(filtered_data)
+  metadata = as.matrix(read.csv("./data/10X_5CL/original_data/sc_10x_5cl.metadata.csv.gz", header = T, row.names = 1))
+  cell_id = rownames(metadata)
   raw_data = as.matrix(original_data[, cell_id])
+  cell_id_new = paste(metadata[, "cell_line"], cell_id, sep = "_")
+  colnames(raw_data) = cell_id_new
   print(dim(raw_data))
   save_h5("./data/10X_5CL/raw.loom", t(raw_data))
 }else{
