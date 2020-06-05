@@ -1,4 +1,5 @@
 import argparse
+import json
 from .utils.data_preparation import *
 from .utils.generator import *
 from .utils.utility import *
@@ -23,10 +24,10 @@ def inference(dataset, model, sess, output_dir, batch_size, workers, manager, lo
     feature_file.create_group("col_graphs")
     feature_file.create_group("layers")
     feature_file["col_attrs/CellID"] = dataset.cell_id.astype(np.string_)
-    feature_file["row_attrs/Gene"] = np.array(["feature_{}".format(x) for x in range(model.compress_dimensions)], np.string_)
+    feature_file["row_attrs/Gene"] = np.array(["feature_{}".format(x) for x in range(model.compress_dimension)], np.string_)
     feature_matrix = feature_file.create_dataset("matrix",
-                                                 shape=(model.compress_dimensions, dataset.cell_number),
-                                                 chunks=(model.compress_dimensions, 1),
+                                                 shape=(model.compress_dimension, dataset.cell_number),
+                                                 chunks=(model.compress_dimension, 1),
                                                  fletcher32=False,
                                                  dtype=np.float32)
     imputation_file = h5py.File("{}/imputation.loom".format(output_dir), "w")
@@ -65,13 +66,13 @@ def main():
     parser.add_argument("--out-dir", required=True, type=str, help="output folder")
     parser.add_argument("-mc", "--min-expressed-cell", required=False, type=int, default=10, help="min-expressed-cell")
     parser.add_argument("-me", "--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
-    parser.add_argument("-t", "--repeats", required=False, type=int, default=3, help="repeats")
     parser.add_argument("-sf", "--library-size-factor", required=False, type=str, default="1500", help="int or median")
-    parser.add_argument("-d", "--depth", required=False, type=str, default="16_8_1", help="depth")
-    parser.add_argument("-s", "--dimension-number", required=False, type=int, default=512, help="Dimension number")
     parser.add_argument("--memory-usage-rate", required=False, type=float, help="How many GPU memory to use (percentage)")
+    parser.add_argument("-d", "--depth", required=False, type=str, default="16_8_1", help="depth")
+    parser.add_argument("-t", "--repeats", required=False, type=int, default=3, help="repeats")
+    parser.add_argument("-s", "--dimension-number", required=False, type=int, default=512, help="Dimension number")
     parser.add_argument("-b", "--batch-size", required=False, type=int, default=128, help="Batch size")
-    parser.add_argument("-w", "--compress-dimensions", required=False, type=int, default=50, help="Latent dimensions")
+    parser.add_argument("-w", "--compress-dimension", required=False, type=int, default=50, help="Latent dimensions")
     parser.add_argument("-l", "--learning-rate", required=False, type=float, default=0.001, help="learning-rate")
     parser.add_argument("-tr", "--training", required=False, type=int, default=1, help="is training")
     parser.add_argument("--pretrained-model", required=False, type=str, help="pretrained model path (.pb)")
@@ -81,13 +82,18 @@ def main():
     parser.add_argument("--round-number", required=False, type=int, default=5, help="round number to stop training")
     parser.add_argument("-trs", "--training-round-size", required=False, type=int, default=50000, help="training round size")
     parser.add_argument("--debug", required=False, type=int, default=0, help="Use debug mode.")
+    parser.add_argument("--model-config-file", required=False, type=str, help="A json formatted file, settings listed here will be treated in priority.")
     FLAGS = vars(parser.parse_args())
     manager = Manager()
-    FLAGS["return_elements_str"] = ""
     result_dir = "{}/result".format(FLAGS["out_dir"])
     os.makedirs(result_dir, exist_ok=True)
     makeLog = MakeLogClass("{}/log.tsv".format(FLAGS["out_dir"])).make
     running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
+    if FLAGS["model_config_file"] is not None:
+        with open(FLAGS["model_config_file"], "r") as f:
+            FLAGS["model_config"] = json.load(f)
+    else:
+        FLAGS["model_config"] = None
     if not FLAGS["training"]:
         assert FLAGS["pretrained_model"] is not None
         model_dir = None
@@ -107,10 +113,19 @@ def main():
     else:
         ScanLoom_kwargs["min_cell"] = -1
         ScanLoom_kwargs["min_avg_exp"] = -1
+    model = DISC(log_fn=makeLog)
+    ScanLoom_kwargs["noise_intensity"] = model.hyperparameter_default["model_structure"]["noise_intensity"]
+    ScanLoom_kwargs["z_score_library_size_factor"] = model.hyperparameter_default["model_structure"]["z_score_library_size_factor"]
+    modeling_using_config = False
+    if FLAGS["model_config"] is not None:
+        if "model_structure" in FLAGS["model_config"].keys():
+            modeling_using_config = True
+            if "noise_intensity" in FLAGS["model_config"]["model_structure"].keys():
+                ScanLoom_kwargs["noise_intensity"] = FLAGS["model_config"]["model_structure"]["noise_intensity"]
+            if "z_score_library_size_factor" in FLAGS["model_config"]["model_structure"].keys():
+                ScanLoom_kwargs["z_score_library_size_factor"] = FLAGS["model_config"]["model_structure"]["z_score_library_size_factor"]
     dataset = ScanLoom(loom_path=FLAGS["dataset"],
                        library_size_factor=FLAGS["library_size_factor"],
-                       noise_intensity=0.1,
-                       z_score_library_size_factor=1000000,
                        workers=FLAGS["scan_workers"],
                        log_fn=makeLog, **ScanLoom_kwargs)
     #  dataset
@@ -118,15 +133,10 @@ def main():
     makeLog("Use {} genes with min_expressed_cell of {} and min_expressed_cell_average_expression of {}".format(dataset.target_gene.size, FLAGS["min_expressed_cell"], FLAGS["min_expressed_cell_average_expression"]))
     makeLog("Use {} as library_size_factor".format(dataset.library_size_factor))
     #  model
-    model = DISC(gene_name=dataset.target_gene,
-                 norm_max=dataset.norm_max,
-                 depth=FLAGS["depth"],
-                 repeats=FLAGS["repeats"],
-                 dimension_number=FLAGS["dimension_number"],
-                 compress_dimensions=FLAGS["compress_dimensions"],
-                 noise_intensity=dataset.noise_intensity,
-                 z_score_library_size_factor=dataset.z_score_library_size_factor,
-                 log_fn=makeLog)
+    if modeling_using_config:
+        model.modeling(gene_name=dataset.target_gene, norm_max=dataset.norm_max, **FLAGS["model_config"]["model_structure"])
+    else:
+        model.modeling(gene_name=dataset.target_gene, norm_max=dataset.norm_max)
     makeLog("Use {} as depth".format(FLAGS["depth"]))
     makeLog("Repeats {}".format(FLAGS["repeats"]))
     feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
@@ -138,6 +148,10 @@ def main():
         config.gpu_options.per_process_gpu_memory_fraction = FLAGS["memory_usage_rate"]
     with tf.Session(config=config) as sess:
         if FLAGS["training"]:
+            training_using_config = False
+            if FLAGS["model_config"] is not None:
+                if "training" in FLAGS["model_config"].keys():
+                    training_using_config = True
             makeLog("Learning Rate: {}".format(FLAGS["learning_rate"]))
             makeLog("\n")
             #  train information
@@ -149,7 +163,10 @@ def main():
                                    warm_up_cells=FLAGS["warm_up_cells"],
                                    detect_cells=FLAGS["round_number"] * FLAGS["training_round_size"],
                                    manager=manager)
-            model.training(FLAGS["learning_rate"])
+            if training_using_config:
+                model.training(**FLAGS["model_config"]["training"])
+            else:
+                model.training()
             feed_dict[model.is_training] = True
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided

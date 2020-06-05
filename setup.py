@@ -9,7 +9,7 @@ requirements = [
 
 setup(
     name="disc",
-    version="1.0.7",
+    version="1.1.0",
     author="Zhongshan Ophthalmic Centre (ZOC), Sun Yat-sen University (SYSU)",
     author_email="904469382@qq.com",
     description="A highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning.",
