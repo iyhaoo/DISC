@@ -1248,4 +1248,18 @@ R --slave < /home/yuanhao/single_cell/scripts/evaluation_pipeline/evaluation/clu
 
 
 
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1/result/imputation.loom \
+"" /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1/result/feature.loom \
+ /home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
 

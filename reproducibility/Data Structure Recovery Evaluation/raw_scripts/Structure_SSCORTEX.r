@@ -3,26 +3,29 @@ source(utilities_path)
 ####################main###############
 dataset_list = list()
 dataset_list[["FISH"]] = readh5_loom("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/fish.loom")
-raw_input_data = "/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/gene_selection.loom"
-use_genes = intersect(rownames(dataset_list[["FISH"]]), get_loom_gene(raw_input_data))
+raw_data = readh5_loom("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/raw.loom")
+gene_filter = gene_selection(raw_data, 10)
+raw_input_data = raw_data[gene_filter, ]
+use_genes = intersect(rownames(dataset_list[["FISH"]]), rownames(raw_input_data))
 print(length(use_genes))
 print(use_genes)
-dataset_list[["Raw"]] = readh5_loom(raw_input_data, use_genes)
+dataset_list[["Raw"]] = raw_input_data[use_genes, ]
 use_cell = colnames(dataset_list[["Raw"]])
 ### DISC
-our_result = "/home/yuanhao/DISC_imputation_result/SSCORTEX/result/imputation.loom"
+our_result = "/home/yuanhao/DISC_imputation_result/SSCORTEX_1.1/result/imputation.loom"
 dataset_list[["DISC"]] = readh5_loom(our_result, use_genes)
 ### Other methods
 dataset_list[["SAVER"]] = readRDS("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/SAVER.rds")
 set.seed(42)
-dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, use_cell]
-dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/scVI.hdf5", use_genes, use_cell)
-dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/MAGIC.hdf5", use_genes, use_cell)
-dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/DCA.hdf5", use_genes, use_cell)
-dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/scScope.hdf5", use_genes, use_cell)
-dataset_list[["DeepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/DeepImpute.hdf5", use_genes)
-dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/VIPER.hdf5", use_genes, use_cell)
-dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/scImpute.hdf5", use_genes, use_cell)
+dataset_list[["SAVER_gamma"]] = gamma_result(dataset_list[["SAVER"]], num_of_obs=1)[use_genes, ]
+dataset_list[["scVI"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/scVI.hdf5", use_genes)
+dataset_list[["MAGIC"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/MAGIC.hdf5", use_genes)
+dataset_list[["DCA"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/DCA.hdf5", use_genes)
+dataset_list[["scScope"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/scScope.hdf5", use_genes)
+dataset_list[["DeepImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/DeepImpute.hdf5")
+dataset_list[["VIPER"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/VIPER.hdf5", use_genes)
+dataset_list[["scImpute"]] = readh5_imputation("/home/yuanhao/github_repositories/DISC/reproducibility/data/SSCORTEX/scImpute.hdf5", use_genes)
+
 ### Output settings
 method_name = c("Raw", "DISC", "SAVER", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
 method_color = c("#A5A5A5", "#E83828", "blue", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
@@ -36,6 +39,17 @@ names(text_color) = method_name
 text_color["DISC"] = "red"
 path_fragments = unlist(strsplit(our_result, "/", fixed = T))
 length_path_fragments = length(path_fragments)
+### SSCORTEX
+for(ii in method_name){
+  if(length(grep("_s", colnames(dataset_list[[ii]]), fixed = T)) != 0){
+    dataset_list[[ii]] = dataset_list[[ii]][, order(sapply(colnames(dataset_list[[ii]]), function(x){
+      return(as.numeric(unlist(strsplit(x, "_", fixed = T))[1]))
+    }))]
+    colnames(dataset_list[[ii]]) = colnames(dataset_list[["Raw"]])
+    cat("RESUME: ", ii, " - ", jj, "\n")
+  }
+  print(ii)
+}
 ### make output dir
 outdir = paste(c(path_fragments[1:(length_path_fragments - 1)], "structure_recovery", path_fragments[length_path_fragments]), collapse = "/")
 dir.create(outdir, showWarnings = F, recursive = T)

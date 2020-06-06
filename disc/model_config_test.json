@@ -1,0 +1,32 @@
+{
+  "model_structure": {
+    "depth": "16_8_8_1_1_1",
+    "repeats": 2,
+    "dimension_number": 66,
+    "compress_dimension": 123,
+    "noise_intensity": 1.2,
+    "dropout_rate": 0.7,
+    "output_scale_factor": "2 * M * 1E-5",
+    "z_score_library_size_factor": 6666,
+    "outlier_cutoff": 1.2345,
+    "beta_666": 1E-4
+  },
+  "training": {
+    "learning_rate": 0.123,
+    "alpha_r": 5,
+    "alpha_p1": 1.5,
+    "alpha_p2": 0.35,
+    "alpha_c": 3,
+    "beta_1": 1,
+    "beta_2": 1,
+    "beta_3": "m * M* 1E-9",
+    "beta_4": "1.65 * m * 1E-5",
+    "beta_5": "6.3 * 1E-5",
+    "beta_6": 1E-6,
+    "beta_7": 1E-6,
+    "beta_8": 1E-5,
+    "beta_9": 1E-4,
+    "beta_10": 1E-4,
+    "beta_11": 1E-4
+  }
+}
