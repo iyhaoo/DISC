@@ -48,11 +48,11 @@ ove <- sapply(allmtd, function(mtd){
         mean(rownames(tmpres[1:i,]) %in% gs)  ## discuss
       }))
       tmpres <- res[rownames(res) %in% highid6,]
-      tmp6 <- mean(sapply(c(1:10)*10,function(i) {
+      tmp6 <- mean(sapply(c(1:100)*10,function(i) {
         mean(rownames(tmpres[1:i,]) %in% gs)  ## discuss
       }))
       tmpres <- res[rownames(res) %in% highid7,]
-      tmp7 <- mean(sapply(c(1:10)*10,function(i) {
+      tmp7 <- mean(sapply(c(1:100)*10,function(i) {
         mean(rownames(tmpres[1:i,]) %in% gs)  ## discuss
       }))
       tmpres <- res[rownames(res) %in% highid8,]

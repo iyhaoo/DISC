@@ -46,7 +46,7 @@ for(ii in method_name){
       return(as.numeric(unlist(strsplit(x, "_", fixed = T))[1]))
     }))]
     colnames(dataset_list[[ii]]) = colnames(dataset_list[["Raw"]])
-    cat("RESUME: ", ii, " - ", jj, "\n")
+    cat("RESUME: ", ii, "\n")
   }
   print(ii)
 }

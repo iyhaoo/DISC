@@ -1,0 +1,164 @@
+---
+title: "DEG Identification"
+output: html_notebook
+---
+### Setup knitr and load utility functions
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
+```
+```{r}
+utilities_path = "./source/utilities.r"
+source(utilities_path)
+library(limma)
+```
+### Settings
+```{r}
+method_name = c("Raw", "DISC", "scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")
+method_color = c("#A5A5A5", "#E83828", "#278BC4", "#EADE36", "#198B41", "#920783", "#F8B62D", "#8E5E32", "#1E2B68")
+names(method_color) = method_name
+text_color = rep("black", length(method_name))
+names(text_color) = method_name
+text_color["DISC"] = "red"
+options(future.globals.maxSize= 4.5e9)
+```
+### Identify reference DEGs from bulk data.
+```{r}
+gene_bulk_mat = readh5_loom("./data/10X_5CL/bulk.loom")
+gene_bulk_filt0 = round(gene_bulk_mat[!grepl('^MT-', rownames(gene_bulk_mat)), ])
+gene_bulk_filt1 = gene_bulk_filt0[rowSums(gene_bulk_filt0 > 0) > 0, ]
+bulk_sample_cell_type = sapply(colnames(gene_bulk_filt1), function(x){
+  return(strsplit(x, "_", fixed = T)[[1]][[2]])
+})
+design_mat = cbind(1, ifelse(bulk_sample_cell_type == bulk_sample_cell_type[1], 1, 0))
+fit <- eBayes(lmFit(voom(gene_bulk_filt1, design = design_mat), design = design_mat))
+bulk_DE_matrix = topTable(fit, coef = 2, number = nrow(gene_bulk_filt1))
+bulk_DEG = rownames(bulk_DE_matrix)[abs(bulk_DE_matrix[, "logFC"]) >= 1.5 & bulk_DE_matrix[, "adj.P.Val"] < 0.05]
+print(head(bulk_DE_matrix))
+print(head(bulk_DEG))
+```
+### Identify DEGs using imputed results.
+```{r}
+if(!file.exists("./results/JURKAT_293T/sc_DEG_list.rds")){
+  dir.create("./results/JURKAT_293T", showWarnings = F, recursive = T)
+  gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw.loom")
+  cell_293T = colnames(gene_bc_mat)[grep("293T", colnames(gene_bc_mat))]
+  cell_Jurkat = colnames(gene_bc_mat)[grep("JURKAT", colnames(gene_bc_mat))]
+  cell_type = c(rep("293T", length(cell_293T)), rep("Jurkat", length(cell_Jurkat)))
+  names(cell_type) = c(cell_293T, cell_Jurkat)
+  cell_type = cell_type[colnames(gene_bc_mat)]
+  cell_type = factor(cell_type, levels = sort(unique(cell_type)))
+  gene_filter = gene_selection(gene_bc_mat, 10)
+  sc_gene = rownames(gene_bc_mat)[gene_filter]
+  sc_DEG_list = list(wilcox = list(), MAST = list())
+  for(ii in method_name){
+    if(ii == "Raw"){
+      gene_bc_filt = gene_bc_mat[sc_gene, ]
+    }else{
+      gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/", ii, "_JURKAT_293T.loom"))
+      gene_bc_filt = gene_bc_mat[sc_gene, ]
+    }
+    seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt), min.cells = 0, min.features = 0)
+    seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+    seurat_obj@active.ident = cell_type
+    suppressWarnings({sc_DEG_list[["wilcox"]][[ii]] = FindMarkers(seurat_obj, ident.1 = "293T", ident.2 = "Jurkat", min.pct = 0.1, logfc.threshold = 0, test.use = "wilcox", verbose = F)})
+    suppressWarnings({sc_DEG_list[["MAST"]][[ii]] = FindMarkers(seurat_obj, ident.1 = "293T", ident.2 = "Jurkat", min.pct = 0.1, logfc.threshold = 0, test.use = "MAST", verbose = F)})
+    print(ii)
+  }
+  saveRDS(sc_DEG_list, paste0("./results/JURKAT_293T/sc_DEG_list.rds"))
+}else{
+  sc_DEG_list = readRDS(paste0("./results/JURKAT_293T/sc_DEG_list.rds"))
+}
+```
+### False detected DEG test.
+```{r}
+if(!file.exists("./results/JURKAT_293T/sc_false_DEG_list.rds")){
+  dir.create("./results/JURKAT_293T", showWarnings = F, recursive = T)
+  gene_bc_mat = readh5_loom("./data/JURKAT_293T/raw.loom")
+  gene_filter = gene_selection(gene_bc_mat, 10)
+  sc_gene = rownames(gene_bc_mat)[gene_filter]
+  cell_293T = colnames(gene_bc_mat)[grep("293T", colnames(gene_bc_mat))]
+  df = expand.grid(c(10, 50, 100, 500), c(10, 50, 100, 500))
+  colnames(df) = c("n1", "n2")
+  df = df[df[, "n1"] <= df[, "n2"], ]
+  sc_false_DEG_list = list(wilcox = list(), MAST = list())
+  for(ii in seq(nrow(df))){
+    cn1 = df[ii, "n1"]
+    cn2 = df[ii, "n2"]
+    set.seed(12345)
+    id = sample(seq(length(cell_293T)), cn1 + cn2)
+    this_name = paste0(cn1, '_', cn2)
+    for(jj in method_name){
+      if(jj == "Raw"){
+        expr = gene_bc_mat[sc_gene, cell_293T][, id]
+      }else{
+        gene_bc_mat = readh5_loom(paste0("./data/JURKAT_293T/", jj, "_JURKAT_293T.loom"))
+        expr = gene_bc_mat[sc_gene, cell_293T][, id]
+      }
+      if(ii == 1 & jj == method_name[1]){
+        sc_false_DEG_list[["wilcox"]][[jj]] = list()
+        sc_false_DEG_list[["MAST"]][[jj]] = list()
+      }
+      seurat_obj = CreateSeuratObject(counts = as.data.frame(expr), min.cells = 0, min.features = 0)
+      seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+      cell_type = c(rep("cn1", cn1),rep("cn2", cn2))
+      names(cell_type) = colnames(expr)
+      seurat_obj@active.ident = factor(cell_type, levels = sort(unique(cell_type)))
+      suppressWarnings({sc_false_DEG_list[["wilcox"]][[jj]][[this_name]] = FindMarkers(seurat_obj, ident.1 = "cn1", ident.2 = "cn2", min.pct = 0.1, logfc.threshold = 0, test.use = "wilcox", verbose = F)})
+      suppressWarnings({sc_false_DEG_list[["MAST"]][[jj]][[this_name]] = FindMarkers(seurat_obj, ident.1 = "cn1", ident.2 = "cn2", min.pct = 0.1, logfc.threshold = 0, test.use = "MAST", verbose = F)})
+    }
+    print(this_name)
+  }
+  saveRDS(sc_false_DEG_list, paste0("./results/JURKAT_293T/sc_false_DEG_list.rds"))
+}else{
+  sc_false_DEG_list = readRDS(paste0("./results/JURKAT_293T/sc_false_DEG_list.rds"))
+}
+```
+Note: This result has tiny difference from our paper as the annotation version is different. 
+```{r}
+overlap_wilcox = sapply(sc_DEG_list[["wilcox"]], function(x){
+  return(mean(sapply(seq(100) * 10, function(y){
+    return(mean(rownames(x[order(x[, "p_val_adj"]), ])[seq(y)] %in% bulk_DEG))
+  })))
+})
+
+overlap_MAST = sapply(sc_DEG_list[["MAST"]], function(x){
+  return(mean(sapply(seq(100) * 10, function(y){
+    return(mean(rownames(x)[seq(y)] %in% bulk_DEG))
+  })))
+})
+print(overlap_MAST)
+print(overlap_wilcox)
+```
+Note: This result has tiny difference from our paper as the sample cell is different. 
+```{r}
+DEG_wilcox_false = sapply(sc_false_DEG_list[["wilcox"]], function(x){
+  return(sapply(x, function(y){
+    return(sum(y[, "p_val"] <= 0.01 & abs(y[, "avg_logFC"]) >= 0.25))
+  }))
+})
+wilcox_false_mean = colMeans(DEG_wilcox_false)
+print(wilcox_false_mean)
+DEG_MAST_false = sapply(sc_false_DEG_list[["MAST"]], function(x){
+  return(sapply(x, function(y){
+    return(sum(y[, "p_val"] <= 0.01 & abs(y[, "avg_logFC"]) >= 0.25))
+  }))
+})
+MAST_false_mean = colMeans(DEG_MAST_false)
+print(MAST_false_mean)
+```
+
+```{r fig.height=3, fig.width=3}
+plot_df = data.frame(omo = (1 - overlap_wilcox[method_name]), fm = wilcox_false_mean[method_name], method = method_name)
+ggplot(plot_df, aes(x = fm, y = omo, label = method, color = method)) + geom_point() + geom_text_repel() + theme_bw() + theme(legend.position = "none") + xlab("False DEG (293T)") + ylab("1 - Overlap") + ggtitle("wilcox") + scale_colour_manual(values = method_color)
+plot_df = data.frame(omo = (1 - overlap_MAST[method_name]), fm = MAST_false_mean[method_name], method = method_name)
+ggplot(plot_df, aes(x = fm, y = omo, label = method, color = method)) + geom_point() + geom_text_repel() + theme_bw() + theme(legend.position = "none") + xlab("False DEG (293T)") + ylab("1 - Overlap") + ggtitle("MAST") + scale_colour_manual(values = method_color)
+```
+
+
+
+
+
+
+
+
