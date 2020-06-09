@@ -216,7 +216,7 @@ class DISC:
         self.hidden_feature_compression = tf.concat(tf.split(tf.stop_gradient(self.hidden_feature[0]), self.repeat + 1, 0), 1)
         self.weights_compressor = tf.compat.v1.get_variable("weights_compressor", [self.dimension_number * (self.repeat + 1), self.compress_dimension], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.025, 0.025))
         bias_compressor = tf.compat.v1.get_variable("bias_compressor", [self.compress_dimension], dtype=tf.float32, initializer=tf.zeros_initializer())
-        self.output_feature = self.autoencoder_activation_function(tf.matmul(self.hidden_feature_compression, self.weights_compressor) + bias_compressor)
+        self.output_feature = self.autoencoder_activation_function(tf.matmul(self.hidden_feature_compression, self.weights_compressor) + bias_compressor, name="output_feature")
         bias_compressor_reverse = tf.compat.v1.get_variable("bias_compressor_reverse", [self.dimension_number * (self.repeat + 1)], dtype=tf.float32, initializer=tf.zeros_initializer())
         self.compressor_reconstruction = self.autoencoder_activation_function(tf.matmul(self.output_feature, tf.transpose(self.weights_compressor)) + bias_compressor_reverse)
         self.compressor_prediction = tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(self.compressor_reconstruction, self.repeat + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficient_merged), self.repeat, 0))

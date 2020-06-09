@@ -238,6 +238,10 @@ save_h5(paste0("E:/DISC/reproducibility/data/JURKAT_293T/gene_selection_JURKAT_2
 
 
 
+DISC_imputation = readh5_loom("/home/yuanhao/DISC_imputation_result/10X_5CL/result/imputation.loom")
+save_h5("/home/yuanhao/github_repositories/DISC/reproducibility/data/10X_5CL/DISC.loom", t(DISC_imputation))
+
+
 
 
 
