@@ -43,7 +43,7 @@ class DISC:
                 "beta_10": 1E-4
             }
         }
-    def modeling(self, gene_name, norm_max, en_de_act_fn=tf.nn.tanh, output_activation_function=tf.nn.sigmoid, **kwargs):
+    def modeling(self, gene_name, norm_max, autoencoder_activation_function=tf.nn.tanh, output_activation_function=tf.nn.sigmoid, **kwargs):
         """
             An accurate and scalable imputation algorithm based on semi-supervised deep learning for single-cell
             transcriptome, which has an integrative structure of an AE and an RNN.
@@ -84,7 +84,7 @@ class DISC:
             z_score_library_size_factor : int, optional, default: 1000000
                 Scale factor for normalization in outlier detection.
 
-            en_de_act_fn : function, optional, default: tf.nn.tanh
+            autoencoder_activation_function : function, optional, default: tf.nn.tanh
                 Activation function for autoencoder.
 
             output_activation_function : function, optional, default: tf.nn.sigmoid
@@ -97,16 +97,15 @@ class DISC:
         self.repeat = hyperparameter_dict["repeat"]
         self.dimension_number = hyperparameter_dict["dimension_number"]
         self.compress_dimension = hyperparameter_dict["compress_dimension"]
-        noise_intensity = hyperparameter_dict["noise_intensity"]
         self.dropout_rate = hyperparameter_dict["dropout_rate"]
         self.output_scale_factor = hyperparameter_dict["output_scale_factor"]
-        self._z_score_library_size_factor = hyperparameter_dict["z_score_library_size_factor"]
-        self.en_de_act_fn = en_de_act_fn
+        self.z_score_library_size_factor = hyperparameter_dict["z_score_library_size_factor"]
+        self.autoencoder_activation_function = autoencoder_activation_function
         self.output_activation_function = output_activation_function
         #  constant tensors
         self.gene_name = tf.constant(gene_name_array, name="gene_name")
         self.norm_max = tf.constant(norm_max, dtype=tf.float32, name="norm_max")
-        self.noise_intensity = tf.constant(noise_intensity, dtype=tf.float32, name="noise_intensity")
+        self.noise_intensity = tf.constant(hyperparameter_dict["noise_intensity"], dtype=tf.float32, name="noise_intensity")
         #  feed tensors
         self.input_raw = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None, self.gene_number], name="input_layer")
         self.batch_library_size = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None], name="library_size")
@@ -129,20 +128,19 @@ class DISC:
             self._attention()
         with tf.compat.v1.variable_scope("imputer", reuse=False):
             self._imputer()
-            self.merge_gene_features = tf.add_n([feature_ * tf.expand_dims(tf.transpose(a_t), 2) for feature_, a_t in zip(self.gene_features, self.attention_coefficient_list)])
         with tf.compat.v1.variable_scope("reconstructor", reuse=False):
             self._reconstructor()
         with tf.compat.v1.variable_scope("compression", reuse=False):
             self._compression()
-        self.output = tf.where(tf.cast(self.input_not_outlier_mask, tf.bool), self.merge_impute_denorm_0, self.input_raw, name="output")
+        self.output = tf.where(self.input_not_outlier_mask, self.merge_impute_denorm_0, self.input_raw, name="output")
         self.output_element = [self.output, self.output_feature]
-        self.constraint_2 = tf.reduce_sum(self._denormalization(self.reconstructor_prediction[0]) * tf.cast(tf.logical_and(tf.logical_not(self.known_expressed), tf.greater(self.reconstructor_prediction[0], 0)), tf.float32))
+        self.constraint_2 = tf.reduce_sum(self._denormalization(self.reconstruction[0]) * tf.cast(tf.logical_and(tf.logical_not(self.known_expressed), tf.greater(self.reconstruction[0], 0)), tf.float32))
         self.constraint_3 = tf.reduce_sum(self.merge_impute_denorm_0 * tf.cast(tf.logical_and(tf.logical_not(self.known_expressed), tf.greater(self.merge_impute[0], 0)), tf.float32))
         self.merge_impute_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.merge_impute_denorm_0 - self.input_raw) * tf.cast(self.known_expressed, tf.float32), 0))
         self.trainable_variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES)
 
     def _outlier_detector(self, tensor, cutoff):
-        zscore = (tf.math.log1p(tf.stop_gradient(tensor) * self._z_score_library_size_factor / self.batch_library_size_expand_dims) - tf.expand_dims(self.z_norm_mean, 0)) / tf.expand_dims(self.z_norm_std, 0)
+        zscore = (tf.math.log1p(tf.stop_gradient(tensor) * self.z_score_library_size_factor / self.batch_library_size_expand_dims) - tf.expand_dims(self.z_norm_mean, 0)) / tf.expand_dims(self.z_norm_std, 0)
         return zscore > cutoff
 
     def _normalization(self, tensor):
@@ -156,7 +154,6 @@ class DISC:
         current_input = [self.input_norm, self.input_norm_noise_input]
         self.impute_latents = []
         self.predictions = []
-        self.hidden_layer = []
         self.gene_features = []
         #  AutoEncoder
         self.weights_encoder = tf.compat.v1.get_variable("weights_encoder", [self.gene_number, self.dimension_number], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.025, 0.025))
@@ -178,20 +175,20 @@ class DISC:
         for _ in range(self.repeat):
             #  feature refers "latent representation" of our paper
             features_stop = [tf.stop_gradient(tf.matmul(x, self.weights_encoder)) for x in current_input]
-            hidden_layer_1_feature = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * tf.transpose(tf.reshape(tf.matmul(self.en_de_act_fn(x), self.hidden_layer_1st_weights) + self.hidden_layer_1st_bias, [tf.shape(x)[0], self.gene_number, self.depth[0]]), [1, 0, 2]) for x in features_stop]
+            print(features_stop)
+            hidden_layer_1_feature = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * tf.transpose(tf.reshape(tf.matmul(self.autoencoder_activation_function(x), self.hidden_layer_1st_weights) + self.hidden_layer_1st_bias, [tf.shape(x)[0], self.gene_number, self.depth[0]]), [1, 0, 2]) for x in features_stop]
             self.gene_features.append(hidden_layer_1_feature[0])
             #  For the middle layers
             hidden_layer_feature = hidden_layer_1_feature
             for ii in range(len(self.depth) - 2):  # [0]
-                hidden_layer_feature = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * (tf.matmul(self.en_de_act_fn(x), self.hidden_layer_2nd_weights_list[ii]) + self.hidden_layer_2nd_bias_list[ii]) for x in hidden_layer_feature]
+                hidden_layer_feature = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * (tf.matmul(self.autoencoder_activation_function(x), self.hidden_layer_2nd_weights_list[ii]) + self.hidden_layer_2nd_bias_list[ii]) for x in hidden_layer_feature]
             #  For the output layer
-            output_1 = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * (tf.matmul(self.en_de_act_fn(x), self.output_layer_weights_list[0]) + self.output_layer_bias_list[0]) for x in hidden_layer_feature]
-            output_2 = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * (tf.matmul(self.en_de_act_fn(x), self.output_layer_weights_list[1]) + self.output_layer_bias_list[1]) for x in hidden_layer_feature]
+            output_1 = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * (tf.matmul(self.autoencoder_activation_function(x), self.output_layer_weights_list[0]) + self.output_layer_bias_list[0]) for x in hidden_layer_feature]
+            output_2 = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * (tf.matmul(self.autoencoder_activation_function(x), self.output_layer_weights_list[1]) + self.output_layer_bias_list[1]) for x in hidden_layer_feature]
             psi = tf.sigmoid(tf.nn.selu(tf.matmul(tf.stop_gradient(hidden_layer_feature[0]), self.psi)))
             output_layer_feature = [tf.transpose(tf.squeeze(self.output_scale_factor * x * psi, 2) + tf.squeeze(self.output_scale_factor * y * (1 - psi), 2)) for x, y in zip(output_1, output_2)]
             self.impute_latents.append(output_layer_feature)
             self.predictions.append([self.output_activation_function(x) for x in output_layer_feature])
-            self.hidden_layer.append(tf.matmul(self.predictions[-1][0] * tf.cast(tf.logical_not(self.known_expressed), tf.float32), self.weights_encoder))
             #  Filter
             current_input = [tf.where(self.known_expressed, self.input_norm, tf.stop_gradient(self.predictions[-1][0])),
                              tf.where(self.known_expressed, self.input_norm_noise_input, tf.nn.dropout(tf.stop_gradient(self.predictions[-1][0]), rate=1 - self.dropout_rate))]
@@ -211,20 +208,19 @@ class DISC:
         predictions = [tf.stop_gradient(prediction_) for prediction_ in [self.input_norm] + [predict_[0] for predict_ in self.predictions]]
         inputs = [tf.concat([tf.where(self.known_expressed, self.input_norm, x) for x in predictions], axis=0),
                   tf.concat([tf.where(self.known_expressed, self.input_norm, tf.nn.dropout(x, rate=1 - self.dropout_rate)) for x in predictions], axis=0)]
-        self.hidden_feature = [self.en_de_act_fn(tf.matmul(x, self.weights_encoder)) for x in inputs]
+        self.hidden_feature = [self.autoencoder_activation_function(tf.matmul(x, self.weights_encoder)) for x in inputs]
         self.bias_decoder = tf.compat.v1.get_variable("bias_decoder", [self.gene_number], dtype=tf.float32, initializer=tf.zeros_initializer())
-        self.split_reconstructor_prediction = [tf.split(self.output_activation_function(self.output_scale_factor * (self.phi + 1) * (tf.matmul(x, tf.transpose(self.weights_encoder)) + self.bias_decoder)), num_or_size_splits=self.repeat + 1, axis=0)[:-1] for x in self.hidden_feature]
-        self.reconstructor_prediction = [tf.add_n([predict_ * a_t for predict_, a_t in zip(reconstructor_predict_, self.attention_coefficient_list)]) for reconstructor_predict_ in self.split_reconstructor_prediction]
+        self.decoding = [tf.split(self.output_activation_function(self.output_scale_factor * (self.phi + 1) * (tf.matmul(x, tf.transpose(self.weights_encoder)) + self.bias_decoder)), num_or_size_splits=self.repeat + 1, axis=0)[:-1] for x in self.hidden_feature]
+        self.reconstruction = [tf.add_n([predict_ * a_t for predict_, a_t in zip(reconstructor_predict_, self.attention_coefficient_list)]) for reconstructor_predict_ in self.decoding]
 
     def _compression(self):
-        self.hidden_feature_compression = [tf.concat(tf.split(tf.stop_gradient(x), self.repeat + 1, 0), 1) for x in self.hidden_feature]
+        self.hidden_feature_compression = tf.concat(tf.split(tf.stop_gradient(self.hidden_feature[0]), self.repeat + 1, 0), 1)
         self.weights_compressor = tf.compat.v1.get_variable("weights_compressor", [self.dimension_number * (self.repeat + 1), self.compress_dimension], dtype=tf.float32, initializer=tf.random_uniform_initializer(-0.025, 0.025))
         bias_compressor = tf.compat.v1.get_variable("bias_compressor", [self.compress_dimension], dtype=tf.float32, initializer=tf.zeros_initializer())
-        compressed_feature = [self.en_de_act_fn(tf.matmul(x, self.weights_compressor) + bias_compressor) for x in self.hidden_feature_compression]
-        self.output_feature = compressed_feature[0]
+        self.output_feature = self.autoencoder_activation_function(tf.matmul(self.hidden_feature_compression, self.weights_compressor) + bias_compressor)
         bias_compressor_reverse = tf.compat.v1.get_variable("bias_compressor_reverse", [self.dimension_number * (self.repeat + 1)], dtype=tf.float32, initializer=tf.zeros_initializer())
-        self.compressor_reconstruction = [self.en_de_act_fn(tf.matmul(x, tf.transpose(self.weights_compressor)) + bias_compressor_reverse) for x in compressed_feature]
-        self.compressor_prediction = [tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(x, self.repeat + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficient_merged), self.repeat, 0)) for x in self.compressor_reconstruction]
+        self.compressor_reconstruction = self.autoencoder_activation_function(tf.matmul(self.output_feature, tf.transpose(self.weights_compressor)) + bias_compressor_reverse)
+        self.compressor_prediction = tf.add_n(tf.split(self.output_activation_function(self.output_scale_factor * (tf.stop_gradient(self.phi) + 1) * (tf.matmul(tf.concat(tf.split(self.compressor_reconstruction, self.repeat + 1, 1)[:-1], 0), tf.stop_gradient(tf.transpose(self.weights_encoder))) + tf.stop_gradient(self.bias_decoder))) * tf.stop_gradient(self.attention_coefficient_merged), self.repeat, 0))
 
     def training(self, **kwargs):
         """
@@ -311,24 +307,27 @@ class DISC:
                                        hyperparameter_dict["alpha_r"] * tf.ones_like(self.input_norm),
                                        tf.ones_like(self.input_norm))
         #  noise target's output compared with filtered merged impute
-        reconstruction_loss = tf.reduce_sum(tf.reduce_mean(tf.square(self.reconstructor_prediction[-1] - reconstruction_target) * reconstruction_mask, 0))
+        reconstruction_loss = tf.reduce_sum(tf.reduce_mean(tf.square(self.reconstruction[-1] - reconstruction_target) * reconstruction_mask, 0))
         #  L_P
         prediction_mask = tf.where(self.known_expressed,
                                    hyperparameter_dict["alpha_p1"] * tf.ones_like(self.input_norm),
                                    hyperparameter_dict["alpha_p2"] * tf.ones_like(self.input_norm))
-        prediction_target = [tf.where(self.known_expressed, self.input_norm, tf.stop_gradient(x)) for x in self.split_reconstructor_prediction[0]]
+        prediction_target = [tf.where(self.known_expressed, self.input_norm, tf.stop_gradient(x)) for x in self.decoding[0]]
         prediction_loss = tf.reduce_sum(tf.reduce_mean(tf.add_n([tf.square(impute_[0] - target_) * prediction_mask for impute_, target_ in zip(self.predictions, prediction_target)]), 0))
+        ###
+        not_expressed_mask = tf.cast(tf.logical_not(self.known_expressed), tf.float32)
         #  L_LR
-        latent_representation_targets = [tf.zeros_like(self.hidden_layer[0])] + self.hidden_layer[:-1]
-        self.latent_representation_loss = tf.add_n([tf.reduce_mean(tf.reduce_sum(tf.square(feature_ - tf.stop_gradient(target_)), 1)) for feature_, target_ in zip(self.hidden_layer, latent_representation_targets)]) / self.repeat
+        latent_representation = [tf.matmul(x[0] * not_expressed_mask, self.weights_encoder) for x in self.predictions]
+        latent_representation_targets = [tf.zeros_like(latent_representation[0])] + latent_representation[:-1]
+        self.latent_representation_loss = tf.add_n([tf.reduce_mean(tf.reduce_sum(tf.square(feature_ - tf.stop_gradient(target_)), 1)) for feature_, target_ in zip(latent_representation, latent_representation_targets)]) / self.repeat
         #  L_C
-        self.constraint = tf.add_n([tf.reduce_sum(tf.square(self._denormalization(x[0])) * tf.cast(tf.logical_not(self.known_expressed), tf.float32)) for x in self.predictions])
+        self.constraint = tf.add_n([tf.reduce_sum(tf.square(self._denormalization(x[0])) * not_expressed_mask) for x in self.predictions])
         #  L_compressor
-        self.compression_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.compressor_prediction[0] - tf.stop_gradient(self.merge_impute[0])), 0)) + tf.reduce_sum(tf.reduce_mean(tf.square(self.compressor_reconstruction[0] - self.hidden_feature_compression[0]), 0))
+        self.compression_loss = tf.reduce_sum(tf.reduce_mean(tf.abs(self.compressor_prediction - tf.stop_gradient(self.merge_impute[0])), 0)) + tf.reduce_sum(tf.reduce_mean(tf.square(self.compressor_reconstruction - self.hidden_feature_compression), 0))
         #  regularizer
-        regularizer1 = tf.add_n([tf.nn.l2_loss(tf.reduce_sum(tf.square(x), 0)) for x in [self.weights_encoder] + [self.hidden_layer_1st_weights]])
+        regularizer1 = tf.add_n([tf.nn.l2_loss(tf.reduce_sum(tf.square(x), 0)) for x in [self.weights_encoder, self.hidden_layer_1st_weights]])
         regularizer2 = tf.add_n([tf.nn.l2_loss(x) for x in self.hidden_layer_2nd_weights_list + self.output_layer_weights_list])
-        regularizer3 = tf.add_n([tf.nn.l2_loss(x) for x in [self.weights_attention] + [self.psi]])
+        regularizer3 = tf.add_n([tf.nn.l2_loss(x) for x in [self.weights_attention, self.psi]])
         regularizer4 = tf.add_n([tf.nn.l2_loss(x) for x in [self.phi]])
         regularizer_compressor = tf.add_n([tf.nn.l2_loss(x) for x in [self.weights_compressor]])
         optimizer = tf.compat.v1.train.AdamOptimizer(hyperparameter_dict["learning_rate"])

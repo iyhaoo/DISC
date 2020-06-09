@@ -168,4 +168,110 @@ R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream 
 
 
 
+CUDA_VISIBLE_DEVICES=0 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_0 \
+--min-expressed-cell=49 \
+--library-size-factor=median
 
+
+
+CUDA_VISIBLE_DEVICES=2 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_1 \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+
+CUDA_VISIBLE_DEVICES=3 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_2 \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_0/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_0/result/feature.loom \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_1/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_1/result/feature.loom \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_2/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_2/result/feature.loom \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+CUDA_VISIBLE_DEVICES=2 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1.0_0 \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+CUDA_VISIBLE_DEVICES=3 HDF5_USE_FILE_LOCKING=FALSE disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1.0_1 \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+disc \
+--dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
+--out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1.0_2 \
+--min-expressed-cell=49 \
+--library-size-factor=median
+
+
+
+
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_0/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_0/result/feature.loom \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_1/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_1/result/feature.loom \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_2/result/imputation.loom \
+/home/yuanhao/DISC_imputation_result/RETINA_1.1_compressor_1_2/result/feature.loom \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1.0_0/result/imputation.loom \
+"" \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1.0_1/result/imputation.loom \
+"" \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"
+
+R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
+--args /home/yuanhao/DISC_imputation_result/RETINA_1.1.0_2/result/imputation.loom \
+"" \
+/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/cell_type.rds \
+30 1.4 "" "retina"

@@ -68,12 +68,7 @@ def main():
     parser.add_argument("-me", "--min-expressed-cell-average-expression", required=False, type=float, default=1, help="min-expressed-cell-average-expression")
     parser.add_argument("-sf", "--library-size-factor", required=False, type=str, default="1500", help="int or median")
     parser.add_argument("--memory-usage-rate", required=False, type=float, help="How many GPU memory to use (percentage)")
-    parser.add_argument("-d", "--depth", required=False, type=str, default="16_8_1", help="depth")
-    parser.add_argument("-t", "--repeats", required=False, type=int, default=3, help="repeats")
-    parser.add_argument("-s", "--dimension-number", required=False, type=int, default=512, help="Dimension number")
     parser.add_argument("-b", "--batch-size", required=False, type=int, default=128, help="Batch size")
-    parser.add_argument("-w", "--compress-dimension", required=False, type=int, default=50, help="Latent dimensions")
-    parser.add_argument("-l", "--learning-rate", required=False, type=float, default=0.001, help="learning-rate")
     parser.add_argument("-tr", "--training", required=False, type=int, default=1, help="is training")
     parser.add_argument("--pretrained-model", required=False, type=str, help="pretrained model path (.pb)")
     parser.add_argument("--scan-workers", required=False, type=int, default=7, help="thread number")
@@ -82,7 +77,7 @@ def main():
     parser.add_argument("--round-number", required=False, type=int, default=5, help="round number to stop training")
     parser.add_argument("-trs", "--training-round-size", required=False, type=int, default=50000, help="training round size")
     parser.add_argument("--debug", required=False, type=int, default=0, help="Use debug mode.")
-    parser.add_argument("--model-config-file", required=False, type=str, help="A json formatted file, settings listed here will be treated in priority.")
+    parser.add_argument("--model-config-file", required=False, type=str, help="A json formatted file that configure hyperparameters")
     FLAGS = vars(parser.parse_args())
     manager = Manager()
     result_dir = "{}/result".format(FLAGS["out_dir"])
@@ -137,8 +132,6 @@ def main():
         model.modeling(gene_name=dataset.target_gene, norm_max=dataset.norm_max, **FLAGS["model_config"]["model_structure"])
     else:
         model.modeling(gene_name=dataset.target_gene, norm_max=dataset.norm_max)
-    makeLog("Use {} as depth".format(FLAGS["depth"]))
-    makeLog("Repeats {}".format(FLAGS["repeats"]))
     feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
                  model.zscore_cutoff: dataset.zscore_cutoff,
@@ -152,8 +145,6 @@ def main():
             if FLAGS["model_config"] is not None:
                 if "training" in FLAGS["model_config"].keys():
                     training_using_config = True
-            makeLog("Learning Rate: {}".format(FLAGS["learning_rate"]))
-            makeLog("\n")
             #  train information
             #  make generator evaluator and training part of model
             train_generator = DataQueue(dataset.loom_path, dataset.target_gene, True, batch_size=FLAGS["batch_size"], log_fn=makeLog, workers=FLAGS["generator_workers"], manager=manager, debug=False)
