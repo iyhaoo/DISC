@@ -175,7 +175,6 @@ class DISC:
         for _ in range(self.repeat):
             #  feature refers "latent representation" of our paper
             features_stop = [tf.stop_gradient(tf.matmul(x, self.weights_encoder)) for x in current_input]
-            print(features_stop)
             hidden_layer_1_feature = [tf.expand_dims(tf.transpose(self.phi + 1), 2) * tf.transpose(tf.reshape(tf.matmul(self.autoencoder_activation_function(x), self.hidden_layer_1st_weights) + self.hidden_layer_1st_bias, [tf.shape(x)[0], self.gene_number, self.depth[0]]), [1, 0, 2]) for x in features_stop]
             self.gene_features.append(hidden_layer_1_feature[0])
             #  For the middle layers
