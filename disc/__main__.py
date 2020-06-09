@@ -132,10 +132,6 @@ def main():
         model.modeling(gene_name=dataset.target_gene, norm_max=dataset.norm_max, **FLAGS["model_config"]["model_structure"])
     else:
         model.modeling(gene_name=dataset.target_gene, norm_max=dataset.norm_max)
-    feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
-                 model.z_norm_std: dataset.z_norm_std,
-                 model.zscore_cutoff: dataset.zscore_cutoff,
-                 model.library_size_factor: dataset.library_size_factor}
     config = tf.ConfigProto()
     if FLAGS["memory_usage_rate"] is not None:
         config.gpu_options.per_process_gpu_memory_fraction = FLAGS["memory_usage_rate"]
@@ -158,7 +154,11 @@ def main():
                 model.training(**FLAGS["model_config"]["training"])
             else:
                 model.training()
-            feed_dict[model.is_training] = True
+            feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
+                         model.z_norm_std: dataset.z_norm_std,
+                         model.zscore_cutoff: dataset.zscore_cutoff,
+                         model.library_size_factor: dataset.library_size_factor,
+                         model.is_training: True}
             sess.run(tf.global_variables_initializer())
             #  read pre-trained model parameters if a pre-trained model is provided
             if FLAGS["pretrained_model"] is not None:
