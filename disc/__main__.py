@@ -204,7 +204,6 @@ def main():
             del evaluator
             use_pretrained_model = "{}/model_{}_cells.pb".format(model_dir, optimal_point)
         else:
-            makeLog("\n")
             sess.run(tf.global_variables_initializer())
             use_pretrained_model = FLAGS["pretrained_model"]
         sess.run(read_model(use_pretrained_model, model, log_fn=makeLog))
