@@ -10,7 +10,6 @@ knitr::opts_knit$set(root.dir="E:/DISC/reproducibility")
 ```{r}
 utilities_path = "./source/utilities.r"
 source(utilities_path)
-library(limma)
 ```
 ### Settings
 ```{r}
@@ -24,6 +23,7 @@ options(future.globals.maxSize= 1e9)
 ```
 ### Identify reference DEGs from bulk data.
 ```{r}
+library(limma)
 gene_bulk_mat = readh5_loom("./data/10X_5CL/bulk.loom")
 gene_bulk_filt0 = round(gene_bulk_mat[!grepl('^MT-', rownames(gene_bulk_mat)), ])
 gene_bulk_filt1 = gene_bulk_filt0[rowSums(gene_bulk_filt0 > 0) > 0, ]
@@ -46,37 +46,50 @@ for(ii in seq(ncol(celltype_combination))){
 ```{r}
 if(!file.exists("./results/10X_5CL/sc_DEG_list.rds")){
   dir.create("./results/10X_5CL", showWarnings = F, recursive = T)
-  gene_bc_mat = readh5_loom("./data/10X_5CL/raw.loom")
-  sc_celltype = sapply(colnames(gene_bc_mat), function(x){
+  sc_celltype = sapply(get_loom_cell("./data/10X_5CL/gene_selection.loom"), function(x){
     return(strsplit(x, "_", fixed = T)[[1]][[1]])
   })
   cell_type = factor(sc_celltype, levels = sort(unique(sc_celltype)))
-  gene_filter = gene_selection(gene_bc_mat, 10)
-  sc_gene = rownames(gene_bc_mat)[gene_filter]
-  sc_DEG_list = list(wilcox = list(), MAST = list())
+  sc_gene = get_loom_gene("./data/10X_5CL/gene_selection.loom")
+  sc_DEG_list = list()
   celltype_combination = combn(unique(sc_celltype), 2)
-  for(ii in method_name){
-    if(ii == "Raw"){
-      gene_bc_filt = gene_bc_mat[sc_gene, ]
+  DEG_method = c("MAST", "wilcox")
+  run_task_matrix = matrix(nrow = ncol(celltype_combination) * length(DEG_method) * length(method_name), ncol = 4, dimnames = list(c(), c("method_name", "DEG_method", "celltype_1", "celltype_2")))
+  run_task_matrix[, c(3, 4)] = rep(t(celltype_combination), each = length(DEG_method) * length(method_name))
+  run_task_matrix[, 2] = rep(rep(DEG_method, each = length(method_name)), ncol(celltype_combination))
+  run_task_matrix[, 1] = rep(method_name, length(DEG_method) * ncol(celltype_combination))
+  for(ii in DEG_method){
+    sc_DEG_list[[ii]] = list()
+    for(jj in method_name){
+      sc_DEG_list[[ii]][[jj]] = list()
+    }
+  }
+  library(parallel)
+  no_cores <- max(c(detectCores() - 1, 1))
+  cl <- makeCluster(no_cores)
+  clusterExport(cl, varlist = c("sc_gene", "cell_type", "run_task_matrix", "readh5_loom"))
+  return_list = parLapply(cl, seq(nrow(run_task_matrix)), function(ii){
+    library(Seurat)
+    library(rhdf5)
+    this_task = run_task_matrix[ii, ]
+    celltype_1 = this_task["celltype_1"]
+    celltype_2 = this_task["celltype_2"]
+    this_celltype = cell_type[cell_type %in% c(celltype_1, celltype_2)]
+    if(this_task["method_name"] == "Raw"){
+      gene_bc_expression = readh5_loom("./data/10X_5CL/raw.loom")[sc_gene, names(this_celltype)]
     }else{
-      gene_bc_mat = readh5_loom(paste0("./data/10X_5CL/", ii, ".loom"))
-      gene_bc_filt = gene_bc_mat[sc_gene, ]
+      gene_bc_expression = readh5_loom(paste0("./data/10X_5CL/", this_task["method_name"], ".loom"))[sc_gene, names(this_celltype)]
     }
-    sc_DEG_list[["wilcox"]][[ii]] = list()
-    sc_DEG_list[["MAST"]][[ii]] = list()
-    for(jj in seq(ncol(celltype_combination))){
-      celltype1 = celltype_combination[1, jj]
-      celltype2 = celltype_combination[2, jj]
-      used_sample = sc_celltype[sc_celltype %in% c(celltype1, celltype2)]
-      this_name = paste(c(celltype1, celltype2), collapse = "_")
-      seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_filt[, names(used_sample)]), min.cells = 0, min.features = 0)
-      seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
-      seurat_obj@active.ident = cell_type
-      suppressWarnings({sc_DEG_list[["wilcox"]][[ii]][[this_name]] = FindMarkers(seurat_obj, ident.1 = celltype1, ident.2 = celltype2, min.pct = 0.1, logfc.threshold = 0, test.use = "wilcox", verbose = F)})
-      suppressWarnings({sc_DEG_list[["MAST"]][[ii]][[this_name]] = FindMarkers(seurat_obj, ident.1 = celltype1, ident.2 = celltype2, min.pct = 0.1, logfc.threshold = 0, test.use = "MAST", verbose = F)})
-    }
-
-    print(ii)
+    seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_expression), min.cells = 0, min.features = 0)
+    seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+    seurat_obj@active.ident = this_celltype
+    suppressWarnings({DEG_result = FindMarkers(seurat_obj, ident.1 = celltype_1, ident.2 = celltype_2, min.pct = 0.1, logfc.threshold = 0, test.use = this_task["DEG_method"], verbose = F)})
+    return(DEG_result)
+  })
+  stopCluster(cl)
+  for(ii in seq(length(return_list))){
+    this_task = run_task_matrix[ii, ]
+    sc_DEG_list[[this_task["DEG_method"]]][[this_task["method_name"]]][[paste0(this_task["celltype_1"], "_", this_task["celltype_2"])]] = return_list[[ii]]
   }
   saveRDS(sc_DEG_list, paste0("./results/10X_5CL/sc_DEG_list.rds"))
 }else{
@@ -87,40 +100,56 @@ if(!file.exists("./results/10X_5CL/sc_DEG_list.rds")){
 ```{r}
 if(!file.exists("./results/10X_5CL/sc_false_DEG_list.rds")){
   dir.create("./results/10X_5CL", showWarnings = F, recursive = T)
-  gene_bc_mat = readh5_loom("./data/10X_5CL/raw.loom")
-  gene_filter = gene_selection(gene_bc_mat, 10)
-  sc_gene = rownames(gene_bc_mat)[gene_filter]
-  cell_1 = colnames(gene_bc_mat)[grep("A549", colnames(gene_bc_mat))]
-  df = expand.grid(c(10, 50, 100, 500), c(10, 50, 100, 500))
-  colnames(df) = c("n1", "n2")
-  df = df[df[, "n1"] <= df[, "n2"], ]
-  sc_false_DEG_list = list(wilcox = list(), MAST = list())
-  for(ii in seq(nrow(df))){
-    cn1 = df[ii, "n1"]
-    cn2 = df[ii, "n2"]
-    set.seed(12345)
-    id = sample(seq(length(cell_1)), cn1 + cn2)
-    this_name = paste0(cn1, '_', cn2)
+  sc_gene = get_loom_gene("./data/10X_5CL/gene_selection.loom")
+  sc_celltype = sapply(get_loom_cell("./data/10X_5CL/gene_selection.loom"), function(x){
+    return(strsplit(x, "_", fixed = T)[[1]][[1]])
+  })
+  cell_type = factor(sc_celltype, levels = sort(unique(sc_celltype)))
+  cell_1 = names(cell_type[cell_type == "A549"])
+  cell_number_combination = as.matrix(expand.grid(c(10, 50, 100, 500), c(10, 50, 100, 500)))
+  cell_number_combination = cell_number_combination[cell_number_combination[, 1] <= cell_number_combination[, 2], ]
+  DEG_method = c("MAST", "wilcox")
+  run_task_matrix = matrix(nrow = nrow(cell_number_combination) * length(DEG_method) * length(method_name), ncol = 4, dimnames = list(c(), c("method_name", "DEG_method", "cell_number_1", "cell_number_2")))
+  run_task_matrix[, c(3, 4)] = rep(cell_number_combination, each = length(DEG_method) * length(method_name))
+  run_task_matrix[, 2] = rep(rep(DEG_method, each = length(method_name)), ncol(cell_number_combination))
+  run_task_matrix[, 1] = rep(method_name, length(DEG_method) * ncol(cell_number_combination))
+  sc_false_DEG_list = list()
+  for(ii in DEG_method){
+    sc_false_DEG_list[[ii]] = list()
     for(jj in method_name){
-      if(jj == "Raw"){
-        expr = gene_bc_mat[sc_gene, cell_1][, id]
-      }else{
-        gene_bc_mat = readh5_loom(paste0("./data/10X_5CL/", jj, ".loom"))
-        expr = gene_bc_mat[sc_gene, cell_1][, id]
-      }
-      if(ii == 1 & jj == method_name[1]){
-        sc_false_DEG_list[["wilcox"]][[jj]] = list()
-        sc_false_DEG_list[["MAST"]][[jj]] = list()
-      }
-      seurat_obj = CreateSeuratObject(counts = as.data.frame(expr), min.cells = 0, min.features = 0)
-      seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
-      cell_type = c(rep("cn1", cn1),rep("cn2", cn2))
-      names(cell_type) = colnames(expr)
-      seurat_obj@active.ident = factor(cell_type, levels = sort(unique(cell_type)))
-      suppressWarnings({sc_false_DEG_list[["wilcox"]][[jj]][[this_name]] = FindMarkers(seurat_obj, ident.1 = "cn1", ident.2 = "cn2", min.pct = 0.1, logfc.threshold = 0, test.use = "wilcox", verbose = F)})
-      suppressWarnings({sc_false_DEG_list[["MAST"]][[jj]][[this_name]] = FindMarkers(seurat_obj, ident.1 = "cn1", ident.2 = "cn2", min.pct = 0.1, logfc.threshold = 0, test.use = "MAST", verbose = F)})
+      sc_false_DEG_list[[ii]][[jj]] = list()
     }
-    print(this_name)
+  }
+  library(parallel)
+  no_cores <- max(c(detectCores() - 1, 1))
+  cl <- makeCluster(no_cores)
+  clusterExport(cl, varlist = c("sc_gene", "cell_1", "run_task_matrix", "readh5_loom"))
+  return_list = parLapply(cl, seq(nrow(run_task_matrix)), function(ii){
+    library(Seurat)
+    library(rhdf5)
+    this_task = run_task_matrix[ii, ]
+    cell_number_1 = as.numeric(this_task["cell_number_1"])
+    cell_number_2 = as.numeric(this_task["cell_number_2"])
+    set.seed(12345)
+    sampled_cells = cell_1[sample(seq(length(cell_1)), cell_number_1 + cell_number_2)]
+    this_celltype = c(rep("cn1", cell_number_1), rep("cn2", cell_number_2))
+    names(this_celltype) = sampled_cells
+    this_celltype = factor(this_celltype, levels = c("cn1", "cn2"))
+    if(this_task["method_name"] == "Raw"){
+      gene_bc_expression = readh5_loom("./data/10X_5CL/raw.loom")[sc_gene, names(this_celltype)]
+    }else{
+      gene_bc_expression = readh5_loom(paste0("./data/10X_5CL/", this_task["method_name"], ".loom"))[sc_gene, names(this_celltype)]
+    }
+    seurat_obj = CreateSeuratObject(counts = as.data.frame(gene_bc_expression), min.cells = 0, min.features = 0)
+    seurat_obj = NormalizeData(seurat_obj, normalization.method = "LogNormalize", scale.factor = 10000)
+    seurat_obj@active.ident = this_celltype
+    suppressWarnings({DEG_result = FindMarkers(seurat_obj, ident.1 = "cn1", ident.2 = "cn2", min.pct = 0.1, logfc.threshold = 0, test.use = this_task["DEG_method"], verbose = F)})
+    return(DEG_result)
+  })
+  stopCluster(cl)
+  for(ii in seq(length(return_list))){
+    this_task = run_task_matrix[ii, ]
+    sc_false_DEG_list[[this_task["DEG_method"]]][[this_task["method_name"]]][[paste0(this_task["cell_number_1"], "_", this_task["cell_number_2"])]] = return_list[[ii]]
   }
   saveRDS(sc_false_DEG_list, paste0("./results/10X_5CL/sc_false_DEG_list.rds"))
 }else{
@@ -129,29 +158,29 @@ if(!file.exists("./results/10X_5CL/sc_false_DEG_list.rds")){
 ```
 Note: This result has tiny difference from our paper as the annotation version is different. 
 ```{r}
-overlap_wilcox = sapply(sc_DEG_list[["wilcox"]], function(x){
-  return(mean(sapply(seq(100) * 10, function(y){
-    return(mean(rownames(x[order(x[, "p_val_adj"]), ])[seq(y)] %in% bulk_DEG))
-  })))
-})
-
 overlap_MAST = sapply(sc_DEG_list[["MAST"]], function(x){
-  return(mean(sapply(seq(100) * 10, function(y){
-    return(mean(rownames(x)[seq(y)] %in% bulk_DEG))
-  })))
-})
-print(overlap_MAST)
-print(overlap_wilcox)
-```
-Note: This result has tiny difference from our paper as the sample cell is different. 
-```{r}
-DEG_wilcox_false = sapply(sc_false_DEG_list[["wilcox"]], function(x){
-  return(sapply(x, function(y){
-    return(sum(y[, "p_val"] <= 0.01 & abs(y[, "avg_logFC"]) >= 0.25))
+  return(sapply(names(x), function(y){
+    test_df = x[[y]][order(x[[y]][, "p_val_adj"]), ]
+    test_result = rownames(test_df) %in% bulk_DEG_list[[y]][["DEG"]]
+    return(mean(sapply(seq(100) * 10, function(z){
+      return(mean(test_result[seq(z)]))
+    })))
   }))
 })
-wilcox_false_mean = colMeans(DEG_wilcox_false)
-print(wilcox_false_mean)
+overlap_wilcox = sapply(sc_DEG_list[["wilcox"]], function(x){
+  return(sapply(names(x), function(y){
+    test_df = x[[y]][order(x[[y]][, "p_val_adj"]), ]
+    test_result = rownames(test_df) %in% bulk_DEG_list[[y]][["DEG"]]
+    return(mean(sapply(seq(100) * 10, function(z){
+      return(mean(test_result[seq(z)]))
+    })))
+  }))
+})
+print(colMeans(overlap_MAST))
+print(colMeans(overlap_wilcox))
+```
+```{r}
+#  Note: This result has tiny difference from our paper as the sample cell is different.
 DEG_MAST_false = sapply(sc_false_DEG_list[["MAST"]], function(x){
   return(sapply(x, function(y){
     return(sum(y[, "p_val"] <= 0.01 & abs(y[, "avg_logFC"]) >= 0.25))
@@ -159,6 +188,13 @@ DEG_MAST_false = sapply(sc_false_DEG_list[["MAST"]], function(x){
 })
 MAST_false_mean = colMeans(DEG_MAST_false)
 print(MAST_false_mean)
+DEG_wilcox_false = sapply(sc_false_DEG_list[["wilcox"]], function(x){
+  return(sapply(x, function(y){
+    return(sum(y[, "p_val"] <= 0.01 & abs(y[, "avg_logFC"]) >= 0.25))
+  }))
+})
+wilcox_false_mean = colMeans(DEG_wilcox_false)
+print(wilcox_false_mean)
 ```
 
 ```{r fig.height=3, fig.width=3}

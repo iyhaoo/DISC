@@ -103,7 +103,7 @@ class ScanLoom:
         pre_z_norm_std, = self._memory_economically_scanning(self._calculate_norm_std, ["plus"])
         self.z_norm_std = np.sqrt(np.divide(pre_z_norm_std, expressed_cell_calculate, out=np.zeros(self.calculate_mask.sum()), where=expressed_cell_calculate != 0))
         # norm_max filtered by z-score with 1m normalization
-        pre_inner_norm_max, self.zscore_cutoff, self.outlier_num, self.library_size = self._memory_economically_scanning(self._calculate_pre_inner_norm_max, ["max", "min", "plus", "append"])
+        pre_inner_norm_max, self.outlier_num, self.library_size = self._memory_economically_scanning(self._calculate_pre_inner_norm_max, ["max", "plus", "append"])
         #  long vector reassignment
         self.gene_name = gene_name
         self.cell_id = cell_id
@@ -136,7 +136,6 @@ class ScanLoom:
             self.z_norm_mean = np.concatenate([self.z_norm_mean[calculate_use_index], np.zeros(extra_genes.size)])
             self.z_norm_std = np.concatenate([self.z_norm_std[calculate_use_index], np.zeros(extra_genes.size)])
             self.norm_max = np.concatenate([self.norm_max[calculate_use_index], np.zeros(extra_genes.size)])
-            self.zscore_cutoff = np.concatenate([self.zscore_cutoff[calculate_use_index], np.zeros(extra_genes.size)])
         else:
             self.target_gene_mask = self.calculate_mask
         #  filter
@@ -178,8 +177,7 @@ class ScanLoom:
         this_zscore = np.divide(this_z_norm - np.expand_dims(self.z_norm_mean, 1), np.expand_dims(self.z_norm_std, 1), out=np.zeros_like(this_z_norm), where=np.expand_dims(self.z_norm_std, 1) != 0)
         this_outlier_num = np.sum(this_zscore > 3, 1)
         pre_inner_norm_max = np.where(this_zscore > 3, np.zeros_like(this_pre_norm), this_pre_norm).max(1)
-        min_zscore = np.where(np.logical_and(use_data > 0, this_zscore >= -2.5), this_zscore, np.ones_like(this_zscore) * 10).min(1)
-        return pre_inner_norm_max, min_zscore, this_outlier_num, this_library_size
+        return pre_inner_norm_max, this_outlier_num, this_library_size
 
     #  optimal running
     def _memory_economically_scanning(self, worker_function, modify_type_list):

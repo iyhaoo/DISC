@@ -18,7 +18,6 @@ def inference(dataset, model, sess, output_dir, batch_size, workers, manager, lo
         rf["outlier_num"] = dataset.outlier_num
         rf["expressed_cell"] = dataset.expressed_cell
         rf["gene_expression"] = dataset.gene_expression
-        rf["zscore_cutoff"] = dataset.zscore_cutoff
     feature_file = h5py.File("{}/feature.loom".format(output_dir), "w")
     feature_file.create_group("row_graphs")
     feature_file.create_group("col_graphs")
@@ -44,7 +43,6 @@ def inference(dataset, model, sess, output_dir, batch_size, workers, manager, lo
     generator = DataQueue(dataset.loom_path, dataset.gene_name, False, batch_size=batch_size, log_fn=log_fn, workers=workers, manager=manager)
     feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                  model.z_norm_std: dataset.z_norm_std,
-                 model.zscore_cutoff: dataset.zscore_cutoff,
                  model.library_size_factor: dataset.library_size_factor,
                  model.is_training: False}
     for _ in range(generator.steps_per_epoch):
@@ -156,7 +154,6 @@ def main():
                 model.training()
             feed_dict = {model.z_norm_mean: dataset.z_norm_mean,
                          model.z_norm_std: dataset.z_norm_std,
-                         model.zscore_cutoff: dataset.zscore_cutoff,
                          model.library_size_factor: dataset.library_size_factor,
                          model.is_training: True}
             sess.run(tf.global_variables_initializer())

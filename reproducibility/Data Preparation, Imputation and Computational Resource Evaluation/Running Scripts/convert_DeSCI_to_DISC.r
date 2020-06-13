@@ -242,11 +242,26 @@ DISC_imputation = readh5_loom("/home/yuanhao/DISC_imputation_result/10X_5CL/resu
 save_h5("/home/yuanhao/github_repositories/DISC/reproducibility/data/10X_5CL/DISC.loom", t(DISC_imputation))
 
 
+gene_bc_mat = readh5_loom("E:/DISC/reproducibility/data/10X_5CL/raw.loom")
+for(ii in c("DISC", "gene_selection")){
+  imputation_result = readh5_loom(paste0("E:/DISC/reproducibility/data/10X_5CL/", ii, ".loom"))
+  colnames(imputation_result) = colnames(gene_bc_mat)
+  save_h5(paste0("E:/DISC/reproducibility/data/10X_5CL/", ii, ".loom"), t(imputation_result))
+  print(ii)
+}
 
+for(ii in c("scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")){
+  imputation_result = readh5_imputation(paste0("E:/DISC/reproducibility/data/10X_5CL/", ii, ".hdf5"))
+  gene_bc_mat = readh5_loom("E:/DISC/reproducibility/data/10X_5CL/raw.loom")
+  gene_bc_mat[rownames(imputation_result), ] = imputation_result
+  save_h5(paste0("E:/DISC/reproducibility/data/10X_5CL/", ii, ".loom"), t(gene_bc_mat))
+}
 
-
-
-
-
+for(ii in c("scVI", "MAGIC", "DCA", "scScope", "DeepImpute", "VIPER", "scImpute")){
+  imputation_result = readh5_loom(paste0("E:/DISC/reproducibility/data/JURKAT_293T/", ii, "_JURKAT_293T.loom"))
+  gene_bc_mat = readh5_loom("E:/DISC/reproducibility/data/JURKAT_293T/raw.loom")
+  gene_bc_mat[rownames(imputation_result), ] = imputation_result
+  save_h5(paste0("E:/DISC/reproducibility/data/JURKAT_293T/", ii, "_JURKAT_293T.loom"), t(gene_bc_mat))
+}
 
 

@@ -21,7 +21,7 @@ if(!file.exists("./data/10X_5CL/raw.loom")){
   gz_path = "./data/annotation/Homo_sapiens.GRCh37.87.gtf.gz"
   annotation_mat = get_map(gz_path)
   mapping = annotation_mat$gene_name
-  names(mapping) = annotation_mat$gene_ids
+  names(mapping) = annotation_mat$gene_id
   gene_name_candidate = mapping[rownames(original_data)]
   gene_name = rownames(original_data)
   gene_name[!is.na(gene_name_candidate)] = gene_name_candidate[!is.na(gene_name_candidate)]

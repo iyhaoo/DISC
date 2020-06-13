@@ -107,24 +107,24 @@ get_optimal_point37 = function(log_path){
 }
 
 
-readh5_imputation = function(h5_path, use_genes=NULL, used_cells=NULL, with_outliers=F){
+readh5_imputation = function(h5_path, use_gene=NULL, use_cell=NULL, with_outliers=F){
   print(h5_path)
   gene_name = h5read(h5_path, "gene_name")
   cell_id = h5read(h5_path, "cell_id")
-  if(!is.null(used_cells)){
-    if(is.character(used_cells)){
-      cell_grasp_index = which(cell_id %in% used_cells)
+  if(!is.null(use_cell)){
+    if(is.character(use_cell)){
+      cell_grasp_index = which(cell_id %in% use_cell)
     }else{
-      cell_grasp_index = used_cells
+      cell_grasp_index = use_cell
     }
   }else{
     cell_grasp_index = c(1: length(cell_id))
   }
-  if(!is.null(use_genes)){
-    if(is.character(use_genes)){
-      gene_grasp_index = which(gene_name %in% use_genes)
+  if(!is.null(use_gene)){
+    if(is.character(use_gene)){
+      gene_grasp_index = which(gene_name %in% use_gene)
     }else{
-      gene_grasp_index = use_genes
+      gene_grasp_index = use_gene
     }
   }else{
     gene_grasp_index = c(1: length(gene_name))
@@ -140,24 +140,24 @@ readh5_imputation = function(h5_path, use_genes=NULL, used_cells=NULL, with_outl
   h5closeAll()
   return(gene_bc_mat)
 }
-readh5_loom = function(loom_path, use_genes=NULL, used_cells=NULL, is_feature=FALSE){
+readh5_loom = function(loom_path, use_gene=NULL, use_cell=NULL, is_feature=FALSE){
   print(loom_path)
   gene_name = h5read(loom_path, "row_attrs/Gene")
   cell_id = h5read(loom_path, "col_attrs/CellID")
-  if(!is.null(used_cells)){
-    if(is.character(used_cells)){
-      cell_grasp_index = which(cell_id %in% used_cells)
+  if(!is.null(use_cell)){
+    if(is.character(use_cell)){
+      cell_grasp_index = which(cell_id %in% use_cell)
     }else{
-      cell_grasp_index = used_cells
+      cell_grasp_index = use_cell
     }
   }else{
     cell_grasp_index = c(1: length(cell_id))
   }
-  if(!is.null(use_genes)){
-    if(is.character(use_genes)){
-      gene_grasp_index = which(gene_name %in% use_genes)
+  if(!is.null(use_gene)){
+    if(is.character(use_gene)){
+      gene_grasp_index = which(gene_name %in% use_gene)
     }else{
-      gene_grasp_index = use_genes
+      gene_grasp_index = use_gene
     }
   }else{
     gene_grasp_index = c(1: length(gene_name))
@@ -172,12 +172,12 @@ readh5_loom = function(loom_path, use_genes=NULL, used_cells=NULL, is_feature=FA
   return(gene_bc_mat)
 }
 
-get_gene_bc_mat = function(gene_bc_mat_path, use_genes=NULL, used_cells=NULL, with_outliers=F){
+get_gene_bc_mat = function(gene_bc_mat_path, use_gene=NULL, use_cell=NULL, with_outliers=F){
   file_format = get_last_element(unlist(strsplit(gene_bc_mat_path, ".", fix = T)))
   if(file_format == "loom"){
-    gene_bc_mat = readh5_loom(gene_bc_mat_path, use_genes = use_genes, used_cells = used_cells)
+    gene_bc_mat = readh5_loom(gene_bc_mat_path, use_gene = use_gene, use_cell = use_cell)
   }else{
-    gene_bc_mat = readh5_imputation(gene_bc_mat_path, use_genes = use_genes, used_cells = used_cells, with_outliers = with_outliers)
+    gene_bc_mat = readh5_imputation(gene_bc_mat_path, use_gene = use_gene, use_cell = use_cell, with_outliers = with_outliers)
   }
   return(gene_bc_mat)
 }
@@ -195,6 +195,10 @@ readh5_feature = function(h5_path){
 
 get_loom_gene = function(loom_path){
   return(h5read(loom_path, "row_attrs/Gene"))
+}
+
+get_loom_cell = function(loom_path){
+  return(h5read(loom_path, "col_attrs/CellID"))
 }
 
 get_imputation_gene = function(running_info){

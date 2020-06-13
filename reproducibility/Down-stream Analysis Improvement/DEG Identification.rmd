@@ -114,8 +114,8 @@ if(!file.exists("./results/JURKAT_293T/sc_false_DEG_list.rds")){
   sc_false_DEG_list = readRDS(paste0("./results/JURKAT_293T/sc_false_DEG_list.rds"))
 }
 ```
-Note: This result has tiny difference from our paper as the annotation version is different. 
 ```{r}
+#  Note: This result has tiny difference from our paper as the sample cell is different.
 overlap_wilcox = sapply(sc_DEG_list[["wilcox"]], function(x){
   return(mean(sapply(seq(100) * 10, function(y){
     return(mean(rownames(x[order(x[, "p_val_adj"]), ])[seq(y)] %in% bulk_DEG))

@@ -111,7 +111,6 @@ class DISC:
         self.batch_library_size = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None], name="library_size")
         self.z_norm_mean = tf.compat.v1.placeholder(tf.float32, shape=[self.gene_number], name="z_norm_mean")
         self.z_norm_std = tf.compat.v1.placeholder(tf.float32, shape=[self.gene_number], name="z_norm_std")
-        self.zscore_cutoff = tf.compat.v1.placeholder(tf.float32, shape=[self.gene_number], name="zscore_cutoff")
         self.library_size_factor = tf.compat.v1.placeholder(tf.float32, shape=[], name="library_size_factor")
         self.is_training = tf.compat.v1.placeholder(tf.bool, shape=[], name="is_training")
         #  general attribute tensors
