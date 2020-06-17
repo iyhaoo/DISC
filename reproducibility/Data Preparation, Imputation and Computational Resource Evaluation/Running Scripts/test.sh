@@ -340,11 +340,6 @@ R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream 
 
 
 
-<<<<<<< HEAD
-
-
-
-
 
 
 R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream Analysis Improvement/raw_scripts/cluster_fn_0.3.r" \
@@ -375,7 +370,7 @@ R --slave < "/home/yuanhao/github_repositories/DISC/reproducibility/Down-stream 
 
 
 
-CUDA_VISIBLE_DEVICES=2 HDF5_USE_FILE_LOCKING=FALSE disc \
+CUDA_VISIBLE_DEVICES=0 HDF5_USE_FILE_LOCKING=FALSE disc \
 --dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/RETINA/raw.loom \
 --out-dir=/home/yuanhao/DISC_imputation_result/RETINA_1.1.1_2 \
 --min-expressed-cell=49 \
