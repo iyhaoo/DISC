@@ -149,6 +149,7 @@ print(MAST_false_mean)
 ```
 
 ```{r fig.height=3, fig.width=3}
+library(ggrepel)
 plot_df = data.frame(omo = (1 - overlap_wilcox[method_name]), fm = wilcox_false_mean[method_name], method = method_name)
 ggplot(plot_df, aes(x = fm, y = omo, label = method, color = method)) + geom_point() + geom_text_repel() + theme_bw() + theme(legend.position = "none") + xlab("False DEG (293T)") + ylab("1 - Overlap") + ggtitle("wilcox") + scale_colour_manual(values = method_color)
 plot_df = data.frame(omo = (1 - overlap_MAST[method_name]), fm = MAST_false_mean[method_name], method = method_name)
