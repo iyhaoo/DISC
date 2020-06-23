@@ -129,7 +129,6 @@ cell_level_df = data.frame(level = c(1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5),
 rownames(cell_level_df) = c("HSC", "MPP", "LMPP", "CMP", "CLP", "GMP", "MEP", "Bcell", "CD4Tcell", "CD8Tcell", "NKcell", "Mono", "Ery")
 path_name = c("immunepath", "monopath", "erypath")
 order_list = list(correct = list(), wrong = list(), cell_type = list())
-wrong_order_list = list("1" = c(), "2" = c(), "3" = c(), "4" = c())
 for(ii in path_name){
   path_celltype = rownames(cell_level_df)[cell_level_df[, ii] == 1]
   order_list[["cell_type"]][[ii]] = path_celltype
@@ -139,31 +138,12 @@ for(ii in path_name){
   wrong_mat = cell_type_pair[cell_level_df[cell_type_pair[, 1], "level"] > cell_level_df[cell_type_pair[, 2], "level"], ]
   order_list[["correct"]][[ii]] = apply(correct_mat, 1, paste, collapse = "_")
   order_list[["wrong"]][[ii]] = apply(wrong_mat, 1, paste, collapse = "_")
-  for(jj in seq(max(cell_level_df[, "level"]) - min(cell_level_df[, "level"]))){
-    this_mask = cell_level_df[cell_type_pair[, 1], "level"] == jj + cell_level_df[cell_type_pair[, 2], "level"]
-    if(sum(this_mask) >=  1){
-      if(sum(this_mask) ==  1){
-        wrong_order_list[[as.character(jj)]] = c(wrong_order_list[[as.character(jj)]], paste(cell_type_pair[this_mask, ], collapse = "_"))
-      }else{
-        wrong_order_list[[as.character(jj)]] = c(wrong_order_list[[as.character(jj)]], apply(cell_type_pair[this_mask, ], 1, paste, collapse = "_"))
-      }
-    }
-  }
 }
 type_level = as.character(cell_level_df[, "level"])
 names(type_level) = rownames(cell_level_df)
 correct_order_all = unique(unlist(order_list[["correct"]]))
 wrong_order_all = unique(unlist(order_list[["wrong"]]))
-get_score_monocle2 = function(cds, cell_type, correct_order, wrong_order = NULL, wrong_order_list = NULL, output_dir = NULL, type_level = NULL){
-  if(is.null(wrong_order) + is.null(wrong_order_list) != 1){
-    stop("One of wrong_order and wrong_order_list should be input.")
-  }
-  if(!is.null(wrong_order_list)){
-    wrong_order = unique(unlist(wrong_order_list))
-    result_mat = matrix(nrow = 0, ncol = 5, dimnames = list(c(), c("acc", "correct_number", "wrong_number", "pair_number", "distance_sum")))
-  }else{
-    result_mat = matrix(nrow = 0, ncol = 4, dimnames = list(c(), c("acc", "correct_number", "wrong_number", "pair_number")))
-  }
+get_score_monocle2 = function(cds, cell_type, correct_order, wrong_order, output_dir = NULL, type_level = NULL){
   print("Looking for the root state...")
   used_cells = as.character(pData(cds)$cell)
   if(!is.null(output_dir)){
@@ -187,6 +167,7 @@ get_score_monocle2 = function(cds, cell_type, correct_order, wrong_order = NULL,
     return(length(cds@auxOrderingData[[cds@dim_reduce_type]]$root_cell))
   })
   candidate_root_states = sort(unique_states[checkroot > 0])
+  result_mat = matrix(nrow = 0, ncol = 2, dimnames = list(c(), c("pair_number", "acc")))
   for(ii in candidate_root_states){
     cds = orderCells(cds, root_state = ii)
     this_output_dir = paste0(output_dir, "/rootstate_", ii)
@@ -230,24 +211,11 @@ get_score_monocle2 = function(cds, cell_type, correct_order, wrong_order = NULL,
               stop("index_pair error")
             }
             branch_cellorder = sprintf("%s_%s",branch_celltype[index_pair[1, ]], branch_celltype[index_pair[2, ]])
-            return_c = c(sum(branch_cellorder %in% correct_order), sum(branch_cellorder %in% wrong_order))
-            sum(branch_cellorder %in% correct_order)
-            if(!is.null(wrong_order_list)){
-              distance_sum = 0
-              for(kk in names(wrong_order_list)){
-                distance_sum = distance_sum + sum(branch_cellorder %in% wrong_order_list[[kk]]) * as.numeric(kk)
-              }
-              return_c = c(return_c, distance_sum)
-            }
-            return(return_c)
+            return(c(sum(branch_cellorder %in% correct_order), sum(branch_cellorder %in% wrong_order)))
           }))
-          pair_number = sum(score[c(1, 2)])
+          pair_number = sum(score)
           acc = score[1] / pair_number
-          if(!is.null(wrong_order_list)){
-            this_branch_point_results = matrix(c(acc, score[1], score[2], pair_number, score[3]), nrow = 1)
-          }else{
-            this_branch_point_results = matrix(c(acc, score[1], score[2], pair_number), nrow = 1)
-          }
+          this_branch_point_results = matrix(c(pair_number, acc), nrow = 1)
           rownames(this_branch_point_results) = paste0("RS_", ii, "_BP_", jj)
           result_mat = rbind(result_mat, this_branch_point_results)
         }, error = function(e){

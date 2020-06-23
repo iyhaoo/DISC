@@ -1,5 +1,5 @@
 setwd("/home/yuanhao/github_repositories/DISC/reproducibility")
-source_path = "./pseudotemporal_analysis/raw_scripts/pseudotemporal_analysis_source.r"
+source_path = "./Down-stream Analysis Improvement/raw_scripts/pseudotemporal_analysis_source.r"
 source(source_path)
 
 
@@ -155,14 +155,39 @@ sapply(result_list, function(x){
   return(x[which.max(x[, 2]), ])
 })
 
+###   revised   ###
+setwd("/home/yuanhao/github_repositories/DISC/reproducibility")
+source_path = "./Down-stream Analysis Improvement/raw_scripts/pseudotemporal_analysis_source.r"
+source(source_path)
+
+
+method_names = c("raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
+output_dir_1 = paste0(output_dir, "/calculate_all_available_rootstates_revised")
+result_list = list()
+for(ii in method_names){
+  cds = readRDS(paste0(output_dir, "/calculate_all_available_rootstates", "/", ii, "/all_cds.rds"))
+  this_output_dir = paste0(output_dir_1, "/", ii)
+  dir.create(this_output_dir, recursive = T, showWarnings = F)
+  result_list[[ii]] = get_score_monocle2(cds, cell_type, correct_order = correct_order_all, wrong_order_list = wrong_order_list, output_dir = this_output_dir, type_level = type_level)
+  saveRDS(result_list[[ii]], paste0(this_output_dir, "/all_result_list.rds"))
+}
 
 
 
+setwd("/home/yuanhao/github_repositories/DISC/reproducibility")
+output_dir = "./results/BONE_MARROW"
+method_names = c("raw", "DISC", "scImpute", "VIPER", "MAGIC", "DCA", "DeepImpute", "scScope", "scVI")
+result_list = list()
+this_output_dir = paste0(output_dir, "/calculate_all_available_rootstates_revised")
+for(ii in method_names){
+  result_list[[ii]] = readRDS(paste0(this_output_dir, "/", ii, "/all_result_list.rds"))
+  print(ii)
+}
+print(result_list)
 
-
-
-
-
+result_mat = sapply(result_list, function(x){
+  return(x[which.max(x[, 1]), ])
+})
 
 
 
