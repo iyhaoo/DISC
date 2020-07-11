@@ -330,8 +330,15 @@ Usage
 
 References
 ----------
-Yao He\ :sup:`#`, Hao Yuan\ :sup:`#`, Cheng Wu\ :sup:`#`, Zhi Xie\ :sup:`*`.
-**"DISC: a highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning"**
+*Yao He*:sup:`#`,
+*Hao Yuan*:sup:`#`,
+*Cheng Wu*:sup:`#`,
+*Zhi Xie*:sup:`*`.
+DISC: a highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning.
+*Genome Biology*
+**21,**
+170 (2020).
+https://doi.org/10.1186/s13059-020-02083-3
 
 History
 -------
