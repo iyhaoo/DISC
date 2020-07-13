@@ -5,11 +5,12 @@ requirements = [
     "pandas>=0.21.0",
     "tensorflow>=1.13.1,<2.0.0",
     "h5py>=2.9.0"
+    "matplotlib>=3.0.0"
 ]
 
 setup(
     name="disc",
-    version="1.1.0",
+    version="1.1.1",
     author="Zhongshan Ophthalmic Centre (ZOC), Sun Yat-sen University (SYSU)",
     author_email="904469382@qq.com",
     description="A highly scalable and accurate inference of gene expression and structure for single-cell transcriptomes using semi-supervised deep learning.",
