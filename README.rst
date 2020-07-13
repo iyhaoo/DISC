@@ -358,7 +358,7 @@ History
 .. _numpy: https://numpy.org/
 .. _pandas: https://pandas.pydata.org/
 .. _h5py: https://www.h5py.org/
-.. _matplotlib: https://matplotlib.org//
+.. _matplotlib: https://matplotlib.org/
 .. _`hdf5-formatted`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`Data availability`: https://github.com/iyhaoo/DISC_data_availability/
 .. _`loom-formatted`: http://loompy.org/
