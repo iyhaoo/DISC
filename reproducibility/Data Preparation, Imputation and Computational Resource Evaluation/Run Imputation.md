@@ -64,5 +64,5 @@ If you want to use a specific model trained by DISC for inference, please use th
     --min-expressed-cell=10 \
     --library-size-factor=median
 
-Please note that `--training=0` here, otherwise `DISC` will use this model for fine-tune training. 
+Please note that using `--training=0` here, otherwise `DISC` will use this model for fine-tune training. 
 
