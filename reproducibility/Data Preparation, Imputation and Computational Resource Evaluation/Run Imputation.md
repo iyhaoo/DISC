@@ -53,3 +53,16 @@ For `DISC`, the imputation result (DISC outputs a matrix of the same dimension w
     --out-dir=/home/yuanhao/DISC_imputation_result/melanoma \
     --min-expressed-cell=10 \
     --library-size-factor=median
+
+If you want to use a specific model trained by DISC for inference, please use this following code:
+
+    disc \
+    --dataset=/home/yuanhao/github_repositories/DISC/reproducibility/data/MELANOMA/raw.loom \
+    --out-dir=/home/yuanhao/DISC_imputation_result/melanoma_inference \
+    --pretrained-model=/home/yuanhao/DISC_imputation_result/melanoma/models/XXX.pb \
+    --training=0 \
+    --min-expressed-cell=10 \
+    --library-size-factor=median
+
+Please note that `--training=0` here, otherwise `DISC` will use this model for fine-tune training. 
+
