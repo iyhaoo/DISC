@@ -81,7 +81,7 @@ def main():
     result_dir = "{}/result".format(FLAGS["out_dir"])
     os.makedirs(result_dir, exist_ok=True)
     makeLog = MakeLogClass("{}/log.tsv".format(FLAGS["out_dir"])).make
-    running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
+    #running_script_backup("{}/run_script".format(FLAGS["out_dir"]))
     if FLAGS["model_config_file"] is not None:
         with open(FLAGS["model_config_file"], "r") as f:
             FLAGS["model_config"] = json.load(f)
